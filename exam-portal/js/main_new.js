@@ -697,38 +697,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!isAdmin) {
-            document.getElementById('resumeBtn').addEventListener('click', () => {
-                overlay.remove();
-                // Logic to resume timer etc
-            });
+                // Logic to resume timer etc removed
+
         }
     }
 
 
-    // --- State Persistence Logic ---
-    function getStorageKey() {
-        const user = JSON.parse(localStorage.getItem('cm_user') || '{}');
-        const userEmail = user.email || 'guest';
-        return `exam_state_${userEmail}_${examName.replace(/\s+/g, '_')}`;
-    }
+    // --- State Persistence Logic removed ---
 
-    function saveExamState() {
-        const state = {
-            userAnswers,
-            markedForReview,
-            currentQuestionIndex,
-            secondsRemaining,
-            pauseCount,
-            questionOrder, // Save the randomized order
-
-            timestamp: new Date().getTime()
-        };
-        localStorage.setItem(getStorageKey(), JSON.stringify(state));
-    }
-
-    function clearExamState() {
-        localStorage.removeItem(getStorageKey());
-    }
 
     returnToExamBtn.addEventListener('click', () => {
         showScreen('exam');
@@ -777,68 +753,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         examTitleEl.textContent = examName;
 
-        // --- Restore State Logic ---
-        const savedStateJson = localStorage.getItem(getStorageKey());
-        let savedSeconds = 90 * 60;
-        let isResuming = false;
-
-        if (savedStateJson) {
-            try {
-                const state = JSON.parse(savedStateJson);
-                // Basic validation to ensure state matches current exam structure
-                if (state.userAnswers && state.userAnswers.length === questions.length) {
-                    userAnswers = state.userAnswers;
-                    markedForReview = state.markedForReview || markedForReview;
-                    currentQuestionIndex = state.currentQuestionIndex || 0;
-                    pauseCount = state.pauseCount || 0;
-                    savedSeconds = state.secondsRemaining || savedSeconds;
-
-                    // --- Restore Question Order ---
-                    if (state.questionOrder && state.questionOrder.length === sourceQuestions.length) {
-                        questionOrder = state.questionOrder;
-                        // Reconstruct shuffled array based on saved indices
-                        questions = questionOrder.map(index => sourceQuestions[index]);
-                    }
-
-                    isResuming = true;
-                }
-            } catch (e) {
-                console.error("Error parsing saved state", e);
-            }
+        // --- NEW session, Shuffle Questions ---
+        // Create array of indices [0, 1, 2, ... n]
+        questionOrder = Array.from({ length: sourceQuestions.length }, (_, i) => i);
+        // Shuffle indices
+        for (let i = questionOrder.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questionOrder[i], questionOrder[j]] = [questionOrder[j], questionOrder[i]];
         }
+        // Reorder questions array
+        questions = questionOrder.map(index => sourceQuestions[index]);
 
-        // --- If NEW session (not resuming), Shuffle Questions ---
-        if (!isResuming) {
-            // Create array of indices [0, 1, 2, ... n]
-            questionOrder = Array.from({ length: sourceQuestions.length }, (_, i) => i);
-            // Shuffle indices
-            for (let i = questionOrder.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [questionOrder[i], questionOrder[j]] = [questionOrder[j], questionOrder[i]];
-            }
-            // Reorder questions array
-            questions = questionOrder.map(index => sourceQuestions[index]);
-
-            // Reset state variables to match new shuffled length (though length is same)
-            userAnswers = new Array(questions.length).fill(null);
-            markedForReview = new Array(questions.length).fill(false);
-        }
+        // Reset state variables to match new shuffled length
+        userAnswers = new Array(questions.length).fill(null);
+        markedForReview = new Array(questions.length).fill(false);
 
         // Start proctoring first to get the welcome message
         await startProctoring();
         // Show the welcome message from the AI
         Swal.fire({
-            title: isResuming ? 'Resuming Your Exam' : 'Welcome to Your Live Proctored Exam',
-            html: isResuming ?
-                `<p>We found a previous session. You will be placed exactly where you left off.</p>
-                 <p><strong>Time Remaining:</strong> ${Math.floor(savedSeconds / 60)} minutes</p>
-                 <p>Good luck!</p>` :
-                `<p>I am your AI proctor for this session. My purpose is to ensure a fair and secure testing environment.</p>
+            title: 'Welcome to Your Live Proctored Exam',
+            html: `<p>I am your AI proctor for this session. My purpose is to ensure a fair and secure testing environment.</p>
                  <p>Please maintain focus on your screen, ensure you are alone, and keep your environment clear of any unauthorized materials. I will be monitoring your session in real-time.</p>
                  <p><strong>All the best for your ${examName}!</strong></p>`,
             icon: 'info',
             allowOutsideClick: false,
-            confirmButtonText: isResuming ? 'Resume Exam' : 'I Understand, Begin Exam'
+            confirmButtonText: 'I Understand, Begin Exam'
         }).then(() => {
             // Now show the exam screen and start the timer
             // START PROCTORING CHECKS (Audio/Polling)
@@ -850,17 +790,9 @@ document.addEventListener('DOMContentLoaded', () => {
             renderQuestions();
             renderNav(false);
             showQuestion(currentQuestionIndex);
-            startTimer(savedSeconds);
-
-            if (isResuming) {
-                // Update pause count display if resuming
-                const pauseDisplay = document.getElementById('pauseCountDisplay');
-                if (pauseDisplay) pauseDisplay.textContent = `(${MAX_PAUSES - pauseCount} left)`;
-
-                // Trigger fullscreen on resume
-                goFullScreen();
-            }
+            startTimer(90 * 60);
         });
+
     }
     // --- Question Rendering and Navigation ---
     function renderQuestions() {
@@ -880,10 +812,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add event listeners for saving answers
         questionArea.querySelectorAll('input[type="radio"]').forEach(input => {
             input.addEventListener('change', (e) => {
-                const qIndex = parseInt(e.target.name.replace('question', ''));
                 userAnswers[qIndex] = e.target.value;
                 updateNav(false);
-                saveExamState(); // Save state on answer change
+
             });
         });
     }
@@ -966,23 +897,17 @@ document.addEventListener('DOMContentLoaded', () => {
         markReviewBtn.textContent = markedForReview[currentQuestionIndex] ? 'Unmark Review' : 'Mark for Review';
     }
     nextBtn.addEventListener('click', () => {
-        if (currentQuestionIndex < questions.length - 1) {
             showQuestion(currentQuestionIndex + 1);
-            saveExamState(); // Save state on navigation
-        }
+
     });
     prevBtn.addEventListener('click', () => {
-        if (currentQuestionIndex > 0) {
             showQuestion(currentQuestionIndex - 1);
-            saveExamState(); // Save state on navigation
-        }
+
     });
-    markReviewBtn.addEventListener('click', () => {
         markedForReview[currentQuestionIndex] = !markedForReview[currentQuestionIndex];
         updateNav(false);
         updateNavButtons();
-        saveExamState(); // Save state on mark for review
-    });
+
     reviewExamBtn.addEventListener('click', () => {
         // When the user is on the last question and clicks "Review Exam"
         populateReviewScreen();
@@ -1005,12 +930,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Save state every 5 seconds to capture timer progress
             if (timer % 5 === 0) {
-                saveExamState();
+                // saveExamState removed
+
             }
 
             if (--timer < 0) {
                 clearInterval(timerInterval);
-                clearExamState(); // Clear state on timeout
+                // clearExamState removed
+
                 Swal.fire({
                     title: 'Time\'s Up!',
                     text: 'Your exam has been automatically submitted.',
@@ -1050,7 +977,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pauseCountDisplay) {
             pauseCountDisplay.textContent = `(${remainingPauses} left)`;
         }
-        saveExamState(); // Save state on pause
+        // saveExamState removed
+
         addToProctorLog("Session paused by user.");
     }
     function resumeExam() {
@@ -1113,7 +1041,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Submission Logic ---
     async function submitAndExit() {
-        clearExamState(); // Clear saved state on submission
+        // clearExamState removed
+
         if (stream) {
             stream.getTracks().forEach(track => track.stop());
         }

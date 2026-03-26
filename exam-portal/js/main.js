@@ -1444,7 +1444,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const qIndex = parseInt(e.target.name.replace('question', ''));
                 userAnswers[qIndex] = e.target.value;
                 updateNav(false);
-                saveExamState(); // Save state on answer change
+                // saveExamState removed
+
             });
         });
     }
@@ -1529,20 +1530,23 @@ document.addEventListener('DOMContentLoaded', () => {
     nextBtn.addEventListener('click', () => {
         if (currentQuestionIndex < questions.length - 1) {
             showQuestion(currentQuestionIndex + 1);
-            saveExamState(); // Save state on navigation
+            // saveExamState removed
+
         }
     });
     prevBtn.addEventListener('click', () => {
         if (currentQuestionIndex > 0) {
             showQuestion(currentQuestionIndex - 1);
-            saveExamState(); // Save state on navigation
+            // saveExamState removed
+
         }
     });
     markReviewBtn.addEventListener('click', () => {
         markedForReview[currentQuestionIndex] = !markedForReview[currentQuestionIndex];
         updateNav(false);
         updateNavButtons();
-        saveExamState(); // Save state on mark for review
+        // saveExamState removed
+
     });
     reviewExamBtn.addEventListener('click', () => {
         // When the user is on the last question and clicks "Review Exam"
@@ -1566,12 +1570,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Save state every 5 seconds to capture timer progress
             if (timer % 5 === 0) {
-                saveExamState();
+                // saveExamState removed
+
             }
 
             if (--timer < 0) {
                 clearInterval(timerInterval);
-                clearExamState(); // Clear state on timeout
+                // clearExamState removed
+
                 Swal.fire({
                     title: 'Time\'s Up!',
                     text: 'Your exam has been automatically submitted.',
@@ -1611,7 +1617,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pauseCountDisplay) {
             pauseCountDisplay.textContent = `(${remainingPauses} left)`;
         }
-        saveExamState(); // Save state on pause
+        // saveExamState removed
+
         addToProctorLog("Session paused by user.");
     }
     function resumeExam() {
@@ -1738,7 +1745,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Submission Logic ---
     async function submitAndExit() {
-        clearExamState(); // Clear saved state on submission
+        // clearExamState removed
+
         if (stream) {
             stream.getTracks().forEach(track => track.stop());
         }
@@ -2106,11 +2114,8 @@ document.addEventListener('DOMContentLoaded', () => {
     checkAgreements();
     checkLaunchReadiness();
 
-    // --- Auto-Launch for Resume ---
-    if (urlParams.get('resume') === 'true') {
-        console.log("Resuming exam - bypassing checks.");
-        initializeExam();
-    }
+    // --- Auto-Launch for Resume removed ---
+
 
 
 
@@ -2183,25 +2188,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Initialize security
         setupExamSecurity();
 
-        // --- Resume Check ---
-        if (urlParams.get('resume') !== 'true') {
-            checkResumeState().then(isResuming => {
-                if (isResuming) {
-                    Swal.fire({
-                        title: 'Active Session Found',
-                        text: 'You have an ongoing session for this exam. Would you like to resume?',
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: 'Resume Now',
-                        cancelButtonText: 'Start Fresh'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            initializeExam();
-                        }
-                    });
-                }
-            });
-        }
+        // --- Resume Check removed ---
+
     });
 
 // *******************************************************************

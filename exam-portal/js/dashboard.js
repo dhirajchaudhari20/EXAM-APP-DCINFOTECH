@@ -433,18 +433,7 @@
                 `;
             }
 
-            try {
-                const response = await fetch(`${SYNC_BASE_URL}/${sessionId}.json`);
-                const sessionData = await response.json();
 
-                if (sessionData && sessionData.status === 'in-progress') {
-                    return `
-                        <a href="exam-session.html?exam=${encodeURIComponent(exam.name)}&resume=true" class="btn" style="background-color: #ea4335; color: white; border: none; font-weight: 700; text-align: center; text-decoration: none; margin-bottom: 8px; display: block;">Resume Exam</a>
-                    `;
-                }
-            } catch (e) {
-                console.warn("[Dashboard] Could not check remote session state:", e);
-            }
 
             if (now < windowStart) {
                 // Too early
