@@ -1,0 +1,161 @@
+[
+    {
+        "name": "Main Website",
+        "desc": "Corporate homepage, landing pages, and blog.",
+        "type": "Web App",
+        "icon": "fa-globe",
+        "url": "https://dcinfotech.org.in"
+    },
+    {
+        "name": "Client Portal",
+        "desc": "Customer login, billing, ticketing, and support.",
+        "type": "SaaS App",
+        "icon": "fa-user-shield",
+        "url": "https://dcinfotech.org.in/portal"
+    },
+    {
+        "name": "API Gateway",
+        "desc": "REST API for integrations, partners, and automation.",
+        "type": "API",
+        "icon": "fa-plug",
+        "url": "https://dcinfotech.org.in/api"
+    },
+    {
+        "name": "Cloud Storage",
+        "desc": "File storage, backup, and secure document sharing.",
+        "type": "Cloud Service",
+        "icon": "fa-cloud"
+    },
+    {
+        "name": "Email Service",
+        "desc": "Transactional, notification, and marketing emails.",
+        "type": "SaaS App",
+        "icon": "fa-envelope",
+        "url": "https://dcinfotech.org.in/webmail"
+    },
+    {
+        "name": "Learning Portal",
+        "desc": "Online training, certifications, quizzes, and resources.",
+        "type": "Learning",
+        "icon": "fa-graduation-cap",
+        "url": "https://dcinfotech.org.in/learning"
+    },
+    {
+        "name": "SAP Integration",
+        "desc": "SAP S/4HANA, ERP connectors, and real-time data sync.",
+        "type": "SAP App",
+        "icon": "fa-cubes"
+    },
+    {
+        "name": "Database Cluster",
+        "desc": "Managed PostgreSQL, MySQL, and MongoDB clusters.",
+        "type": "Cloud DB",
+        "icon": "fa-database"
+    },
+    {
+        "name": "Mobile App",
+        "desc": "Android/iOS app for client access and notifications.",
+        "type": "Mobile",
+        "icon": "fa-mobile-alt"
+    },
+    {
+        "name": "Admin Dashboard",
+        "desc": "Internal admin, analytics, and monitoring tools.",
+        "type": "Internal",
+        "icon": "fa-chart-line",
+        "url": "https://dcinfotech.org.in/admin"
+    },
+    {
+        "name": "Notification Service",
+        "desc": "Push/SMS/email notifications for users and admins.",
+        "type": "Service",
+        "icon": "fa-bell"
+    },
+    {
+        "name": "Backup Service",
+        "desc": "Automated daily and weekly backups for critical data.",
+        "type": "Cloud Service",
+        "icon": "fa-hdd"
+    },
+    {
+        "name": "Payment Gateway",
+        "desc": "Online payments, invoicing, and refunds.",
+        "type": "API",
+        "icon": "fa-credit-card"
+    },
+    {
+        "name": "Partner API",
+        "desc": "APIs for third-party partners and integrations.",
+        "type": "API",
+        "icon": "fa-handshake"
+    },
+    {
+        "name": "HR Portal",
+        "desc": "Employee self-service, leave, payroll, and onboarding.",
+        "type": "Internal",
+        "icon": "fa-users",
+        "url": "https://dcinfotech.org.in/hr"
+    },
+    {
+        "name": "Recruitment System",
+        "desc": "Job postings, candidate tracking, and interview scheduling.",
+        "type": "Internal",
+        "icon": "fa-user-tie",
+        "url": "https://dcinfotech.org.in/careers"
+    },
+    {
+        "name": "Knowledge Base",
+        "desc": "Internal and public documentation, FAQs, and guides.",
+        "type": "Docs",
+        "icon": "fa-book",
+        "url": "https://dcinfotech.org.in/docs"
+    },
+    {
+        "name": "Video Conferencing",
+        "desc": "Secure video meetings for staff and clients.",
+        "type": "Service",
+        "icon": "fa-video"
+    },
+    {
+        "name": "Live Chat",
+        "desc": "Real-time chat support for clients and prospects.",
+        "type": "Support",
+        "icon": "fa-comments"
+    },
+    {
+        "name": "File Transfer",
+        "desc": "Large file upload/download for clients and partners.",
+        "type": "Cloud Service",
+        "icon": "fa-file-upload"
+    },
+    {
+        "name": "Monitoring & Alerts",
+        "desc": "Automated monitoring, alerting, and incident response.",
+        "type": "Internal",
+        "icon": "fa-eye"
+    },
+    {
+        "name": "DevOps CI/CD",
+        "desc": "Continuous integration and deployment pipelines.",
+        "type": "Internal",
+        "icon": "fa-code-branch"
+    },
+    {
+        "name": "DNS Service",
+        "desc": "Managed DNS for all domains. Fast global propagation.",
+        "type": "Cloud Service",
+        "icon": "fa-globe-asia"
+    },
+    {
+        "name": "Firewall & Security",
+        "desc": "Network firewall, DDoS protection, and threat monitoring.",
+        "type": "Security",
+        "icon": "fa-shield-alt"
+    },
+    {
+        "name": "Test Sandbox",
+        "desc": "Isolated environment for client and internal testing.",
+        "type": "Sandbox",
+        "icon": "fa-flask"
+    }
+]

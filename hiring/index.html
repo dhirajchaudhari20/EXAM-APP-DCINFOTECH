@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="DC Cloud Solutionslogo.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DC Cloud Solutions Internship Application</title>
+
+
+    <!-- SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="icon" href="DC Cloud Solutionslogo.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" href="DC Cloud Solutionslogo.ico" type="image/x-icon">
+    <link rel="icon" href="DC Cloud Solutionslogo.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta property="og:image" content="https://dcinfotech.org.in
+/images/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notiflix@3.2.5/dist/notiflix-3.2.5.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/notiflix@3.2.5/dist/notiflix-aio-3.2.5.min.js"></script>
+<meta name="twitter:image" content="https://dcinfotech.org.in
+/images/logo.png">
+<meta property="og:image" content="https://www.dcinfotech.org.in
+/DC Cloud Solutionslogo.png">
+<meta name="twitter:image" content="https://www.dcinfotech.org.in
+/DC Cloud Solutionslogo.png">
+<!-- Favicon for general browsers -->
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+
+<!-- Favicon in different sizes for various browsers -->
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+
+<!-- Apple Touch Icon for iOS devices -->
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- Android Chrome Icons for different screen sizes -->
+<link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="android-chrome-512x512.png">
+
+<!-- Web App Manifest for PWA compatibility -->
+<link rel="manifest" href="site.webmanifest">
+
+<!-- Favicon -->
+<link rel="icon" href="DC Cloud Solutionslogo.ico" type="image/x-icon">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            width: 100%;
+            margin-bottom: 20px;
+            border-top: 5px solid #4CAF50;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin: 10px 0 5px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .header img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+            margin-top: 20px;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        /* Loading overlay styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            display: none;
+        }
+
+        .loading-circle {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #4CAF50;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 15px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<script src="script.js"></script>
+<style>
+    /* Reset styling */
+/* Basic styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Overlay styling */
+.intro-overlay {
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 25%;
+    background: #2e8b57;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    animation: fadeOut 4s ease forwards 2s; /* Delay fade-out for a brief view */
+}
+
+.intro-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.intro-content p {
+    font-size: 1rem;
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; display: none; }
+}
+
+.main-content {
+    display: none;
+    padding: 2rem;
+}
+
+.show-content .main-content {
+    display: block;
+}
+
+
+</style>
+
+<script>
+    // Function to close the overlay and display main content
+function closeOverlay() {
+    const overlay = document.getElementById("introOverlay");
+    const mainContent = document.getElementById("mainContent");
+    
+    // Fade out overlay
+    overlay.classList.add("fade-out");
+
+    // After the fade-out animation, hide the overlay and show main content
+    setTimeout(() => {
+        overlay.style.display = "none";
+        mainContent.style.display = "block";
+    }, 1000); // Match the fade-out duration
+}
+
+</script>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-circle"></div>
+    </div>
+
+    <div class="header">
+        <img src="https://i.ibb.co/ZKtrgxj/Whats-App-Image-2024-10-18-at-8-29-30-AM.jpg" alt="DC Cloud Solutions Header Image">
+    </div>
+
+    <div class="form-container">
+        <h2>DC Cloud Solutions Internship Application</h2>
+        <form id="internship-form">
+            <label for="fullName">Full Name *</label>
+            <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+            
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            
+            <label for="mobileNumber">Mobile Number *</label>
+            <input type="tel" id="mobileNumber" name="mobileNumber" placeholder="Enter your mobile number" required>
+            
+            <label for="collegeName">College Name *</label>
+            <input type="text" id="collegeName" name="collegeName" placeholder="Enter your college name" required>
+            
+            <label for="education">Education Qualification *</label>
+            <select id="education" name="education" required>
+                <option value="" disabled selected>Select your qualification</option>
+                <option value="BE">BE</option>
+                <option value="BTech">B Tech</option>
+                <option value="BSC">BSC</option>
+                <option value="BCA">BCA</option>
+                <option value="MSC">MSC</option>
+                <option value="MBA">MBA</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label for="source">Where did you learn about DC Cloud Solutions? *</label>
+            <select id="source" name="source" required>
+                <option value="" disabled selected>Select an option</option>
+                <option value="social">Social Media (Instagram, LinkedIn, etc.)</option>
+                <option value="referral">Referral (Friends, Colleagues, Relatives, etc.)</option>
+                <option value="campus">Campus Placement Cell/Coordinators</option>
+                <option value="other">Other</option>
+            </select>
+
+            <label for="resume">Upload Resume *</label>
+            <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2022 Designed and Developed by DC Cloud Solutions</p>
+    </div>
+
+    <!-- SweetAlert Script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.getElementById('internship-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+        
+            const fullName = document.getElementById('fullName').value;
+            const timestamp = new Date().toLocaleString(); // Current date and time
+        
+            const formData = {
+                "data": [{
+                    "Full Name": fullName,
+                    "Email Address": document.getElementById('email').value,
+                    "Mobile Number": document.getElementById('mobileNumber').value,
+                    "College Name": document.getElementById('collegeName').value,
+                    "Education Qualification": document.getElementById('education').value,
+                    "Source of Information": document.getElementById('source').value,
+                    "Submission Time": timestamp // Add timestamp
+                }]
+            };
+        
+            // Show Notiflix Loading with a customized message
+            Notiflix.Loading.hourglass(`Submitting your application, ${fullName}...`);
+        
+            fetch('https://sheetdb.io/api/v1/xms6r1lnky4n9', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide Notiflix Loading overlay
+                Notiflix.Loading.remove();
+        
+                // Show Notiflix Success notification
+                Notiflix.Report.success(
+                    `Thank you, ${fullName}!`,
+                    'Your form has been submitted successfully. We will reach out shortly. If you don’t hear back within 24 hours, please follow up on our LinkedIn page.',
+                    'OK'
+                );
+        
+                // Reset form after submission
+                document.getElementById('internship-form').reset();
+            })
+            .catch((error) => {
+                // Hide Notiflix Loading overlay
+                Notiflix.Loading.remove();
+        
+                // Show Notiflix Failure notification
+                Notiflix.Report.failure(
+                    'Oops!',
+                    'There was an error submitting the form. Please try again later.',
+                    'OK'
+                );
+                console.error('Error:', error);
+            });
+        });
+        </script>
+        
+</body>
+</html>

@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Training Schedules - DC Cloud Solutions</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Shared Admin Layout Component -->
+    <link rel="stylesheet" href="components/layout.css">
+
+    <style>
+        :root {
+            --primary: #0044cc;
+            --primary-hover: #0033aa;
+            --bg-color: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        /* Topbar overrides specific to schedules */
+        .topbar {
+            height: 64px;
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .topbar h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Batch Selection Dropdown for Unified UI */
+        .batch-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .batch-selector select {
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-size: 1rem;
+            min-width: 200px;
+        }
+
+        .topbar {
+            height: 64px;
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .topbar h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            color: #cbd5e1;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: none;
+            /* Hidden until batch is selected */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            font-size: 0.95rem;
+        }
+
+        .session-desc {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .session-time {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 4px;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .actions button:hover {
+            background: #f1f5f9;
+            color: var(--text-dark);
+        }
+
+        .actions .delete-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 32px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: var(--shadow);
+            transform: translateY(20px);
+            transition: transform 0.2s;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 68, 204, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #eff6ff;
+            color: var(--primary);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Main Content Wrapper injected by unified layout -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1 class="admin-header-title">
+                <i class="fas fa-calendar-alt"></i> Manage Training Schedules
+            </h1>
+        </header>
+
+        <div class="admin-content">
+
+            <div class="batch-selector">
+                <div style="flex:1;">
+                    <label style="font-weight:600; margin-right: 15px; color: var(--text-dark);">Active Batch
+                        Selector:</label>
+                    <select id="batchListSelect" onchange="selectBatch(this.value)">
+                        <option value="">Loading batches...</option>
+                    </select>
+                </div>
+                <button class="btn btn-outline" onclick="promptNewBatch()" style="white-space:nowrap;">
+                    <i class="fas fa-plus"></i> New Batch
+                </button>
+            </div>
+
+            <div class="topbar">
+                <h1 id="currentBatchTitle">Select a Batch</h1>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-outline" onclick="loadBatches()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn" id="addSessionBtn" style="display: none;" onclick="openSessionModal()">
+                        <i class="fas fa-plus"></i> Add Session
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div id="emptyState" class="empty-state">
+                    <i class="far fa-folder-open"></i>
+                    <h3>No Batch Selected</h3>
+                    <p>Select a batch from the sidebar to view and manage its schedule.</p>
+                </div>
+
+                <div id="tableContainer" class="table-container">
+                    <table id="scheduleTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%">Date & Time</th>
+                                <th style="width: 35%">Description</th>
+                                <th style="width: 20%">Links</th>
+                                <th style="width: 10%; text-align: center;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleBody">
+                            <!-- Rows injected here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="noSessionsState" class="empty-state"
+                    style="display: none; height: 300px; background: #fff; border-radius: 10px; border: 1px solid var(--border-color); margin-top: 0;">
+                    <i class="far fa-calendar-times"></i>
+                    <h3>No Sessions</h3>
+                    <p>This batch currently has no scheduled sessions.</p>
+                    <button class="btn" style="margin-top: 16px;" onclick="openSessionModal()">Add First
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Unified Sidebar Injector -->
+    <script src="components/sidebar.js"></script>
+
+    <div id="access-denied" style="display: none; text-align: center; padding: 50px; font-family: sans-serif;">
+        <h2 style="color: red;">Access Denied</h2>
+        <p>You do not have permission to view this content.</p>
+    </div>
+
+    <!-- Session Modal -->
+    <div class="modal-overlay" id="sessionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Session</h3>
+                <button class="close-modal" onclick="closeSessionModal()">&times;</button>
+            </div>
+
+            <form id="sessionForm" onsubmit="saveSession(event)">
+                <input type="hidden" id="sessionIndex">
+
+                <div class="form-group" style="background: #f1f5f9; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed var(--primary);">
+                    <label style="color: var(--primary); display: flex; align-items: center; gap: 6px;">
+                        <i class="fas fa-magic"></i> Smart Fill (Paste session details below)
+                    </label>
+                    <textarea id="smartPaste" placeholder="Example: In this course... Tue, 21 April 2026... 17:30 - 20:30 GMT+5:30... Industry Use Cases..." style="font-size: 0.85rem; height: 60px; min-height: 60px;" oninput="handleSmartPaste(this.value)"></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label>Select Date</label>
+                        <input type="date" id="sDayPick" required onchange="updateFormattedDay()">
+                        <input type="hidden" id="sDay"> <!-- Hidden but used for final storage -->
+                        <div id="dayPreview" class="badge" style="margin-top: 8px; display: none;"></div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label>Start Time</label>
+                        <input type="time" id="sTimeStart" required onchange="updateFormattedTime()">
+                    </div>
+                    <div class="form-group">
+                        <label>End Time</label>
+                        <input type="time" id="sTimeEnd" required onchange="updateFormattedTime()">
+                    </div>
+                    <div class="form-group">
+                        <label>Timezone</label>
+                        <select id="sTimezone" onchange="updateFormattedTime()"
+                            style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <option value="GMT+5:30">IST (GMT+5:30)</option>
+                            <option value="GMT+0:00">UTC (GMT+0:00)</option>
+                            <option value="GMT-7:00">PDT (GMT-7:00)</option>
+                            <option value="GMT-4:00">EDT (GMT-4:00)</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="hidden" id="sTime"> <!-- Final formatted string -->
+                <div id="timePreview" class="badge" style="margin-bottom: 16px; display: none;"></div>
+
+                <div class="form-group">
+                    <label>Description / Title</label>
+                    <input type="text" id="sDesc" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Details</label>
+                    <textarea id="sDetails"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Meeting Link (Optional)</label>
+                    <input type="url" id="sLink" placeholder="https://meet.google.com/...">
+                </div>
+
+                <div class="form-group">
+                    <label>Recording Video URL (Optional)</label>
+                    <input type="url" id="sRec" placeholder="https://youtu.be/...">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeSessionModal()">Cancel</button>
+                    <button type="submit" class="btn">Save Session</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <script>
+        // 1. Firebase Config Setup
+        const firebaseConfig = {
+            apiKey: "AIzaSyCohKlqNu0I1sXcLW4D_fv-OEw9x0S50q8",
+            authDomain: "dc-infotechpvt-1-d1a4b.firebaseapp.com",
+            databaseURL: "https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com",
+            projectId: "dc-infotechpvt-1-d1a4b",
+            storageBucket: "dc-infotechpvt-1-d1a4b.firebasestorage.app",
+            messagingSenderId: "622552457680",
+            appId: "1:622552457680:web:4b80e21e14e2b8266f19d5"
+        };
+
+        const EMAILJS_CONFIG = {
+            serviceId: 'service_syn5ees',
+            templateId: 'template_x0az4m9', // Note: Using the same template, but ideally a "New Session" template could be used
+            publicKey: 'H6VWnC4FWgPkgR4g-'
+        };
+
+        let db;
+        let currentBatch = null;
+        let currentSessions = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            db = firebase.database();
+            
+            // Initialize EmailJS
+            emailjs.init(EMAILJS_CONFIG.publicKey);
+            
+            loadBatches();
+        });
+
+        // 1. Load Batches for Dropdown Selector
+        function loadBatches() {
+            const selectEl = document.getElementById('batchListSelect');
+            selectEl.innerHTML = '<option value="">Refreshing...</option>';
+
+            db.ref('agendas').once('value')
+                .then(snapshot => {
+                    const data = snapshot.val();
+                    selectEl.innerHTML = '<option value="" disabled selected>Select a batch...</option>';
+
+                    if (!data) {
+                        selectEl.innerHTML = '<option value="" disabled>No batches found</option>';
+                        return;
+                    }
+
+                    // Extract keys and sort
+                    const batches = Object.keys(data).sort((a, b) => {
+                        if (a === 'DEFAULT') return -1;
+                        if (b === 'DEFAULT') return 1;
+                        return a.localeCompare(b);
+                    });
+
+                    batches.forEach(batchId => {
+                        const opt = document.createElement('option');
+                        opt.value = batchId;
+                        const count = data[batchId] ? Object.keys(data[batchId]).length : 0;
+                        opt.textContent = `${batchId} (${count} sessions)`;
+                        if (batchId === currentBatch) opt.selected = true;
+                        selectEl.appendChild(opt);
+                    });
+                })
+                .catch(err => {
+                    console.error("Error fetching batches:", err);
+                    Swal.fire('Error', 'Failed to load batches from Firebase.', 'error');
+                });
+        }
+
+        // 2. Select a Batch and Load its Sessions
+        function selectBatch(batchId) {
+            if (!batchId) return;
+            currentBatch = batchId;
+            document.getElementById('currentBatchTitle').innerText = `Batch: ${batchId}`;
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('addSessionBtn').style.display = 'flex';
+
+            // Set up real-time listener for this batch
+            db.ref(`agendas/${batchId}`).on('value', snapshot => {
+                // Check if we switched batches before this resolved
+                if (currentBatch !== batchId) return;
+
+                const raw = snapshot.val();
+                // Firebase stores sessions as object; convert to array
+                currentSessions = raw ? Object.values(raw) : [];
+                renderTable();
+            });
+        }
+
+        // 3. Render the Sessions Table
+        function renderTable() {
+            const tbody = document.getElementById('scheduleBody');
+            const tableCont = document.getElementById('tableContainer');
+            const noSess = document.getElementById('noSessionsState');
+
+            tbody.innerHTML = '';
+
+            if (currentSessions.length === 0) {
+                tableCont.style.display = 'none';
+                noSess.style.display = 'flex';
+                return;
+            }
+
+            tableCont.style.display = 'block';
+            noSess.style.display = 'none';
+
+            // Sort chronologically by the 'day' parser
+            currentSessions.sort((a, b) => {
+                const getDate = (dateStr) => {
+                    if (!dateStr) return 0;
+                    try {
+                        let cleanStr = dateStr;
+                        // Handle "Mon, March 9, 2026 (Optional)" format
+                        if (cleanStr.includes('(')) cleanStr = cleanStr.split('(')[0];
+                        // Handle standard "Day, Month DD, YYYY" format by stripping the day of week
+                        if (cleanStr.includes(',')) cleanStr = cleanStr.substring(cleanStr.indexOf(',') + 1);
+
+                        const d = new Date(cleanStr.trim());
+                        return isNaN(d.getTime()) ? 0 : d.getTime();
+                    } catch (e) {
+                        return 0;
+                    }
+                };
+                return getDate(a.day) - getDate(b.day);
+            });
+
+            currentSessions.forEach((sess, index) => {
+                const tr = document.createElement('tr');
+
+                let linksHtml = '';
+                if (sess.link) linksHtml += `<a href="${sess.link}" target="_blank" title="Meet Link"><i class="fas fa-video" style="color:#0ea5e9;"></i></a> &nbsp;`;
+                if (sess.recording) linksHtml += `<a href="${sess.recording}" target="_blank" title="Recording"><i class="fas fa-play-circle" style="color:#ef4444;"></i></a>`;
+                if (!linksHtml) linksHtml = `<span style="color:#cbd5e1">-</span>`;
+
+                tr.innerHTML = `
+                    <td>
+                        <div class="session-desc">${sess.day}</div>
+                        <div class="session-time">${sess.time}</div>
+                    </td>
+                    <td>
+                        <div class="session-desc">${sess.description}</div>
+                        <div class="session-time" style="margin-top:4px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${sess.details || ''}">${sess.details || '-'}</div>
+                    </td>
+                    <td>${linksHtml}</td>
+                    <td style="text-align:center;">
+                        <div class="actions" style="justify-content:center;">
+                            <button onclick="editSession(${index})" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button class="delete-btn" onclick="deleteSession(${index})" title="Delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 4. Create New Batch
+        async function promptNewBatch() {
+            const { value: batchName } = await Swal.fire({
+                title: 'New Batch ID',
+                input: 'text',
+                inputLabel: 'Enter the batch name (e.g., ACE25). No spaces or special chars.',
+                inputPlaceholder: 'ACE25',
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    if (!value) return 'You need to write something!';
+                    if (value.includes(' ') || value.includes('/')) return 'No spaces or slashes allowed.';
+                }
+            });
+
+            if (batchName) {
+                const id = batchName.toUpperCase();
+                // Initialize with empty array
+                db.ref(`agendas/${id}`).set([])
+                    .then(() => {
+                        Swal.fire('Success', `Batch ${id} created!`, 'success');
+                        loadBatches();
+                        selectBatch(id);
+                    })
+                    .catch(err => Swal.fire('Error', err.message, 'error'));
+            }
+        }
+
+        // 5. Open Modal for Add/Edit
+        function openSessionModal(index = -1) {
+            const modal = document.getElementById('sessionModal');
+            const form = document.getElementById('sessionForm');
+            form.reset();
+            document.getElementById('sessionIndex').value = index;
+            document.getElementById('dayPreview').style.display = 'none';
+            document.getElementById('timePreview').style.display = 'none';
+
+            if (index >= 0) {
+                document.getElementById('modalTitle').innerText = 'Edit Session';
+                const s = currentSessions[index];
+
+                // Parse Date String ("Mon, March 3, 2025") back to Picker ("2025-03-03")
+                if (s.day) {
+                    try {
+                        const datePart = s.day.split('(')[0].split(',').slice(1).join(',').trim();
+                        const d = new Date(datePart);
+                        if (!isNaN(d.getTime())) {
+                            document.getElementById('sDayPick').value = d.toISOString().split('T')[0];
+                            updateFormattedDay();
+                        }
+                    } catch (e) { console.warn("Failed to parse day string:", s.day); }
+                }
+
+                // Parse Time String ("9:00 AM - 1:00 PM GMT+5:30") back to Pickers
+                if (s.time) {
+                    try {
+                        const parts = s.time.split(' - ');
+                        const startStr = parts[0];
+                        const rest = parts[1].split(' ');
+                        const endStr = rest[0] + ' ' + rest[1];
+                        const tz = rest.slice(2).join(' ');
+
+                        document.getElementById('sTimeStart').value = to24Hour(startStr);
+                        document.getElementById('sTimeEnd').value = to24Hour(endStr);
+                        document.getElementById('sTimezone').value = tz || 'GMT+5:30';
+                        updateFormattedTime();
+                    } catch (e) { console.warn("Failed to parse time string:", s.time); }
+                }
+
+                document.getElementById('sDesc').value = s.description || '';
+                document.getElementById('sDetails').value = s.details || '';
+                document.getElementById('sLink').value = s.link || '';
+                document.getElementById('sRec').value = s.recording || '';
+            } else {
+                document.getElementById('modalTitle').innerText = 'Add New Session';
+                // Set default date to today
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('sDayPick').value = today;
+                updateFormattedDay();
+            }
+
+            modal.classList.add('active');
+        }
+
+        let smartPasteTimer;
+
+        // --- Picker Helpers ---
+        function handleSmartPaste(text) {
+            clearTimeout(smartPasteTimer);
+            if (!text || text.trim().length < 20) return;
+
+            const sp = document.getElementById('smartPaste');
+            sp.style.borderColor = '#3b82f6'; // Processing (Blue)
+
+            smartPasteTimer = setTimeout(async () => {
+                try {
+                    const prompt = `
+                        Extract session scheduling details from the text below.
+                        Return ONLY a JSON object with these exact keys:
+                        {
+                            "date": "YYYY-MM-DD",
+                            "start_time": "HH:MM" (in 24-hour format),
+                            "end_time": "HH:MM" (in 24-hour format),
+                            "timezone": "GMT+5:30" (or closest standard offset like GMT-7:00, default GMT+5:30),
+                            "title": "A short, concise title for the session",
+                            "description": "A clear description or details. Only relevant info."
+                        }
+                        If a field cannot be determined, use an empty string. Do not wrap the JSON in Markdown.
+                        TEXT:
+                        ${text}
+                    `;
+
+                    const response = await fetch('/.netlify/functions/gemini-proxy', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }],
+                            generationConfig: { responseMimeType: "application/json" }
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.error) throw new Error(data.error.message);
+
+                    if (data.candidates && data.candidates[0].content) {
+                        const parsed = JSON.parse(data.candidates[0].content.parts[0].text);
+
+                        if (parsed.date) {
+                            document.getElementById('sDayPick').value = parsed.date;
+                            updateFormattedDay();
+                        }
+                        if (parsed.start_time) document.getElementById('sTimeStart').value = parsed.start_time;
+                        if (parsed.end_time) document.getElementById('sTimeEnd').value = parsed.end_time;
+                        if (parsed.timezone) {
+                            const tzSelect = document.getElementById('sTimezone');
+                            const matchedOption = Array.from(tzSelect.options).find(opt => opt.value.includes(parsed.timezone));
+                            if (matchedOption) tzSelect.value = matchedOption.value;
+                        }
+                        
+                        updateFormattedTime();
+
+                        if (parsed.title) document.getElementById('sDesc').value = parsed.title;
+                        if (parsed.description) document.getElementById('sDetails').value = parsed.description;
+                        
+                        sp.style.borderColor = '#10b981'; // Green
+                        setTimeout(() => sp.style.borderColor = 'var(--border-color)', 1500);
+                    }
+                } catch (error) {
+                    console.error("Smart Fill AI Error:", error);
+                    sp.style.borderColor = '#ef4444'; // Error Red
+                    setTimeout(() => sp.style.borderColor = 'var(--border-color)', 1500);
+                }
+            }, 800);
+        }
+
+        function updateFormattedDay() {
+            const val = document.getElementById('sDayPick').value;
+            if (!val) return;
+            const d = new Date(val);
+            const options = { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' };
+            const formatted = d.toLocaleDateString('en-US', options);
+            document.getElementById('sDay').value = formatted;
+
+            const preview = document.getElementById('dayPreview');
+            preview.innerText = `Stored format: ${formatted}`;
+            preview.style.display = 'inline-block';
+        }
+
+        function updateFormattedTime() {
+            const start = document.getElementById('sTimeStart').value;
+            const end = document.getElementById('sTimeEnd').value;
+            const tz = document.getElementById('sTimezone').value;
+
+            if (start && end) {
+                const formatted = `${to12Hour(start)} - ${to12Hour(end)} ${tz}`;
+                document.getElementById('sTime').value = formatted;
+
+                const preview = document.getElementById('timePreview');
+                preview.innerText = `Stored format: ${formatted}`;
+                preview.style.display = 'inline-block';
+            }
+        }
+
+        function to12Hour(time24) {
+            let [hours, minutes] = time24.split(':');
+            hours = parseInt(hours);
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            return `${hours}:${minutes} ${ampm}`;
+        }
+
+        function to24Hour(time12) {
+            const [time, modifier] = time12.split(' ');
+            let [hours, minutes] = time.split(':');
+            hours = parseInt(hours);
+            if (modifier === 'PM' && hours < 12) hours += 12;
+            if (modifier === 'AM' && hours === 12) hours = 0;
+            return `${hours.toString().padStart(2, '0')}:${minutes}`;
+        }
+
+        function closeSessionModal() {
+            document.getElementById('sessionModal').classList.remove('active');
+        }
+
+        // Edit hook correctly named from earlier loop
+        function editSession(index) {
+            openSessionModal(index);
+        }
+
+        // 6. Save (Create/Update) Session
+        function saveSession(e) {
+            e.preventDefault();
+
+            const index = parseInt(document.getElementById('sessionIndex').value);
+            const isNew = index < 0;
+            const newSession = {
+                day: document.getElementById('sDay').value.trim(),
+                time: document.getElementById('sTime').value.trim(),
+                description: document.getElementById('sDesc').value.trim(),
+                details: document.getElementById('sDetails').value.trim(),
+                link: document.getElementById('sLink').value.trim(),
+                recording: document.getElementById('sRec').value.trim()
+            };
+
+            let updatedArray = [...currentSessions];
+
+            if (isNew) {
+                updatedArray.push(newSession); // Add
+            } else {
+                updatedArray[index] = newSession; // Update
+            }
+
+            // Convert array -> keyed object before saving
+            const objToSave = {};
+            updatedArray.forEach((s, i) => { objToSave['sess_' + i] = s; });
+
+            // Sync to Firebase
+            db.ref(`agendas/${currentBatch}`).set(objToSave)
+                .then(() => {
+                    closeSessionModal();
+                    Swal.fire({
+                        icon: 'success',
+                        title: isNew ? 'Session Scheduled!' : 'Saved!',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+
+                    // If new session, trigger immediate alerts
+                    if (isNew) {
+                        sendNewSessionScheduledAlert(newSession, currentBatch);
+                    }
+                })
+                .catch(err => Swal.fire('Error', err.message, 'error'));
+        }
+
+        async function sendNewSessionScheduledAlert(session, batch) {
+            console.log("Triggering new session alerts...");
+            
+            try {
+                // Call Background Function
+                const response = await fetch('/.netlify/functions/manual-alert-background', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        session: session,
+                        batch: batch 
+                    })
+                });
+
+                if (response.status === 202) {
+                    console.log("Success: Background alert triggered.");
+                } else {
+                    console.error("Failed to trigger background alerts.");
+                }
+            } catch (err) {
+                console.error("Error in sendNewSessionScheduledAlert:", err);
+            }
+        }
+
+        // 7. Delete Session
+        function deleteSession(index) {
+            Swal.fire({
+                title: 'Delete Session?',
+                text: "This will be removed immediately for all users.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let updatedArray = [...currentSessions];
+                    updatedArray.splice(index, 1);
+
+                    const objToSave = {};
+                    updatedArray.forEach((s, i) => { objToSave['sess_' + i] = s; });
+
+                    db.ref(`agendas/${currentBatch}`).set(objToSave)
+                        .then(() => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted',
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        })
+                        .catch(err => Swal.fire('Error', err.message, 'error'));
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

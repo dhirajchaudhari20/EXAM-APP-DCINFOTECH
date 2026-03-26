@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - DC Cloud Solutions</title>
+    <style>
+        /* Add some basic styles for better visibility */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .error {
+            color: red;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .button {
+            padding: 10px 15px;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Admin Login Page -->
+    <div id="login-page" class="login-container">
+        <h1>Admin Login</h1>
+        <div id="login-error" class="error"></div>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Enter username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Enter password">
+        </div>
+        <button id="login-btn" class="button">Login</button>
+    </div>
+
+    <!-- Admin Dashboard Page -->
+    <div id="dashboard-page" class="dashboard-container" style="display:none;">
+        <h1>Admin Dashboard</h1>
+        <button class="logout-btn button" id="logout-btn">Logout</button>
+
+        <h2>Submissions List</h2>
+        <h3 id="submission-count">Total Submissions: 0</h3>
+        <button id="delete-selected" class="button">Delete Selected</button>
+        <button id="email-selected" class="button">Email Selected</button>
+        <table id="submissions-table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="select-all"></th>
+                    <th>Full Name</th>
+                    <th>Email Address</th>
+                    <th>Mobile Number</th>
+                    <th>College Name</th>
+                    <th>Education Qualification</th>
+                    <th>Source of Information</th>
+                    <th>Submission Time</th>
+                </tr>
+            </thead>
+            <tbody id="submissions-body">
+                <!-- Submissions will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>Designed and Developed by DC Cloud Solutions</p>
+    </footer>
+
+    <script>
+        // Predefined admin credentials
+        const ADMIN_USERNAME = 'admin';
+        const ADMIN_PASSWORD = 'admin';
+
+        // DOM Elements
+        const loginPage = document.getElementById('login-page');
+        const dashboardPage = document.getElementById('dashboard-page');
+        const loginError = document.getElementById('login-error');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const submissionCount = document.getElementById('submission-count');
+        const selectAllCheckbox = document.getElementById('select-all');
+        const deleteSelectedBtn = document.getElementById('delete-selected');
+        const emailSelectedBtn = document.getElementById('email-selected');
+
+        // Check if user is already logged in
+        if (sessionStorage.getItem('loggedIn') === 'true') {
+            loginPage.style.display = 'none';
+            dashboardPage.style.display = 'block';
+            fetchSubmissions();
+            // Set interval to fetch submissions every 10 seconds
+            setInterval(fetchSubmissions, 10000);
+        }
+
+        // Event Listener for Login
+        loginBtn.addEventListener('click', function() {
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                // Clear inputs
+                usernameInput.value = '';
+                passwordInput.value = '';
+                loginError.innerHTML = '';
+
+                // Set session
+                sessionStorage.setItem('loggedIn', 'true');
+
+                // Show dashboard and hide login
+                loginPage.style.display = 'none';
+                dashboardPage.style.display = 'block';
+
+                // Fetch submissions after login
+                fetchSubmissions();
+                // Set interval to fetch submissions every 10 seconds
+                setInterval(fetchSubmissions, 10000);
+            } else {
+                loginError.innerHTML = 'Invalid username or password!';
+            }
+        });
+
+        // Event Listener for Logout
+        logoutBtn.addEventListener('click', function() {
+            // Clear session and show login page
+            sessionStorage.removeItem('loggedIn');
+            dashboardPage.style.display = 'none';
+            loginPage.style.display = 'block';
+        });
+
+        // Event Listener for Select All Checkbox
+        selectAllCheckbox.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.submission-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+
+        // Event Listener for Delete Selected
+        deleteSelectedBtn.addEventListener('click', function() {
+            const selectedCheckboxes = document.querySelectorAll('.submission-checkbox:checked');
+            const selectedEmails = Array.from(selectedCheckboxes).map(checkbox => {
+                return checkbox.getAttribute('data-email');
+            });
+
+            if (selectedEmails.length > 0) {
+                // Implement the deletion logic here
+                alert(`Selected Emails for deletion: ${selectedEmails.join(', ')}`);
+                // Here you can make a request to your backend to delete the selected submissions
+            } else {
+                alert('No submissions selected for deletion!');
+            }
+        });
+
+        // Event Listener for Email Selected
+        emailSelectedBtn.addEventListener('click', function() {
+            const selectedCheckboxes = document.querySelectorAll('.submission-checkbox:checked');
+            const selectedEmails = Array.from(selectedCheckboxes).map(checkbox => {
+                return checkbox.getAttribute('data-email');
+            });
+
+            if (selectedEmails.length > 0) {
+                // Implement the email sending logic here
+                alert(`Selected Emails for sending: ${selectedEmails.join(', ')}`);
+                // Here you can make a request to your backend to send emails to the selected addresses
+            } else {
+                alert('No submissions selected for emailing!');
+            }
+        });
+
+        // Fetch submissions from SheetDB
+        function fetchSubmissions() {
+            fetch('https://sheetdb.io/api/v1/xms6r1lnky4n9')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('submissions-body');
+                tableBody.innerHTML = ''; // Clear table before populating
+                submissionCount.innerHTML = `Total Submissions: ${data.length}`;
+
+                if (data.length > 0) {
+                    data.forEach(submission => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><input type="checkbox" class="submission-checkbox" data-email="${submission['Email Address']}"></td>
+                            <td>${submission['Full Name']}</td>
+                            <td>${submission['Email Address']}</td>
+                            <td>${submission['Mobile Number']}</td>
+                            <td>${submission['College Name']}</td>
+                            <td>${submission['Education Qualification']}</td>
+                            <td>${submission['Source of Information']}</td>
+                            <td>${new Date(submission['Submission Time']).toLocaleString()}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td colspan="8" style="text-align:center;">No submissions found</td>`;
+                    tableBody.appendChild(row);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching submissions:', error);
+            });
+        }
+    </script>
+</body>
+</html>

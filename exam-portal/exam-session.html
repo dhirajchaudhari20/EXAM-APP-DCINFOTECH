@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Proctored Exam - Exam Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --tcs-blue-600: #0056b3;
+      --tcs-blue-700: #004494;
+      --tcs-bg-light: #f4f7f9;
+      --tcs-border: #d1dce5;
+      --tcs-text-main: #333333;
+      --tcs-text-muted: #6c757d;
+      --green-500: #28a745;
+      --red-500: #dc3545;
+      --yellow-500: #ffc107;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --radius-sm: 4px;
+      --radius-md: 8px;
+    }
+
+    body {
+      font-family: 'Inter', 'Roboto', sans-serif;
+      background-color: var(--tcs-bg-light);
+      color: var(--tcs-text-main);
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* --- Footer Styling --- */
+    .app-footer {
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--tcs-text-muted);
+      background-color: var(--white);
+      border-top: 1px solid var(--tcs-border);
+      margin-top: auto;
+    }
+
+    /* --- Pre-Exam Screens --- */
+    .pre-exam-screen {
+      display: none;
+      /* Hidden by default */
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
+      padding: 2rem;
+    }
+
+    .pre-exam-container {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      padding: 2rem;
+      width: 100%;
+      max-width: 900px;
+      border-top: 5px solid var(--tcs-blue-600);
+    }
+
+    .pre-exam-container h1 {
+      font-family: 'Google Sans', sans-serif;
+      color: var(--grey-800);
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.75rem;
+    }
+
+    .pre-exam-container p {
+      color: var(--grey-700);
+      line-height: 1.6;
+    }
+
+    .tos-content {
+      border: 1px solid var(--tcs-border);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      max-height: 250px;
+      overflow-y: auto;
+      background-color: var(--white);
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .agreement-check {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      background-color: #fefefe;
+      border: 1px solid var(--tcs-border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 1.5rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .agreement-check:hover {
+      background-color: #f8fafd;
+    }
+
+    .agreement-check input {
+      margin-right: 1rem;
+      width: 18px;
+      height: 18px;
+    }
+
+    .pre-exam-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+      border-top: 1px solid var(--tcs-border);
+      padding-top: 1.5rem;
+    }
+
+    /* Photo Examples Screen */
+    .photo-examples-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .example-card {
+      border: 1px solid var(--grey-200);
+      border-radius: 8px;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .example-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      background-color: var(--grey-200);
+    }
+
+    .example-card p {
+      font-size: 0.9rem;
+      color: var(--grey-700);
+      margin: 0;
+    }
+
+    /* Biometric Capture Screen */
+    #videoFeed {
+      width: 100%;
+      max-width: 500px;
+      height: auto;
+      border-radius: 8px;
+      border: 2px solid var(--grey-200);
+      background-color: #000;
+      margin: 1rem auto;
+      display: block;
+    }
+
+    /* --- Prepare for Launch Screen --- */
+    .stepper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+      gap: 0.5rem;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--grey-500);
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--grey-500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .step.active .step-number {
+      background-color: var(--blue-600);
+      border-color: var(--blue-600);
+      color: #fff;
+    }
+
+    .step.active .step-label {
+      color: var(--blue-600);
+      font-weight: 700;
+    }
+
+    .step-label {
+      font-size: 0.8rem;
+    }
+
+    .step-line {
+      flex-grow: 1;
+      height: 2px;
+      background-color: var(--grey-200);
+      max-width: 100px;
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      /* 16:9 aspect ratio */
+      height: 0;
+      overflow: hidden;
+      max-width: 100%;
+      background: #000;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .checklist-section {
+      margin-top: 1.5rem;
+    }
+
+    /* --- Final Review Screen --- */
+    .review-summary {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+      padding: 1rem;
+      background-color: var(--grey-100);
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .review-summary span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .review-summary .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+      max-height: 45vh;
+      overflow-y: auto;
+      padding: 1rem;
+      border: 1px solid var(--tcs-border);
+      border-radius: var(--radius-sm);
+      background: #fafbfc;
+    }
+
+    .review-item {
+      padding: 0.8rem 1rem;
+      background: var(--white);
+      border: 1px solid var(--tcs-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+      font-size: 0.85rem;
+    }
+
+    .review-item:hover {
+      border-color: var(--tcs-blue-600);
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
+    }
+
+    .review-item .status-text {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .review-item .status-answered {
+      color: var(--green-500);
+    }
+
+    .review-item .status-unanswered {
+      color: var(--red-500);
+    }
+
+    .review-item .status-marked {
+      color: var(--yellow-500);
+    }
+
+    .exam-layout {
+      display: flex;
+      flex-grow: 1;
+      overflow: hidden;
+    }
+
+    .exam-main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+    }
+
+    .exam-nav {
+      width: 280px;
+      flex-shrink: 0;
+      background: #fff;
+      border-left: 1px solid var(--grey-200);
+      padding: 1.5rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .exam-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--white);
+      padding: 0.75rem 2rem;
+      border-bottom: 2px solid var(--tcs-blue-600);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .exam-header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .exam-logo {
+      height: 40px;
+      width: auto;
+    }
+
+    .exam-header h1 {
+      font-family: 'Google Sans', 'Roboto', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: #5f6368;
+      margin: 0;
+      letter-spacing: 0.2px;
+    }
+
+    .timer {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--red-500);
+      background-color: #fce8e6;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+    }
+
+    .question-area {
+      flex-grow: 1;
+    }
+
+    .question-block {
+      display: none;
+    }
+
+    .question-block.active {
+      display: block;
+      animation: fadeIn 0.5s;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .question-block h3 {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .options-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .options-list li label {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--tcs-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--white);
+      font-size: 0.95rem;
+    }
+
+    .options-list li input[type="radio"]:checked+label {
+      border-color: var(--tcs-blue-600);
+      background-color: #f0f7ff;
+      font-weight: 500;
+      box-shadow: 0 0 0 1px var(--tcs-blue-600);
+    }
+
+    .options-list li label:hover {
+      background-color: #fafbfc;
+      border-color: var(--tcs-text-muted);
+    }
+
+    .navigation-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--grey-200);
+      padding-top: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, var(--tcs-blue-600) 0%, var(--tcs-blue-700) 100%);
+      color: var(--white);
+      padding: 0.6rem 1.75rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      border: 1px solid var(--tcs-blue-700);
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn:hover:not(:disabled) {
+      filter: brightness(1.1);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .btn:disabled {
+      background: #e9ecef;
+      border-color: #dee2e6;
+      color: #adb5bd;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-secondary {
+      background: var(--white);
+      border: 1px solid var(--tcs-border);
+      color: var(--tcs-text-main);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background-color: var(--tcs-bg-light);
+    }
+
+    .btn-submit {
+      background: linear-gradient(180deg, #28a745 0%, #218838 100%);
+      border-color: #1e7e34;
+    }
+
+    /* Question Navigator */
+    .question-nav-header {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--grey-200);
+    }
+
+    .question-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .q-nav-item {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--tcs-border);
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      background: var(--white);
+    }
+
+    .q-nav-item:hover {
+      background-color: var(--tcs-bg-light);
+      border-color: var(--tcs-blue-600);
+    }
+
+    .q-nav-item.current {
+      background-color: var(--tcs-blue-600);
+      border-color: var(--tcs-blue-600);
+      color: var(--white);
+    }
+
+    .q-nav-item.answered {
+      background-color: var(--green-500);
+      border-color: var(--green-500);
+      color: var(--white);
+    }
+
+    .q-nav-item.marked {
+      background-color: var(--yellow-500);
+      border-color: var(--yellow-500);
+      color: #333;
+    }
+
+    .q-nav-item.marked::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 8px;
+      height: 8px;
+      background: var(--yellow-500);
+      border-radius: 50%;
+    }
+
+    /* Accessibility Improvements */
+    .options-list li label:focus-within {
+      outline: 2px solid var(--blue-600);
+    }
+
+    .q-nav-item:focus {
+      outline: 2px solid var(--blue-600);
+      outline-offset: 2px;
+    }
+
+    .review-item:focus {
+      outline: 2px solid var(--blue-600);
+      outline-offset: 2px;
+    }
+
+    /* Responsive Design Enhancements */
+    @media (max-width: 768px) {
+      .exam-layout {
+        flex-direction: column;
+      }
+
+      .exam-nav {
+        width: 100%;
+        order: 2;
+      }
+
+      .question-grid {
+        grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+      }
+
+      .q-nav-item {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Proctoring Panel Styles */
+    .proctoring-panel {
+      margin-top: auto;
+      padding: 1rem;
+      background-color: #1e293b;
+      border-radius: var(--radius-sm);
+      color: var(--white);
+      border: 1px solid #334155;
+    }
+
+    .proctoring-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      font-size: 0.8rem;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #94a3b8;
+    }
+
+    #proctoring-video {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      background-color: #000;
+      border: 1px solid #475569;
+    }
+
+    .warnings-display {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--yellow-500);
+      font-weight: 500;
+    }
+
+    .proctor-log {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--grey-700);
+      background-color: #f8f9fa;
+      padding: 0.5rem;
+      border-radius: 4px;
+      max-height: 100px;
+      overflow-y: auto;
+      font-family: monospace;
+    }
+
+    /* Spinner for buttons */
+    .spinner {
+      display: inline-block;
+      width: 1.2em;
+      height: 1.2em;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* New System Check Styles - FIXED CSS */
+    .check-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      background-color: var(--grey-100);
+      border: 1px solid var(--grey-200);
+    }
+
+    .check-status span {
+      font-weight: 500;
+    }
+
+    .check-status .status-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .status-pass {
+      color: var(--green-500);
+    }
+
+    .status-fail {
+      color: var(--red-500);
+    }
+
+    .status-pending {
+      color: var(--blue-600);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Screen 1: Terms of Service -->
+  <div id="tosScreen" class="pre-exam-screen" style="display: flex;">
+    <div class="pre-exam-container">
+      <h1>DC Cloud Solutions - Google Cloud Partner Exam Portal Policies</h1>
+      <p>By checking the boxes below, you agree to each term as described. To take this exam in an online environment,
+        you must agree to all of the following terms and conditions.</p>
+    </div>
+    <div class="tos-content">
+      <h3>DC Cloud Solutions's Privacy Policy and Terms of Use</h3>
+      <p>By accessing this website and ticking the box you indicate your acceptance of DC Cloud Solutions's Privacy
+        Policy and
+        Terms of Use to support your experience. You also understand, acknowledge, and agree that the testing program
+        sponsor has its own, possibly different, privacy policy.</p>
+    </div>
+    <div class="agreement-check">
+      <input type="checkbox" id="agreePrivacy" class="tos-checkbox">
+      <label for="agreePrivacy">I agree</label>
+    </div>
+    <div class="tos-content">
+      <h3>Exam Data Processing</h3>
+      <p>By providing your personal information, as described in our Privacy Policy, you acknowledge and agree to the
+        video and audio recording of your entire testing session... you and your computer will be monitored during your
+        entire testing session in real-time so that your face, voice, desk, and workspace will be captured and possibly
+        recorded... DC Cloud Solutions may use artificial intelligence (AI) technologies to assist in
+        monitoring and flagging potential exam violations...</p>
+    </div>
+    <div class="agreement-check">
+      <input type="checkbox" id="agreeDataProcessing" class="tos-checkbox">
+      <label for="agreeDataProcessing">I agree</label>
+    </div>
+    <div class="tos-content">
+      <h3>Limited License</h3>
+      <p>You acknowledge that DC Cloud Solutions is granting you a limited license to access and make personal
+        use of this Online Proctored Application only for the duration of your testing session. Further you acknowledge
+        that this application may not be reproduced, duplicated, copied, take a picture of, downloaded, or otherwise
+        exploited...</p>
+    </div>
+    <div class="agreement-check">
+      <input type="checkbox" id="agreeLicense" class="tos-checkbox">
+      <label for="agreeLicense">I agree</label>
+    </div>
+    <div class="tos-content">
+      <h3>Third Party Prohibition</h3>
+      <p>By accessing this website you signify that you understand, acknowledge and agree that if any third party is
+        detected as being present in your physical location, whether visible or not... the test will be terminated and
+        you will not receive any score.</p>
+    </div>
+    <div class="agreement-check">
+      <input type="checkbox" id="agreeThirdParty" class="tos-checkbox">
+      <label for="agreeThirdParty">I agree</label>
+    </div>
+    <div class="tos-content">
+      <h3>Facial Comparison and Keystroke Analysis Policy</h3>
+      <p>You understand and agree that DC Cloud Solutions may use facial comparison technology or keystroke
+        analysis to verify your identity during the testing process. The facial comparison technology will compare your
+        facial image to the one on your identification and to facial images captured during the testing process...</p>
+    </div>
+    <div class="agreement-check">
+      <input type="checkbox" id="agreeFacial" class="tos-checkbox">
+      <label for="agreeFacial">I agree</label>
+    </div>
+    <div class="pre-exam-actions">
+      <button id="selectAllBtn" class="btn btn-secondary">Select All</button>
+      <button id="doNotAgreeBtn" class="btn btn-secondary">I do not agree</button>
+      <button id="proceedToExamplesBtn" class="btn" disabled>Proceed</button>
+    </div>
+  </div>
+  </div>
+  <!-- Screen 2: Photo Examples -->
+  <div id="photoExamplesScreen" class="pre-exam-screen">
+    <div class="pre-exam-container">
+      <h1>Take the perfect Biometric Photo</h1>
+      <p>Please review the examples below before you proceed. Your face should be clearly visible, centered, and
+        well-lit.</p>
+      <div class="photo-examples-grid">
+        <div class="example-card">
+          <img src="images/First-biometric-instruction.svg" alt="Underexposed photo example">
+          <p><b>Avoid underexposure.</b> Your face should be visible and free of shadows.</p>
+        </div>
+        <div class="example-card">
+          <img src="images/Second-biometric-instruction.svg" alt="Background distraction example">
+          <p><b>Avoid background distractions.</b> The background should be plain and uniform.</p>
+        </div>
+        <div class="example-card">
+          <img src="images/Third-biometric-instruction.svg" alt="Bad angle example">
+          <p><b>Use a good angle.</b> Your entire face should be visible and centered.</p>
+        </div>
+        <div class="example-card">
+          <img src="images/Fourt-biometric-instruction.svg" alt="Glasses example">
+          <p><b>Remove glasses.</b> If you wear glasses, they must be removed for your photo.</p>
+        </div>
+      </div>
+      <div class="pre-exam-actions">
+        <button id="exitExamBtn1" class="btn btn-secondary">Exit Exam</button>
+        <button id="proceedToCaptureBtn" class="btn">Continue</button>
+      </div>
+    </div>
+  </div>
+  <!-- Screen 3: Biometric Capture -->
+  <div id="biometricCaptureScreen" class="pre-exam-screen">
+    <div class="pre-exam-container">
+      <h1 id="captureInstructionTitle">Step 1: Capture Your ID</h1>
+      <p id="captureInstructionText">Please hold your government-issued ID clearly in front of the camera. Ensure it is
+        readable.</p>
+      <video id="videoFeed" autoplay playsinline></video>
+      <canvas id="captureCanvas" style="display:none;"></canvas>
+      <div class="pre-exam-actions">
+        <button id="exitExamBtn2" class="btn btn-secondary">Exit Exam</button>
+        <button id="captureBtn" class="btn">
+          <i data-lucide="camera" style="margin-right: 8px;"></i> Capture
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 4: System Checks (New Mandatory Screen) -->
+  <div id="systemCheckScreen" class="pre-exam-screen">
+    <style>
+      .system-check-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .check-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        border: 1px solid var(--grey-200);
+        border-radius: 8px;
+        background-color: #fafafa;
+        transition: all 0.2s ease;
+      }
+
+      .check-item.passed {
+        border-color: var(--green-500);
+        background-color: #f0f9f4;
+      }
+
+      .check-item.failed {
+        border-color: var(--red-500);
+        background-color: #fce8e6;
+      }
+
+      .check-info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .check-label {
+        font-weight: 500;
+        color: var(--grey-800);
+      }
+
+      .check-detail {
+        font-size: 0.85rem;
+        color: var(--grey-500);
+      }
+
+      .status-pass {
+        color: var(--green-500);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .status-fail {
+        color: var(--red-500);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .status-pending {
+        color: var(--grey-500);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+    </style>
+    <div class="pre-exam-container">
+      <h1 id="systemCheckTitle">System Compatibility Check</h1>
+      <p>We are verifying your system environment to ensure a secure and uninterrupted exam session.</p>
+
+      <div class="system-check-grid">
+        <!-- Browser Check -->
+        <div class="check-item" id="checkItem-browser">
+          <div class="check-info">
+            <span class="check-label">Browser Compatibility</span>
+            <span class="check-detail" id="browserDetail">Pending...</span>
+          </div>
+          <span id="browserCheckStatus" class="status-pending"><i data-lucide="circle" class="status-icon"></i></span>
+        </div>
+
+        <!-- OS Check -->
+        <div class="check-item" id="checkItem-os">
+          <div class="check-info">
+            <span class="check-label">Operating System</span>
+            <span class="check-detail" id="osDetail">Pending...</span>
+          </div>
+          <span id="osCheckStatus" class="status-pending"><i data-lucide="circle" class="status-icon"></i></span>
+        </div>
+
+        <!-- Audio Check -->
+        <div class="check-item" id="checkItem-audio">
+          <div class="check-info">
+            <span class="check-label">Microphone Input</span>
+            <span class="check-detail">Required for proctoring</span>
+          </div>
+          <span id="audioCheckStatus" class="status-pending"><i data-lucide="circle" class="status-icon"></i></span>
+        </div>
+
+        <!-- Network Check -->
+        <div class="check-item" id="checkItem-network">
+          <div class="check-info">
+            <span class="check-label">Network Connection</span>
+            <span class="check-detail">Stable connection required</span>
+          </div>
+          <span id="networkCheckStatus" class="status-pending"><i data-lucide="circle" class="status-icon"></i></span>
+        </div>
+      </div>
+
+      <div id="systemCheckProgress" style="display:none; margin-bottom: 20px;">
+        <div style="background: #e9ecef; border-radius: 4px; height: 6px; width: 100%; overflow: hidden;">
+          <div id="checkProgressBar"
+            style="background: var(--blue-600); width: 0%; height: 100%; transition: width 0.3s;"></div>
+        </div>
+        <p style="text-align: center; font-size: 0.85rem; color: var(--grey-500); margin-top: 8px;"
+          id="checkProgressText">Initializing...</p>
+      </div>
+
+      <div class="pre-exam-actions">
+        <button id="exitExamBtn4" class="btn btn-secondary">Exit Exam</button>
+        <button id="startSystemChecksBtn" class="btn">Start System Check</button>
+        <button id="proceedToLaunchBtn" class="btn" disabled>Proceed to Launch</button>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    var Tawk_API = Tawk_API || {},
+      Tawk_LoadStart = new Date();
+    (function () {
+      var s1 = document.createElement("script"),
+        s0 = document.getElementsByTagName("script")[0];
+      s1.async = true;
+      s1.src = "https://embed.tawk.to/673b87e22480f5b4f59ffc23/1id08lk55";
+      s1.charset = "UTF-8";
+      s1.setAttribute("crossorigin", "*");
+      s0.parentNode.insertBefore(s1, s0);
+    })();
+  </script>
+  <!-- Screen 5 (was 4): Prepare for Launch -->
+  <div id="prepareLaunchScreen" class="pre-exam-screen">
+    <div class="pre-exam-container">
+      <div class="stepper">
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-label">Biometrics</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step active">
+          <div class="step-number">3</div>
+          <div class="step-label">System Check</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-label">Exam Pre-Check</div>
+        </div>
+      </div>
+      <h1>Prepare For Launch!</h1>
+      <p>So you are getting ready to launch an exam? Good for you! Please watch the short video on this page, then
+        review the steps below to ensure an uninterrupted, successful testing experience.</p>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/4MF2asicV9c" title="YouTube video player" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <div class="checklist-section">
+        <div class="agreement-check">
+          <input type="checkbox" id="agreeDevice" class="launch-checkbox">
+          <label for="agreeDevice"><b>Prepare Your Device:</b> Make sure your computer is plugged in or fully charged.
+            Close programs (e.g., GoToMeeting, Zoom, and Skype).</label>
+        </div>
+        <div class="agreement-check">
+          <input type="checkbox" id="agreeEnv" class="launch-checkbox">
+          <label for="agreeEnv"><b>Prepare Your Environment:</b> Remove hats, headphones, and jacket hoods. Remove
+            watches and bracelets. Ensure your testing area is well-lit.</label>
+        </div>
+      </div>
+      <div class="pre-exam-actions">
+        <button id="exitExamBtn3" class="btn btn-secondary">Exit Exam</button>
+        <button id="launchExamBtn" class="btn" disabled>Launch Exam</button>
+      </div>
+    </div>
+  </div>
+  <!-- Screen 6 (was 5): Final Review -->
+  <div id="reviewScreen" class="pre-exam-screen">
+    <div class="pre-exam-container">
+      <h1>Exam Review</h1>
+      <p>Review the status of your answers before final submission. Click on a question to jump back to it.</p>
+
+      <div class="review-summary">
+        <span>
+          <div class="status-indicator" style="background: var(--green-500);"></div> Answered: <strong
+            id="summaryAnswered">0</strong>
+        </span>
+        <span>
+          <div class="status-indicator" style="background: var(--red-500);"></div> Not Answered: <strong
+            id="summaryUnanswered">0</strong>
+        </span>
+        <span>
+          <div class="status-indicator" style="background: var(--yellow-500);"></div> Marked for Review: <strong
+            id="summaryMarked">0</strong>
+        </span>
+      </div>
+      <div id="reviewGrid" class="review-grid">
+        <!-- Review items will be injected here -->
+      </div>
+      <div class="pre-exam-actions">
+        <button id="returnToExamBtn" class="btn btn-secondary">
+          <i data-lucide="arrow-left" style="margin-right: 8px;"></i> Return to Exam
+        </button>
+        <button id="finalSubmitBtn" class="btn btn-submit">
+          <i data-lucide="check-circle" style="margin-right: 8px;"></i> Submit Final Exam
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Screen 7 (was 6): The Exam -->
+  <div id="examScreen" style="display: none; flex-direction: column; flex-grow: 1;">
+    <header class="exam-header">
+      <div class="exam-header-left">
+        <img src="https://dcinfotech.org.in/images/dcintro.gif" alt="DC Cloud Solutions" class="exam-logo">
+        <h1 id="examTitle">Loading Exam...</h1>
+      </div>
+
+      <!-- EXAM TOOLBAR -->
+      <div class="exam-toolbar" style="margin-left: auto; margin-right: 1rem;">
+        <button class="tool-toggle-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+          <i data-lucide="moon"></i>
+        </button>
+        <button class="tool-toggle-btn" onclick="toggleTool('calculator')" title="Toggle Calculator">
+          <i data-lucide="calculator"></i>
+        </button>
+        <button class="tool-toggle-btn" onclick="toggleTool('notepad')" title="Toggle Notepad">
+          <i data-lucide="file-text"></i>
+        </button>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <button id="pauseBtn" class="btn btn-secondary" title="Pause Exam"><i data-lucide="pause"></i> Pause <span
+            id="pauseCountDisplay"></span></button>
+        <div id="timer" class="timer">01:30:00</div>
+      </div>
+    </header>
+    <div class="exam-layout">
+      <main class="exam-main">
+        <div id="questionArea" class="question-area">
+          <!-- Questions will be injected here -->
+        </div>
+        <footer class="navigation-buttons">
+          <div>
+            <button id="prevBtn" class="btn btn-secondary" disabled>Previous</button>
+            <button id="markReviewBtn" class="btn btn-secondary" style="margin-left: 8px;">Mark for Review</button>
+          </div>
+          <button id="nextBtn" class="btn">Next</button>
+          <button id="reviewExamBtn" class="btn btn-submit" style="display: none;">Review Exam</button>
+        </footer>
+      </main>
+      <aside class="exam-nav">
+        <h2 class="question-nav-header">Question Navigator</h2>
+        <div id="questionNav" class="question-grid">
+          <!-- Navigator items will be injected here -->
+        </div>
+        <div class="proctoring-panel">
+          <div class="proctoring-header">
+            <i data-lucide="video"></i>
+            <span>Live Proctoring Session</span>
+          </div>
+          <video id="proctoring-video" muted playsinline></video>
+          <div id="warnings-display" class="warnings-display">Warnings: <strong>0 / 3</strong></div>
+          <div id="proctor-log" class="proctor-log">
+            <!-- Live analysis feed will appear here -->
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <!-- Pause Overlay -->
+  <div id="pauseOverlay"
+    style="display: none; position: fixed; inset: 0; background-color: rgba(32,33,36,0.9); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; color: white; backdrop-filter: blur(5px);">
+    <i data-lucide="pause-circle" style="width: 80px; height: 80px; margin-bottom: 2rem;"></i>
+    <h1 style="font-family: 'Google Sans', sans-serif;">Exam Paused</h1>
+    <p>Your exam timer and proctoring have been stopped. Click Resume to continue.</p>
+    <button id="resumeBtn" class="btn" style="margin-top: 2rem; font-size: 1.2rem; padding: 1rem 2rem;">Resume
+      Exam</button>
+  </div>
+
+  <!-- Footer for Copyright and Design -->
+  <footer class="app-footer">
+    © 2025 All rights reserved. Designed and Developed by DC Cloud Solutions.
+  </footer>
+
+  <style>
+    /* --- Dark Mode Styles --- */
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .app-header {
+      background-color: #1e1e1e;
+      border-bottom: 1px solid #333;
+    }
+
+    body.dark-mode .app-header h1 {
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .app-footer {
+      background-color: #1e1e1e;
+      color: #aaa;
+    }
+
+    body.dark-mode .pre-exam-container,
+    body.dark-mode .exam-main,
+    body.dark-mode .exam-sidebar {
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      box-shadow: none;
+      border: 1px solid #333;
+    }
+
+    body.dark-mode .pre-exam-container h1,
+    body.dark-mode .question-block h3 {
+      color: #fff;
+    }
+
+    body.dark-mode .pre-exam-container p,
+    body.dark-mode .check-label {
+      color: #ccc;
+    }
+
+    body.dark-mode .tos-content,
+    body.dark-mode .agreement-check,
+    body.dark-mode .check-item,
+    body.dark-mode .example-card {
+      background-color: #2c2c2c;
+      border-color: #444;
+    }
+
+    body.dark-mode .check-item.passed {
+      background-color: #1b3a24;
+      border-color: #2e7d32;
+    }
+
+    body.dark-mode .check-item.failed {
+      background-color: #4a1b1b;
+      border-color: #c62828;
+    }
+
+    body.dark-mode .check-detail {
+      color: #aaa;
+    }
+
+    body.dark-mode .question-nav-grid,
+    body.dark-mode .review-grid {
+      background-color: #2c2c2c;
+    }
+
+    body.dark-mode .q-nav-item,
+    body.dark-mode .review-item {
+      background-color: #333;
+      color: #e0e0e0;
+      border-color: #555;
+    }
+
+    body.dark-mode .q-nav-item:hover {
+      background-color: #444;
+    }
+
+    body.dark-mode .q-nav-item.current {
+      border-color: #fff;
+    }
+
+    body.dark-mode .options-list li {
+      background-color: #2c2c2c;
+      border-color: #444;
+    }
+
+    body.dark-mode .options-list li:hover {
+      background-color: #383838;
+    }
+
+    body.dark-mode .timer-display {
+      background-color: #2c2c2c;
+      color: #e0e0e0;
+    }
+
+    /* Calculator & Notepad Styles */
+    .floating-tool {
+      position: fixed;
+      background: white;
+      border: 1px solid var(--grey-200);
+      box-shadow: var(--shadow-md);
+      border-radius: 8px;
+      z-index: 1000;
+      display: none;
+      /* Hidden by default */
+      flex-direction: column;
+      overflow: hidden;
+      resize: both;
+    }
+
+    body.dark-mode .floating-tool {
+      background: #1e1e1e;
+      border-color: #444;
+    }
+
+    .tool-header {
+      background: var(--grey-100);
+      padding: 8px 12px;
+      cursor: move;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--grey-200);
+      user-select: none;
+    }
+
+    body.dark-mode .tool-header {
+      background: #2c2c2c;
+      border-color: #444;
+      color: #e0e0e0;
+    }
+
+    .tool-title {
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .tool-close {
+      cursor: pointer;
+      color: var(--grey-500);
+    }
+
+    .tool-close:hover {
+      color: var(--red-500);
+    }
+
+    /* Calculator Specifics */
+    #calculator {
+      top: 100px;
+      left: 20px;
+      width: 220px;
+    }
+
+    .calc-display {
+      background: #222;
+      color: #fff;
+      text-align: right;
+      padding: 10px;
+      font-size: 1.5rem;
+      font-family: monospace;
+      border: none;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .calc-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--grey-200);
+    }
+
+    .calc-btn {
+      border: none;
+      background: #fff;
+      padding: 15px;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .calc-btn:hover {
+      background: #f0f0f0;
+    }
+
+    .calc-btn.op {
+      background: #f8f9fa;
+      color: var(--blue-600);
+    }
+
+    .calc-btn.eq {
+      background: var(--blue-600);
+      color: white;
+      grid-column: span 2;
+    }
+
+    body.dark-mode .calc-display {
+      background: #000;
+      color: #0f0;
+    }
+
+    body.dark-mode .calc-buttons {
+      background: #444;
+    }
+
+    body.dark-mode .calc-btn {
+      background: #333;
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .calc-btn:hover {
+      background: #444;
+    }
+
+    body.dark-mode .calc-btn.op {
+      background: #2c2c2c;
+      color: #64b5f6;
+    }
+
+    body.dark-mode .calc-btn.eq {
+      background: var(--blue-700);
+    }
+
+    /* Notepad Specifics */
+    #notepad {
+      top: 100px;
+      right: 20px;
+      width: 300px;
+      height: 400px;
+    }
+
+    #notepad textarea {
+      flex-grow: 1;
+      width: 100%;
+      border: none;
+      padding: 10px;
+      resize: none;
+      outline: none;
+      background: #fff;
+      color: #333;
+      font-family: sans-serif;
+    }
+
+    body.dark-mode #notepad textarea {
+      background: #1e1e1e;
+      color: #e0e0e0;
+    }
+
+    /* Toolbar in Header */
+    .exam-toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-right: 20px;
+    }
+
+    .tool-toggle-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--grey-700);
+      padding: 5px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tool-toggle-btn:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    body.dark-mode .tool-toggle-btn {
+      color: #ccc;
+    }
+
+    body.dark-mode .tool-toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+
+  <!-- Floating Tools -->
+  <div id="calculator" class="floating-tool">
+    <div class="tool-header">
+      <span class="tool-title">Calculator</span>
+      <i data-lucide="x" class="tool-close" onclick="toggleTool('calculator')"></i>
+    </div>
+    <input type="text" class="calc-display" id="calcDisplay" readonly value="0">
+    <div class="calc-buttons">
+      <button class="calc-btn" onclick="calcAppend('C')">C</button>
+      <button class="calc-btn" onclick="calcAppend('/')">/</button>
+      <button class="calc-btn" onclick="calcAppend('*')">×</button>
+      <button class="calc-btn" onclick="calcAppend('DEL')">←</button>
+      <button class="calc-btn" onclick="calcAppend('7')">7</button>
+      <button class="calc-btn" onclick="calcAppend('8')">8</button>
+      <button class="calc-btn" onclick="calcAppend('9')">9</button>
+      <button class="calc-btn op" onclick="calcAppend('-')">-</button>
+      <button class="calc-btn" onclick="calcAppend('4')">4</button>
+      <button class="calc-btn" onclick="calcAppend('5')">5</button>
+      <button class="calc-btn" onclick="calcAppend('6')">6</button>
+      <button class="calc-btn op" onclick="calcAppend('+')">+</button>
+      <button class="calc-btn" onclick="calcAppend('1')">1</button>
+      <button class="calc-btn" onclick="calcAppend('2')">2</button>
+      <button class="calc-btn" onclick="calcAppend('3')">3</button>
+      <button class="calc-btn eq" onclick="calcCalculate()">=</button>
+      <button class="calc-btn" style="grid-column: span 2;" onclick="calcAppend('0')">0</button>
+      <button class="calc-btn" onclick="calcAppend('.')">.</button>
+    </div>
+  </div>
+
+  <div id="notepad" class="floating-tool">
+    <div class="tool-header">
+      <span class="tool-title">Notepad <span style="font-size:0.7em; font-weight:normal;">(Auto-saved)</span></span>
+      <i data-lucide="x" class="tool-close" onclick="toggleTool('notepad')"></i>
+    </div>
+    <textarea id="notepadArea"
+      placeholder="Type your notes here... This content will be cleared upon exam submission."></textarea>
+  </div>
+
+  <!-- Certificate Template (Hidden) V13 -->
+  <div id="certCaptureWrap" style="position: fixed; top: 0; left: 0; z-index: -9999; opacity: 0; pointer-events: none;">
+    <div id="certificateTemplate"
+      style="width: 1123px; height: 794px; background: #ffffff; padding: 0; border: 2px solid #e0e0e0; font-family: 'Google Sans', 'Inter', sans-serif; position: relative; color: #3c4043; line-height: 1.4; box-sizing: border-box;">
+
+      <div
+        style="padding: 45px 65px 40px 65px; height: 100%; box-sizing: border-box; display: flex; flex-direction: column;">
+
+        <!-- Header Row: Logo | Google Cloud Partner | QR -->
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 30px; border-bottom: 1px solid #e8eaed;">
+          <!-- Left: DC Logo image only -->
+          <div>
+            <img src="../images/logo.png" style="height: 120px; display: block;" alt="DC Infotech Logo"
+              crossorigin="anonymous">
+          </div>
+
+          <!-- Center: Google Cloud Partner -->
+          <div style="text-align: center;">
+            <img src="../image.png" style="height: 85px; display: block; margin: auto;" alt="Google Cloud Partner"
+              crossorigin="anonymous">
+          </div>
+
+          <!-- Right: QR Code -->
+          <div id="certQRCode"
+            style="width: 90px; height: 90px; display: flex; align-items: center; justify-content: center;">
+          </div>
+        </div>
+
+        <!-- Main Body -->
+        <div
+          style="text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 10px 0;">
+
+          <p style="font-size: 17px; color: #5f6368; font-weight: 400; margin: 0 0 20px 0; letter-spacing: 0.2px;">
+            This acknowledges that
+          </p>
+
+          <h1 id="certStudentName"
+            style="font-size: 62px; font-weight: 400; color: #202124; margin: 0 0 22px 0; font-family: 'Google Sans', serif; letter-spacing: -0.5px; text-align: center; width: 100%;">
+            Student Name
+          </h1>
+
+          <p
+            style="font-size: 16px; color: #5f6368; margin: 0 0 20px 0; line-height: 1.7; max-width: 750px; margin-left: auto; margin-right: auto;">
+            has successfully completed all the requirements to be recognized as
+          </p>
+
+          <div style="margin: 0;">
+            <h2 id="certExamName"
+              style="font-size: 50px; font-weight: 400; color: #202124; margin: 0 0 6px 0; font-family: 'Google Sans', serif; letter-spacing: -0.3px;">
+              Associate Cloud Engineer
+            </h2>
+            <p id="certLevel"
+              style="font-size: 46px; font-weight: 400; color: #202124; margin: 0; font-family: 'Google Sans', serif; letter-spacing: -0.3px;">
+              (Associate Level)
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer Row: Metadata | Signature | Seal -->
+        <div
+          style="display: flex; justify-content: space-between; align-items: flex-end; padding-top: 20px; border-top: 1px solid #e8eaed;">
+
+          <!-- Left: Metadata block -->
+          <div style="font-size: 10.5px; color: #5f6368; font-family: monospace; line-height: 2.0; min-width: 280px;">
+            <div>Series ID: <span id="certSeriesID" style="color: #3c4043;">4301</span></div>
+            <div>Issued Date:<span id="certIssuedDate" style="color: #3c4043;">2026-01-31T07:18:55.791Z</span></div>
+            <div>ID: <span id="certUniqueID"
+                style="color: #3c4043; word-break: break-all;">3db55ba0e0c1340f3ae085a2917232934</span></div>
+            <div>Certified As: <span id="certCandidateNameDisplay" style="color: #3c4043;">Vanshita Thakur</span></div>
+          </div>
+
+          <!-- Center: Signature -->
+          <div style="text-align: center; margin-bottom: 0;">
+            <div
+              style="font-family: 'Dancing Script', 'Brush Script MT', cursive; font-size: 40px; color: #3c4043; line-height: 1; margin-bottom: 4px;">
+              Prathmesh Bharambe
+            </div>
+            <div style="width: 240px; border-top: 1.5px solid #0081C9; padding-top: 8px; margin: 0 auto;">
+              <div id="certManagerName"
+                style="font-weight: 700; font-size: 14px; color: #0081C9; letter-spacing: 0.3px;">
+                Prathmesh Bharambe
+              </div>
+              <div style="font-size: 11px; color: #5f6368; font-weight: 500; margin-top: 3px;">
+                Program Manager, DC Infotech Private Limited
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Official Colorful Seal -->
+          <div style="width: 130px; height: 130px; flex-shrink: 0;">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+              <defs>
+                <path id="sealTextPath" d="M 50,50 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" />
+              </defs>
+              <circle cx="50" cy="50" r="47" fill="none" stroke="#c8d0d8" stroke-width="0.8" stroke-dasharray="2 1.5" />
+              <circle cx="50" cy="50" r="39" fill="white" stroke="#dde2e8" stroke-width="0.5" />
+              <text font-size="4.2" fill="#607080" font-family="Arial, sans-serif" font-weight="600"
+                letter-spacing="0.8">
+                <textPath xlink:href="#sealTextPath">IT Solutions Certified • Program Manager • GOOGLE CCERTIFIED •
+                  ERGAMI • ASSOCIATE •</textPath>
+              </text>
+              <g transform="translate(50,50)">
+                <line x1="0" y1="-22" x2="19" y2="-11" stroke="#4285F4" stroke-width="1.2" />
+                <line x1="19" y1="-11" x2="19" y2="11" stroke="#34A853" stroke-width="1.2" />
+                <line x1="19" y1="11" x2="0" y2="22" stroke="#FBBC05" stroke-width="1.2" />
+                <line x1="0" y1="22" x2="-19" y2="11" stroke="#EA4335" stroke-width="1.2" />
+                <line x1="-19" y1="11" x2="-19" y2="-11" stroke="#4285F4" stroke-width="1.2" />
+                <line x1="-19" y1="-11" x2="0" y2="-22" stroke="#34A853" stroke-width="1.2" />
+                <line x1="0" y1="-22" x2="19" y2="11" stroke="#4285F4" stroke-width="0.7" opacity="0.5" />
+                <line x1="19" y1="-11" x2="-19" y2="11" stroke="#34A853" stroke-width="0.7" opacity="0.5" />
+                <line x1="19" y1="11" x2="-19" y2="-11" stroke="#FBBC05" stroke-width="0.7" opacity="0.5" />
+                <circle cx="0" cy="-22" r="3.5" fill="#EA4335" />
+                <circle cx="19" cy="-11" r="3.5" fill="#4285F4" />
+                <circle cx="19" cy="11" r="3.5" fill="#34A853" />
+                <circle cx="0" cy="22" r="3.5" fill="#FBBC05" />
+                <circle cx="-19" cy="11" r="3.5" fill="#34A853" />
+                <circle cx="-19" cy="-11" r="3.5" fill="#EA4335" />
+                <text x="0" y="6" text-anchor="middle" font-size="14" fill="#3c4043" font-weight="700"
+                  font-family="Arial, sans-serif">IT</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

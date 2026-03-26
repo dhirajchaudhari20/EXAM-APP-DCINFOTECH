@@ -1,0 +1,7 @@
+# Block scrapers by redirecting them to a fake error page
+/*  /error.html 403! User-Agent=HTTrack
+/*  /error.html 403! User-Agent=WebCopier
+/*  /error.html 403! User-Agent=Wget
+
+# QR Code Certificate Verification Redirect
+/verify  /verification.html  200

@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting - DC Cloud Solutions AI Mentor</title>
+    <!-- Dependencies -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/notiflix/dist/notiflix-3.2.6.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #202124;
+            --surface-dark: #3c4043;
+            --primary: #8ab4f8;
+            --danger: #ea4335;
+            --text-primary: #e8eaed;
+            --text-secondary: #9aa0a6;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Google Sans', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .meeting-code {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-container {
+            flex: 1;
+            display: flex;
+            padding: 0 16px 16px 16px;
+            gap: 16px;
+            overflow: hidden;
+        }
+
+        .video-grid {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+        }
+
+        /* AI Avatar "Video" */
+        .participant-tile {
+            background: var(--surface-dark);
+            border-radius: 8px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0b57d0, #1a73e8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        .listening-ring {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            opacity: 0;
+            transition: opacity 0.3s;
+            animation: pulse 2s infinite;
+        }
+
+        .speaking-waves {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            gap: 4px;
+            height: 40px;
+            align-items: center;
+        }
+
+        .wave {
+            width: 6px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 4px;
+            animation: sound 0.5s infinite;
+        }
+
+        .participant-name {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Self View */
+        .self-view {
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            width: 280px;
+            height: 160px;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+
+        /* Chat Sidebar */
+        .sidebar {
+            width: 360px;
+            background: #fff;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            color: #202124;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.hidden {
+            display: none;
+        }
+
+        .sidebar-header {
+            padding: 16px;
+            font-size: 18px;
+            border-bottom: 1px solid #dadce0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-area {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f1f3f4;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .message.ai {
+            background: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.user {
+            background: #d2e3fc;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: #5f6368;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        /* Bottom Bar (Google Meet Style) */
+        .bottom-bar {
+            height: 80px;
+            background: #202124;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 100;
+        }
+
+        .left-section {
+            display: flex;
+            align-items: center;
+            color: #fff;
+            font-weight: 500;
+            font-size: 16px;
+            min-width: 200px;
+        }
+
+        .left-section .time-display {
+            font-weight: 500;
+        }
+
+        .left-section .separator {
+            margin: 0 12px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .center-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            min-width: 200px;
+            justify-content: flex-end;
+        }
+
+        .control-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid #3c4043;
+            /* Slight border */
+            background: #3c4043;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .control-btn:hover {
+            background: #474a4d;
+            /* Slightly lighter on hover */
+            border-color: #474a4d;
+        }
+
+        /* Active State (e.g. Mic On is default dark, Mic Off is Red) */
+        /* Actually Google Meet Mic ON is transparent/dark, Mic OFF is Red */
+        /* We'll stick to our toggle logic but refine colors */
+
+        .control-btn.active-share {
+            background: #8ab4f8;
+            color: #202124;
+        }
+
+        .control-btn.danger-pill {
+            width: 60px;
+            border-radius: 30px;
+            background: #ea4335;
+            border-color: #ea4335;
+        }
+
+        .control-btn.danger-pill:hover {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            background: #d93025;
+        }
+
+        /* When mic/cam is OFF (red) */
+        .control-btn.danger {
+            background: #ea4335;
+            border-color: #ea4335;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .icon-btn.active {
+            color: #8ab4f8;
+        }
+
+        .badge {
+            position: absolute;
+            top: 2px;
+            right: 0px;
+            background: #3c4043;
+            color: white;
+            font-size: 10px;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .host-controls {
+            color: #fff;
+            font-size: 18px;
+            margin-left: 10px;
+            opacity: 0.5;
+        }
+
+        .ctrl-btn.danger:hover {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .listening-status {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .listening-status.visible {
+            opacity: 1;
+        }
+
+        /* Real-time Captions */
+        .caption-box {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            max-width: 80%;
+            text-align: center;
+            z-index: 100;
+            display: none;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        .caption-box:not(:empty) {
+            display: block;
+        }
+
+        .interim-text {
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        /* Language Selector */
+        .lang-select {
+            background: rgba(255, 255, 255, 0.08);
+            color: #e8eaed;
+            border: 1px solid transparent;
+            padding: 8px 12px;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            font-family: 'Google Sans', sans-serif;
+            font-size: 14px;
+            margin-right: 16px;
+            transition: background 0.2s;
+        }
+
+        .lang-select:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .lang-select option {
+            background: #202124;
+            color: white;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: 300px;
+                /* Fixed height for chat on mobile */
+                position: relative;
+            }
+
+            .sidebar.hidden {
+                display: none;
+            }
+
+            .self-view {
+                width: 120px;
+                height: 80px;
+                bottom: 100px;
+                /* Above bottom bar */
+                right: 10px;
+            }
+
+            .bottom-bar {
+                height: auto;
+                flex-wrap: wrap;
+                padding: 10px;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .center-section {
+                order: 2;
+                /* Controls below info */
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .left-section {
+                order: 1;
+                width: 50%;
+                min-width: unset;
+                font-size: 14px;
+            }
+
+            .right-section {
+                order: 1;
+                width: 50%;
+                min-width: unset;
+                justify-content: flex-end;
+            }
+
+            .control-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            .participant-tile {
+                min-height: 50vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <div class="meeting-code">dci-mentorship-sync</div>
+        <div style="flex:1"></div>
+        <select id="langSelect" onchange="changeLanguage(this.value)" class="lang-select">
+            <option value="Hinglish">Hinglish</option>
+            <option value="English">English</option>
+        </select>
+        <div id="clockTop" style="font-size:18px; color:var(--text-secondary)"></div>
+    </div>
+
+    <!-- PRE-JOIN SCREEN -->
+    <div id="pre-join-screen"
+        style="position:fixed; top:0; left:0; width:100%; height:100%; background:#202124; z-index:2000; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        <h2 style="color:white; margin-bottom:24px;">Ready to join?</h2>
+
+        <div style="display:flex; gap:32px; flex-wrap:wrap; justify-content:center;">
+            <!-- Preview Video -->
+            <div
+                style="width:500px; height:300px; background:#000; border-radius:8px; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+                <video id="previewVideo" autoplay playsinline muted
+                    style="width:100%; height:100%; object-fit:cover; transform:scaleX(-1);"></video>
+                <div id="camera-off-msg" style="color:white; display:none;">Camera is Off</div>
+
+                <!-- Preview Controls -->
+                <div
+                    style="position:absolute; bottom:16px; left:50%; transform:translateX(-50%); display:flex; gap:16px;">
+                    <button class="control-btn" id="preMicBtn" onclick="togglePreMic()">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button class="control-btn" id="preCamBtn" onclick="togglePreCam()">
+                        <i class="fas fa-video"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Join Info -->
+            <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; color:white;">
+                <h3 id="joiningAs" style="margin-bottom:8px;">Intern</h3>
+                <p style="color:#bdc1c6; margin-bottom:24px;">No one else is here</p>
+                <button onclick="joinMeeting()"
+                    style="background:#8ab4f8; color:#202124; border:none; padding:10px 24px; border-radius:24px; font-weight:600; font-size:16px; cursor:pointer;">
+                    Join now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container" id="meeting-interface" style="display:none;">
+        <!-- Main Video Area -->
+        <div class="video-grid">
+            <div class="participant-tile">
+                <div class="listening-ring" id="listeningRing"></div>
+                <div class="avatar-circle">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="speaking-waves" id="speakingWaves" style="display:none">
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                </div>
+                <div class="participant-name">
+                    <i class="fas fa-thumbtack" style="font-size:12px"></i>
+                    DC Cloud Solutions AI Mentor
+                </div>
+            </div>
+
+            <!-- Captions Overlay -->
+            <div id="captionBox" class="caption-box"></div>
+
+            <!-- Self View -->
+            <div class="self-view">
+                <video id="mainSelfVideo" autoplay playsinline muted
+                    style="width:100%; height:100%; object-fit:cover; transform:scaleX(-1); display:none;"></video>
+                <div id="mainSelfPlaceholder"
+                    style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#1a1a1a; color:#5f6368">
+                    <i class="fas fa-user-circle" style="font-size:48px"></i>
+                </div>
+                <div class="participant-name" style="bottom:8px; left:8px; font-size:12px">You</div>
+            </div>
+        </div>
+
+        <!-- Chat Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span>In-call messages</span>
+                <i class="fas fa-times" style="cursor:pointer" onclick="toggleChat()"></i>
+            </div>
+            <div class="chat-area" id="chatArea">
+                <div style="text-align:center; color:#5f6368; font-size:12px; margin-bottom:10px">
+                    Messages are only visible to participants in this call.
+                </div>
+            </div>
+            <div style="padding:16px; background:white; border-top:1px solid #dadce0">
+                <input type="text" id="manualInput" placeholder="Send a message..."
+                    style="width:90%; padding:10px; border-radius:20px; border:1px solid #dadce0; outline:none;"
+                    onkeypress="handleManualInput(event)">
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="listening-status" id="statusPill">Listening...</div>
+
+    <!-- Bottom Bar (Google Meet Style) -->
+    <div class="bottom-bar">
+        <!-- LEFT: Time & Code -->
+        <div class="left-section">
+            <div class="time-display" id="clockBottom">10:00 AM</div>
+            <div class="separator">|</div>
+            <div class="meeting-code" style="display:flex; align-items:center; gap:8px;">
+                <span style="font-weight:600; letter-spacing:0.5px;">DC Cloud Solutions</span>
+                <span style="opacity:0.7; font-weight:400;">(Weekly Intern Sync)</span>
+            </div>
+        </div>
+
+        <!-- CENTER: Controls -->
+        <div class="center-section">
+            <button class="control-btn" onclick="toggleMic()" id="micBtn" title="Turn off microphone (ctrl + d)">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <button class="control-btn" onclick="toggleVideo()" id="videoBtn" title="Turn off camera (ctrl + e)">
+                <i class="fas fa-video"></i>
+            </button>
+            <button class="control-btn" onclick="Notiflix.Notify.info('Captions enabled')" title="Turn on captions (c)">
+                <i class="fas fa-closed-captioning"></i>
+            </button>
+            <button class="control-btn" onclick="toggleScreenShare()" id="screenBtn" title="Present now">
+                <i class="fas fa-desktop"></i>
+            </button>
+            <button class="control-btn" onclick="Notiflix.Notify.success('Hand Raised! Host notified.')"
+                title="Raise hand">
+                <i class="fas fa-hand-paper"></i>
+            </button>
+            <button class="control-btn" onclick="document.getElementById('imgUpload').click()" id="uploadBtn"
+                title="Upload Image">
+                <i class="fas fa-image"></i>
+            </button>
+            <input type="file" id="imgUpload" accept="image/*" style="display:none" onchange="handleImageUpload(this)">
+
+            <button class="control-btn" onclick="takeManualSnapshot()" title="Take Snapshot Now">
+                <i class="fas fa-camera"></i>
+            </button>
+
+            <button class="control-btn" onclick="Notiflix.Notify.info('Settings menu coming soon')"
+                title="More options">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+
+            <button class="control-btn danger-pill" onclick="endCall()" title="Leave call">
+                <i class="fas fa-phone-slash"></i>
+            </button>
+        </div>
+
+        <!-- RIGHT: Info & Chat -->
+        <div class="right-section">
+            <button class="icon-btn" title="Meeting details">
+                <i class="fas fa-info-circle"></i>
+            </button>
+            <button class="icon-btn" title="People">
+                <i class="fas fa-users"></i>
+                <span class="badge">2</span>
+            </button>
+            <button class="icon-btn active" onclick="toggleChat()" title="Chat with everyone">
+                <i class="fas fa-comment-alt"></i>
+            </button>
+            <button class="icon-btn" title="Activities">
+                <i class="fas fa-shapes"></i>
+            </button>
+            <div class="host-controls">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // 0. UI Config (Dark Theme for Alerts)
+        Notiflix.Report.init({
+            backgroundColor: '#202124',
+            titleColor: '#e8eaed',
+            messageColor: '#bdc1c6',
+            buttonBackground: '#8ab4f8',
+            buttonColor: '#202124',
+            backOverlayColor: 'rgba(0,0,0,0.8)',
+            plainText: false
+        });
+
+        Notiflix.Confirm.init({
+            backgroundColor: '#202124',
+            titleColor: '#e8eaed',
+            messageColor: '#bdc1c6',
+            okButtonBackground: '#ea4335',
+            okButtonColor: '#fff',
+            cancelButtonBackground: '#3c4043',
+            cancelButtonColor: '#e8eaed',
+            backOverlayColor: 'rgba(0,0,0,0.8)',
+        });
+
+        Notiflix.Notify.init({
+            position: 'left-bottom',
+            distance: '85px',
+            cssAnimationStyle: 'from-bottom',
+        });
+
+        // 1. Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCohKlqNu0I1sXcLW4D_fv-OEw9x0S50q8",
+            authDomain: "dc-infotechpvt-1-d1a4b.firebaseapp.com",
+            databaseURL: "https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com",
+            projectId: "dc-infotechpvt-1-d1a4b",
+            storageBucket: "dc-infotechpvt-1-d1a4b.firebasestorage.app",
+        };
+        try { firebase.initializeApp(firebaseConfig); } catch (e) { }
+        const db = firebase.database();
+
+        const GEMINI_URL = "/.netlify/functions/gemini-proxy";
+        // GEMINI_URL is now defined near handleUserInput for context switching
+        // const GEMINI_URL = ...;
+
+        // 2. State
+        const user = JSON.parse(localStorage.getItem('cloudUser')) || { email: 'guest', name: 'Intern' };
+        const userName = user.name || "Intern";
+        document.getElementById('joiningAs').innerText = userName;
+
+        // Pre-join Logic
+        let localStream = null;
+        let isMicOn = true;
+        let isCamOn = true;
+
+        async function initPreJoin() {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                document.getElementById('previewVideo').srcObject = localStream;
+            } catch (e) {
+                console.error("Permissions denied or error", e);
+                Notiflix.Notify.failure("Please allow Camera/Mic access");
+                isMicOn = false; isCamOn = false;
+                updatePreButtons();
+            }
+        }
+
+        function togglePreMic() {
+            isMicOn = !isMicOn;
+            if (localStream) localStream.getAudioTracks()[0].enabled = isMicOn;
+            updatePreButtons();
+        }
+
+        function togglePreCam() {
+            isCamOn = !isCamOn;
+            if (localStream) localStream.getVideoTracks()[0].enabled = isCamOn;
+            updatePreButtons();
+
+            const v = document.getElementById('previewVideo');
+            const msg = document.getElementById('camera-off-msg');
+            if (isCamOn) { v.style.opacity = 1; msg.style.display = 'none'; }
+            else { v.style.opacity = 0; msg.style.display = 'block'; }
+        }
+
+        function updatePreButtons() {
+            const m = document.getElementById('preMicBtn');
+            const c = document.getElementById('preCamBtn');
+
+            if (isMicOn) { m.classList.remove('danger'); m.innerHTML = '<i class="fas fa-microphone"></i>'; }
+            else { m.classList.add('danger'); m.innerHTML = '<i class="fas fa-microphone-slash"></i>'; }
+
+            if (isCamOn) { c.classList.remove('danger'); c.innerHTML = '<i class="fas fa-video"></i>'; }
+            else { c.classList.add('danger'); c.innerHTML = '<i class="fas fa-video-slash"></i>'; }
+        }
+
+        function joinMeeting() {
+            document.getElementById('pre-join-screen').style.display = 'none';
+            document.getElementById('meeting-interface').style.display = 'flex';
+
+            // Apply states to main controls
+            // (Assumes main controls will be synced)
+
+            // Start AI Interaction
+            setTimeout(() => {
+                initSpeech();
+                // Sync Main Controls
+                updateMainControls();
+            }, 500);
+
+            // Transfer Video
+            const mainVid = document.getElementById('mainSelfVideo');
+            const mainPlace = document.getElementById('mainSelfPlaceholder');
+
+            if (localStream) {
+                mainVid.srcObject = localStream;
+                if (isCamOn) {
+                    mainVid.style.display = 'block';
+                    mainPlace.style.display = 'none';
+                } else {
+                    mainVid.style.display = 'none';
+                    mainPlace.style.display = 'flex';
+                }
+            }
+        }
+
+        function updateMainControls() {
+            const mBtn = document.getElementById('micBtn');
+            if (isMicOn) { mBtn.classList.remove('danger'); mBtn.innerHTML = '<i class="fas fa-microphone"></i>'; }
+            else { mBtn.classList.add('danger'); mBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>'; }
+
+            const vBtn = document.getElementById('videoBtn');
+            if (isCamOn) { vBtn.classList.remove('danger'); vBtn.innerHTML = '<i class="fas fa-video"></i>'; }
+            else { vBtn.classList.add('danger'); vBtn.innerHTML = '<i class="fas fa-video-slash"></i>'; }
+        }
+
+
+        // Initialize on Load
+        window.addEventListener('load', initPreJoin);
+
+        let conversationHistory = [{
+            role: "user",
+            parts: [{
+                text: `
+                Act as a friendly, enthusiastic senior mentor at **DC Cloud Solutions (Google Cloud Partner)**. You are talking to an intern named ${userName}.
+                
+                **Context - Internship Program:**
+                - Role: **Google Cloud Engineer Intern** (3 Months, Remote).
+                - Structure: Starts with **3 Weeks Training** (Live sessions), then **Project Phase**.
+                - Goal: They must clear **ACE Certification** before starting projects.
+                - Projects: Real client work (IAM, Networking, CI/CD, Capstone).
+                - Benefits: ₹4000 fee covers Training + **$200 Exam Voucher** + Re-attempt. Top performers get a Job Offer.
+
+                **Your Persona:**
+                - Tone: Casual, warm, and encouraging (like a supportive senior).
+                - Language: **Hinglish** (Mix of English and Hindi). Use words like 'Acha', 'Sahi hai', 'Arre wah', 'Theek hai', 'Blocker hai kya?'.
+                - Behavior: Listen actively. If they say something good, cheer them up ("Great going!"). If they are stuck, show empathy ("Koi baat nahi, hota hai.").
+                
+                **Rules:**
+                1. Keep your responses **SHORT** (maximum 2 sentences). This is a voice call, not an email.
+                2. Ask only **ONE** question at a time.
+                3. Focus on: What did they learn this week? Any blockers? needed support?
+                4. If they ask about the program, use the Context above.
+                
+                **Start:**
+                "Hi ${userName}! Kaise ho? Iss week kya naya seekha?"
+            ` }]
+        }];
+
+        let recognition;
+        let authState = "IDLE"; // IDLE, LISTENING, PROCESSING, SPEAKING
+        let synth = window.speechSynthesis;
+
+        // New State
+        let currentLang = 'Hinglish';
+        let capturedSnapshots = [];
+        let snapshotInterval = null;
+
+        // 3. UI Helpers
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            const mins = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('clock').innerText = `${hours}:${mins} ${ampm}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function setStatus(status) {
+            authState = status;
+            const pill = document.getElementById('statusPill');
+            const ring = document.getElementById('listeningRing');
+            const waves = document.getElementById('speakingWaves');
+
+            // STRICT Safety Check: If UI not ready, just return
+            if (!pill || !ring || !waves) {
+                console.warn("UI elements not ready for status:", status);
+                return;
+            }
+
+            pill.classList.remove('visible');
+            ring.style.opacity = '0';
+            waves.style.display = 'none';
+
+            if (status === 'LISTENING') {
+                pill.innerText = "Listening...";
+                pill.classList.add('visible');
+                ring.style.opacity = '1';
+                const cb = document.getElementById('captionBox');
+                if (cb) cb.innerText = ''; // Clear stale captions
+            } else if (status === 'PROCESSING') {
+                pill.innerText = "Thinking...";
+                pill.classList.add('visible');
+            } else if (status === 'SPEAKING') {
+                pill.innerText = "Speaking...";
+                pill.classList.add('visible');
+                waves.style.display = 'flex';
+            }
+        }
+
+        function addMessage(role, text) {
+            const area = document.getElementById('chatArea');
+            if (!area) return; // Safety check
+
+            const div = document.createElement('div');
+            div.className = `message ${role === 'user' ? 'user' : 'ai'}`;
+            div.innerHTML = `
+                ${role === 'ai' ? '<strong><i class="fas fa-robot"></i> Mentor</strong><br>' : ''}
+                ${text}
+                <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+            `;
+            area.appendChild(div);
+            area.scrollTop = area.scrollHeight;
+        }
+
+        function toggleChat() {
+            document.getElementById('sidebar').classList.toggle('hidden');
+        }
+
+        // 4. Speech Logic (Refined Turn-Taking)
+        function initSpeech() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Please use Chrome for voice features.");
+                return;
+            }
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = currentLang === 'Hinglish' ? 'en-IN' : 'en-US';
+            recognition.interimResults = true;
+
+            recognition.onstart = () => {
+                if (authState === 'SPEAKING' || authState === 'PROCESSING') {
+                    recognition.stop();
+                    return;
+                }
+                setStatus('LISTENING');
+            };
+
+            recognition.onend = () => {
+                const cb = document.getElementById('captionBox');
+                if (cb && authState !== 'LISTENING') cb.innerText = '';
+
+                // Only restart if we are supposed to be IDLE or LISTENING, 
+                // and NOT if we are about to process or speak.
+                if (authState === 'LISTENING' || authState === 'IDLE') {
+                    // We stopped listening but didn't switch state? 
+                    // Means silence or no result. Restart.
+                    setTimeout(() => {
+                        if (authState === 'LISTENING' || authState === 'IDLE') {
+                            try { recognition.start(); } catch (e) { }
+                        }
+                    }, 300);
+                }
+            };
+
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                let finalTranscript = '';
+                const cb = document.getElementById('captionBox');
+
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+
+                if (cb) {
+                    if (finalTranscript) {
+                        cb.innerText = finalTranscript;
+                    } else if (interimTranscript) {
+                        cb.innerHTML = `<span class="interim-text">${interimTranscript}</span>`;
+                    }
+                }
+
+                if (finalTranscript.trim().length > 0) {
+                    if (cb) cb.innerText = finalTranscript;
+                    handleUserInput(finalTranscript);
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech Recognition Error:", event.error);
+                // On some errors (like 'aborted'), we might need to restart manually
+                if (event.error === 'network' || event.error === 'aborted') {
+                    startListening();
+                }
+            };
+
+            // Initial Start
+            setTimeout(() => {
+                setStatus('PROCESSING'); // Fake state to block auto-start logic
+                handleUserInput("Start conversation");
+            }, 1000);
+        }
+
+        // 5. Core Interaction (Removed duplicate function)
+        // The previous handleUserInput function was removed as per instructions.
+        // The GEMINI_URL definition and the updated handleUserInput are below.
+
+        // Use gemini-flash-latest (Confirmed available via API list)
+
+        // 5. Core Interaction (Updated for robustness)
+        async function handleUserInput(text) {
+            setStatus('PROCESSING');
+            if (recognition) recognition.stop(); // Stop listening explicitly
+
+            const userContent = { role: "user", parts: [{ text: text }] };
+            if (pendingImage) {
+                userContent.parts.push(pendingImage);
+                pendingImage = null;
+            } else if (isScreenSharing) {
+                const screenFrame = await captureScreenFrame();
+                if (screenFrame) {
+                    userContent.parts.push(screenFrame);
+                    userContent.parts[0].text += "\n[Attached: Current Screen Frame]";
+                }
+            }
+
+            if (text !== "Start conversation") {
+                if (!text.includes("uploaded an image")) {
+                    addMessage('user', text);
+                }
+                conversationHistory.push(userContent);
+            }
+
+            const makeRequest = async (retries = 3, delay = 2000) => {
+                try {
+                    const response = await fetch(GEMINI_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ contents: conversationHistory })
+                    });
+
+                    if (response.status === 429) {
+                        if (retries > 0) {
+                            console.warn(`429 Hit. Retrying in ${delay / 1000}s...`);
+                            Notiflix.Notify.warning(`Server busy. Retrying... (${retries})`);
+                            await new Promise(r => setTimeout(r, delay));
+                            return makeRequest(retries - 1, delay * 2); // Exponential backoff
+                        } else {
+                            throw new Error("429 Too Many Requests");
+                        }
+                    }
+
+                    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+
+                    const data = await response.json();
+                    if (!data.candidates) throw new Error("No response candidates");
+                    return data;
+
+                } catch (e) {
+                    throw e;
+                }
+            };
+
+            try {
+                const data = await makeRequest();
+                const aiResponse = data.candidates[0].content.parts[0].text;
+                conversationHistory.push({ role: "model", parts: [{ text: aiResponse }] });
+
+                addMessage('ai', aiResponse);
+                await speak(aiResponse);
+
+            } catch (error) {
+                console.error("AI Error:", error);
+                let errMsg = "I'm having trouble connecting. Could you say that again?";
+
+                if (error.message.includes("429") || error.message.includes("Too Many Requests")) {
+                    errMsg = "The server is very busy right now. Please wait a moment.";
+                    Notiflix.Notify.failure("Server Overloaded (429).");
+                } else if (error.message.includes("404")) {
+                    errMsg = "I'm having a configuration issue (Model Not Found).";
+                    Notiflix.Notify.failure("Model Config Error (404)");
+                }
+
+                addMessage('ai', errMsg);
+                await speak(errMsg);
+            } finally {
+                // ALWAYS resume listening afterwards
+                startListening();
+            }
+        }
+
+        // Helper to safely resume listening
+        function startListening() {
+            setStatus('IDLE');
+            setTimeout(() => {
+                setStatus('LISTENING');
+                try {
+                    if (recognition && isMicOn) recognition.start();
+                } catch (e) {
+                    // Ignore if already started
+                }
+            }, 300);
+        }
+
+        function speak(text) {
+            return new Promise((resolve) => {
+                const pill = document.getElementById('statusPill');
+                if (!pill) {
+                    console.warn("UI not ready for speak");
+                    resolve(); // Resolve immediately if UI down to prevent hanging
+                    return;
+                }
+
+                setStatus('SPEAKING'); // Lock state capability
+                if (recognition) recognition.stop();
+
+                const utter = new SpeechSynthesisUtterance(text);
+                const voices = synth.getVoices();
+                // Priority based on Language
+                let v = null;
+                if (currentLang === 'Hinglish') {
+                    v = voices.find(x => x.name.includes("Google हिन्दी") || x.name.includes("Google Hindi"));
+                }
+                if (!v) v = voices.find(x => x.name.includes("Google US English"));
+                if (v) utter.voice = v;
+
+                // Add slight variation to sound more 'alive'
+                utter.rate = 1.0 + (Math.random() * 0.1 - 0.05); // 0.95 - 1.05
+                utter.pitch = 1.0 + (Math.random() * 0.1 - 0.05); // 0.95 - 1.05
+
+                utter.onstart = () => {
+                    setStatus('SPEAKING');
+                };
+
+                utter.onend = () => {
+                    resolve();
+                    // AI finished talking. NOW we listen.
+                    setStatus('IDLE');
+                    setTimeout(() => {
+                        setStatus('LISTENING');
+                        try { recognition.start(); } catch (e) { }
+                    }, 200); // Small pause for natural turn-taking
+                };
+
+                synth.speak(utter);
+            });
+        }
+
+        function handleManualInput(e) {
+            if (e.key === 'Enter') {
+                const text = e.target.value;
+                e.target.value = '';
+                handleUserInput(text);
+            }
+        }
+
+        // 6. End Call Logic & Report Generation
+        async function generateReportSummary() {
+            const summaryPrompt = {
+                role: "user",
+                parts: [{
+                    text: `
+                    Generate a structured summary of this conversation for the admin dashboard.
+                    Format STRICTLY as JSON:
+                    {
+                        "sentiment": "Positive/Neutral/Negative",
+                        "summary": "2 sentence summary of progress",
+                        "blockers": "List of blockers mentioned (or None)",
+                        "actionBytes": "Suggested follow-up actions for the mentor"
+                    }
+                ` }]
+            };
+
+            // Clone history to avoid modifying the UI version
+            const context = [...conversationHistory, summaryPrompt];
+
+            try {
+                const response = await fetch(GEMINI_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: context })
+                });
+
+                const data = await response.json();
+                const text = data.candidates[0].content.parts[0].text;
+
+                // Cleanup markdown code blocks if present
+                const jsonStr = text.replace(/```json/g, '').replace(/```/g, '').trim();
+                return JSON.parse(jsonStr);
+            } catch (e) {
+                console.error("Summary Gen Error", e);
+                return {
+                    sentiment: "Neutral",
+                    summary: "Could not generate AI summary.",
+                    blockers: "Unknown",
+                    actionBytes: "Check transcript manually."
+                };
+            }
+        }
+
+        function endCall() {
+            if (synth) synth.cancel();
+            if (recognition) recognition.stop();
+            setStatus('IDLE');
+
+            Notiflix.Confirm.show(
+                'End Meeting?',
+                'This will generate a summary and sending report to support.',
+                'End & Save',
+                'Cancel',
+                async function okCb() {
+                    Notiflix.Loading.circle('Generating AI Report...');
+
+                    // 1. Generate Summary
+                    const aiReport = await generateReportSummary();
+
+                    Notiflix.Loading.change('Sending to support@dcinfotech.org.in...');
+
+                    // 2. Prepare Data
+                    const user = JSON.parse(localStorage.getItem('cloudUser')) || { email: 'guest', name: 'Guest' };
+                    const uid = user.email.replace('.', '_');
+                    const dateKey = new Date().toISOString().split('T')[0];
+                    const timestamp = Date.now();
+
+                    // Sanitize history to remove base64 images
+                    const cleanHistory = conversationHistory.map(turn => ({
+                        role: turn.role,
+                        parts: turn.parts.map(p => {
+                            if (p.inlineData) return { text: "[Image/Screen Attachment]" };
+                            return p;
+                        })
+                    }));
+
+                    const finalReport = {
+                        timestamp: timestamp,
+                        userId: user.email,
+                        userName: user.name,
+                        transcript: cleanHistory,
+                        aiAnalysis: aiReport,
+                        snapshots: capturedSnapshots,
+                        status: "Completed"
+                    };
+
+                    // 3. Save to Firebase
+                    db.ref(`reports/${uid}/${dateKey}/${timestamp}`).set(finalReport)
+                        .then(() => {
+                            setTimeout(() => {
+                                Notiflix.Loading.remove();
+                                Notiflix.Report.success(
+                                    'Report Sent Successfully',
+                                    `<b>Summary:</b> ${aiReport.summary}<br><br><b>Status:</b> Sent to Admin.`,
+                                    'Close',
+                                    () => {
+                                        window.location.href = 'https://calendar.app.google/GchxwkQsXwHbEfKVA';
+                                    }
+                                );
+                            }, 1500);
+                        })
+                        .catch(e => {
+                            Notiflix.Loading.remove();
+                            Notiflix.Report.failure('Save Failed', e.message, 'Okay');
+                        });
+                }
+            );
+        }
+
+        // 7. Visual & Toggle Controls
+        // Variables listed at top: isMicOn, isCamOn, localStream
+        let isScreenSharing = false;
+        let screenStream = null;
+        let pendingImage = null; // Base64 image waiting to be sent
+
+        function toggleMic() {
+            // Use existing global isMicOn
+            isMicOn = !isMicOn;
+
+            if (localStream && localStream.getAudioTracks().length > 0) {
+                localStream.getAudioTracks()[0].enabled = isMicOn;
+            }
+
+            const btn = document.getElementById('micBtn');
+            const icon = btn.querySelector('i');
+
+            if (isMicOn) {
+                btn.classList.remove('danger');
+                icon.className = 'fas fa-microphone';
+                // If we are currently IDLE/LISTENING, ensure recognition is active
+                if (authState === 'IDLE' || authState === 'LISTENING') {
+                    try { recognition.start(); } catch (e) { }
+                }
+            } else {
+                btn.classList.add('danger');
+                icon.className = 'fas fa-microphone-slash';
+                // Note: We don't stop recognition here because we might want to hear "Stop call" etc, 
+                // BUT for privacy, if mic is off, we should probably stop recognition.
+                if (recognition) recognition.stop();
+                setStatus('IDLE');
+            }
+        }
+
+
+        async function toggleScreenShare() {
+            if (!isScreenSharing) {
+                try {
+                    screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                    isScreenSharing = true;
+                    document.getElementById('screenBtn').classList.add('active-share');
+
+                    // Handle "Stop Sharing" from browser UI
+                    screenStream.getVideoTracks()[0].onended = () => {
+                        isScreenSharing = false;
+                        screenStream = null;
+                        document.getElementById('screenBtn').classList.remove('active-share');
+
+                        // Remove preview
+                        const preview = document.getElementById('screenPreview');
+                        if (preview) preview.remove();
+                        document.querySelector('.participant-tile').style.display = 'flex';
+                    };
+
+                    // Show Preview
+                    const videoGrid = document.querySelector('.video-grid');
+                    const aiTile = document.querySelector('.participant-tile');
+                    aiTile.style.display = 'none';
+
+                    const video = document.createElement('video');
+                    video.id = 'screenPreview';
+                    video.srcObject = screenStream;
+                    video.autoplay = true;
+                    video.muted = true;
+                    video.style.width = '100%';
+                    video.style.height = '100%';
+                    video.style.borderRadius = '8px';
+                    video.style.objectFit = 'contain';
+                    video.style.background = '#000';
+
+                    videoGrid.appendChild(video);
+
+                    Notiflix.Notify.success("Screen sharing active. You are presenting to everyone.");
+                } catch (e) {
+                    console.error("Screen share error", e);
+                }
+            } else {
+                if (screenStream) {
+                    screenStream.getTracks().forEach(t => t.stop());
+                    screenStream = null;
+                }
+                isScreenSharing = false;
+                document.getElementById('screenBtn').classList.remove('active-share');
+
+                // Remove preview
+                const preview = document.getElementById('screenPreview');
+                if (preview) preview.remove();
+                document.querySelector('.participant-tile').style.display = 'flex';
+            }
+        }
+
+        function handleImageUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                // Remove data prefix for API
+                const base64 = e.target.result.split(',')[1];
+                pendingImage = {
+                    inlineData: {
+                        mimeType: file.type,
+                        data: base64
+                    }
+                };
+                addMessage('user', `[Sent an image: ${file.name}]`);
+                handleUserInput("I've uploaded an image. Can you analyze it?");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function captureScreenFrame() {
+            if (!screenStream) return null;
+
+            const track = screenStream.getVideoTracks()[0];
+            const imageCapture = new ImageCapture(track);
+
+            try {
+                const bitmap = await imageCapture.grabFrame();
+                const canvas = document.createElement('canvas');
+                canvas.width = bitmap.width;
+                canvas.height = bitmap.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(bitmap, 0, 0);
+
+                // Convert to base64
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                return {
+                    inlineData: {
+                        mimeType: 'image/jpeg',
+                        data: dataUrl.split(',')[1]
+                    }
+                };
+            } catch (e) {
+                console.error("Frame capture failed", e);
+                return null;
+            }
+        }
+
+        async function toggleVideo() {
+            isCamOn = !isCamOn;
+
+            // 1. Manage Track
+            if (localStream && localStream.getVideoTracks().length > 0) {
+                localStream.getVideoTracks()[0].enabled = isCamOn;
+            }
+
+            // 2. Update UI (Overlay/Placeholder)
+            const video = document.getElementById('mainSelfVideo');
+            const placeholder = document.getElementById('mainSelfPlaceholder');
+
+            if (isCamOn) {
+                if (video) video.style.display = 'block';
+                if (placeholder) placeholder.style.display = 'none';
+            } else {
+                if (video) video.style.display = 'none';
+                if (placeholder) placeholder.style.display = 'flex';
+            }
+
+            // 3. Sync Bottom Controls
+            updateMainControls();
+        }
+
+
+
+
+        // 8. Dynamic Clock
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const top = document.getElementById('clockTop');
+            const bottom = document.getElementById('clockBottom');
+            if (top) top.innerText = timeString;
+            if (bottom) bottom.innerText = timeString;
+        }
+        setInterval(updateClock, 1000); // Update every second
+
+        // 9. Auto-Snapshots & Language
+        function changeLanguage(lang) {
+            currentLang = lang;
+            if (recognition) {
+                recognition.stop();
+                recognition.lang = currentLang === 'Hinglish' ? 'en-IN' : 'en-US';
+            }
+            const prompt = currentLang === 'Hinglish'
+                ? "Switching to Hinglish. Use Hindi mix. Be casual. Use words like 'Acha', 'Sahi hai'."
+                : "Switching to English. Keep it casual, warm, and human-like. Avoid formal corporate speak. Act like a supportive friend.";
+
+            conversationHistory.push({ role: "user", parts: [{ text: `[System]: ${prompt}` }] });
+            Notiflix.Notify.info(`Language switched to ${lang}`);
+        }
+
+        function startAutoSnapshots() {
+            if (snapshotInterval) clearInterval(snapshotInterval);
+            snapshotInterval = setInterval(async () => {
+                // Take snapshot if Video is ON and we have a stream
+                if (isCamOn && localStream) {
+                    const track = localStream.getVideoTracks()[0];
+                    if (track && track.readyState === 'live' && track.enabled) {
+                        try {
+                            const imageCapture = new ImageCapture(track);
+                            const bitmap = await imageCapture.grabFrame();
+                            const canvas = document.createElement('canvas');
+                            // Resize for storage efficiency (320px width)
+                            const scale = 320 / bitmap.width;
+                            canvas.width = 320;
+                            canvas.height = bitmap.height * scale;
+
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+                            const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                            capturedSnapshots.push({
+                                timestamp: Date.now(),
+                                image: dataUrl
+                            });
+                            // Subtle feedback for user
+                            Notiflix.Notify.info("Auto-snapshot captured");
+                        } catch (e) { console.error("Auto-snap error", e); }
+                    }
+                }
+            }, 60000); // Back to 60 seconds
+        }
+
+        async function takeManualSnapshot() {
+            if (!isCamOn || !localStream) {
+                Notiflix.Notify.failure("Please turn on your camera first!");
+                return;
+            }
+
+            try {
+                const track = localStream.getVideoTracks()[0];
+                const imageCapture = new ImageCapture(track);
+                const bitmap = await imageCapture.grabFrame();
+
+                const canvas = document.createElement('canvas');
+                const scale = 320 / bitmap.width;
+                canvas.width = 320;
+                canvas.height = bitmap.height * scale;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                capturedSnapshots.push({
+                    timestamp: Date.now(),
+                    image: dataUrl
+                });
+
+                Notiflix.Notify.success("Snapshot captured!");
+            } catch (e) {
+                console.error("Manual snap error", e);
+                Notiflix.Notify.failure("Could not take snapshot.");
+            }
+        }
+
+        // Init
+        window.onload = () => {
+            updateClock();
+            startAutoSnapshots();
+            window.speechSynthesis.getVoices();
+            initSpeech();
+        };
+
+    </script>
+
+</html>

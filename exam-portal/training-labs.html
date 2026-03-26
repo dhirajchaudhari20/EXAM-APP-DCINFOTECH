@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Training Labs & Exam Preparation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Google+Sans:wght@700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --blue-600: #1a73e8;
+      --blue-700: #185abc;
+      --grey-100: #f8f9fa;
+      --grey-200: #e9ecef;
+      --grey-700: #495057;
+      --grey-800: #343a40;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    body {
+      font-family: 'Roboto', 'Segoe UI', sans-serif;
+      background-color: var(--grey-100);
+      color: var(--grey-800);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1100px;
+      padding: 2rem;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    header h1 {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 2.5rem;
+      color: var(--blue-600);
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: var(--grey-700);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .checklist-section h2 {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 1.75rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      color: var(--grey-800);
+    }
+
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .checklist-item {
+      background-color: #fff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border-top: 4px solid var(--blue-600);
+    }
+
+    .checklist-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .item-icon {
+      background-color: #e8f0fe;
+      color: var(--blue-600);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .item-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .checklist-item h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .checklist-item p {
+      color: var(--grey-700);
+      font-size: 0.95rem;
+      flex-grow: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: var(--blue-600);
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      font-weight: 500;
+      transition: background-color 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: var(--blue-700);
+    }
+
+    /* Progress Bar Styles */
+    .progress-container {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(248, 249, 250, 0.95);
+      backdrop-filter: blur(5px);
+      padding: 1rem 0;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--grey-200);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .progress-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .progress-text {
+      font-weight: 700;
+      color: var(--blue-600);
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      flex-grow: 1;
+      height: 10px;
+      background-color: var(--grey-200);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: #34a853;
+      /* Green for progress */
+      width: 0%;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Checkbox Styles */
+    .checklist-item {
+      position: relative;
+      /* For positioning the checkbox if needed */
+      cursor: pointer;
+      /* Make whole card clickable for check */
+    }
+
+    .checklist-item.completed {
+      border-top-color: #34a853;
+      background-color: #f6ffed;
+      /* Light green tint */
+    }
+
+    .checklist-checkbox {
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      color: var(--grey-700);
+    }
+
+    .checklist-checkbox input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: #34a853;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Training Labs & Exam Preparation</h1>
+      <p>Your central hub for resources to help you succeed in your Google Cloud certification journey.</p>
+    </header>
+
+    <!-- Sticky Progress Bar -->
+    <div class="progress-container">
+      <div class="container" style="padding: 0;"> <!-- Inner container for alignment -->
+        <div class="progress-wrapper">
+          <span class="progress-text">Your Progress: <span id="progress-percent">0%</span></span>
+          <div class="progress-track">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <main>
+      <section class="checklist-section">
+        <h2>Associate Cloud Engineer: Pre-exam Checklist</h2>
+        <div class="checklist-grid">
+          <div class="checklist-item">
+            <div class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                <path d="m9 12 2 2 4-4"></path>
+              </svg></div>
+            <h3>1. Complete Learning Path </h3>
+            <p>Ensure you have met all prerequisites to be eligible for the exam voucher. Review the requirements list
+              in your learning path.</p>
+            <a href="https://services.google.com/fh/files/misc/pck_cloud_engineer_one_pager.pdf?utm_content=week6&utm_source=cloud_sfdc&utm_medium=email&utm_campaign=&pref=&mkt_tok=ODA4LUdKVy0zMTQAAAGdv_2Ihqx8TZY5-b1HOFUqXNFMCLUNYHFhpOicQuFwGYHQaBV6M4-dJVE9CHiyPzMSkItZedFnNvUCpzUHdd1jJZfzibo-82vk3E-kuGVxwBz1_5EMVQo"
+              class="btn" style="margin-bottom: 1rem;">View Learning Path</a>
+            <label class="checklist-checkbox">
+              <input type="checkbox" data-id="item-1"> Mark as Completed
+            </label>
+          </div>
+          <div class="checklist-item">
+            <div class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg></div>
+            <h3>2. Review the Exam Guide</h3>
+            <p>Understand the exam objectives, format, and topics covered. This is crucial for your study plan.</p>
+            <a href="https://services.google.com/fh/files/misc/associate_cloud_engineer_exam_guide_english.pdf"
+              target="_blank" class="btn" style="margin-bottom: 1rem;">Open Exam Guide</a>
+            <label class="checklist-checkbox">
+              <input type="checkbox" data-id="item-2"> Mark as Completed
+            </label>
+          </div>
+          <div class="checklist-item">
+            <div class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg></div>
+            <h3>3. Practice with Sample Questions</h3>
+            <p>Familiarize yourself with the question style and test your knowledge with official sample questions.</p>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfexWKtXT2OSFJ-obA4iT3GmzgiOCGvjrT9OfxilWC1yPtmfQ/viewform?pref=&mkt_tok=ODA4LUdKVy0zMTQAAAGdv_2IhpDCOwuprqqHFX1r3sEe6iNGJr48ppc3k566FP1igZtn7cXao3z0AyfsW4UIpwOG0OI-txMBVtLumVSsMK45kK8BK24D-tUu6X7S6NGCKhS5RbI"
+              target="_blank" class="btn" style="margin-bottom: 1rem;">View Sample Questions</a>
+            <label class="checklist-checkbox">
+              <input type="checkbox" data-id="item-3"> Mark as Completed
+            </label>
+          </div>
+          <div class="checklist-item">
+            <div class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <path d="M12 18v-6"></path>
+                <path d="m9 15 3-3 3 3"></path>
+              </svg></div>
+            <h3>4. Attend an Exam Readiness Workshop</h3>
+            <p>Join a workshop to get last-minute tips, clarify doubts, and build confidence before the exam.</p>
+            <a href="mailto:support@dcinfotech.org.in?subject=Registration%20for%20Exam%20Readiness%20Workshop"
+              class="btn" style="margin-bottom: 1rem;">Register for Workshop</a>
+            <label class="checklist-checkbox">
+              <input type="checkbox" data-id="item-4"> Mark as Completed
+            </label>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const checkBoxes = document.querySelectorAll('input[type="checkbox"][data-id]');
+      const progressFill = document.getElementById('progress-fill');
+      const progressText = document.getElementById('progress-percent');
+      const totalItems = checkBoxes.length;
+
+      function updateProgress() {
+        let checkedCount = 0;
+        checkBoxes.forEach(box => {
+          if (box.checked) {
+            checkedCount++;
+            box.closest('.checklist-item').classList.add('completed');
+          } else {
+            box.closest('.checklist-item').classList.remove('completed');
+          }
+        });
+
+        const percent = Math.round((checkedCount / totalItems) * 100);
+        progressFill.style.width = `${percent}%`;
+        progressText.textContent = `${percent}%`;
+
+        // Celebration effect for 100%
+        if (percent === 100) {
+          progressFill.style.backgroundColor = '#34a853';
+        }
+      }
+
+      // Load saved state
+      checkBoxes.forEach(box => {
+        const id = box.dataset.id;
+        const saved = localStorage.getItem(`labs_check_${id}`);
+        if (saved === 'true') {
+          box.checked = true;
+        }
+
+        box.addEventListener('change', (e) => {
+          localStorage.setItem(`labs_check_${id}`, e.target.checked);
+          updateProgress();
+        });
+      });
+
+      // Initialize UI
+      updateProgress();
+    });
+  </script>
+  <script src="js/security.js"></script>
+</body>
+
+</html>

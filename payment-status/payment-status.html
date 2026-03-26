@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Status</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body style="font-family:'Inter',sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;">
+  <div id="statusBox"></div>
+
+  <script>
+    (async function(){
+      // Get txnId from URL (PhonePe redirects with it)
+      const params = new URLSearchParams(window.location.search);
+      const txnId = params.get("transactionId") || params.get("merchantTransactionId");
+
+      if (!txnId) {
+        Swal.fire("⚠️ Error", "No transaction ID found in redirect.", "error");
+        return;
+      }
+
+      Swal.fire({
+        title: "Verifying Payment",
+        text: "Please wait while we confirm your transaction...",
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+
+      try {
+        // Call Netlify status checker
+        const res = await fetch("/.netlify/functions/checkStatus", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ merchantTransactionId: txnId })
+        });
+
+        const data = await res.json();
+        console.log("Payment Status Response:", data);
+
+        if (data.success && data.code === "PAYMENT_SUCCESS") {
+          Swal.fire("✅ Payment Successful", "Your registration is complete!", "success");
+        } else if (data.success && data.code === "PAYMENT_PENDING") {
+          Swal.fire("⏳ Payment Pending", "We are still waiting for confirmation. Please refresh later.", "info");
+        } else {
+          Swal.fire("❌ Payment Failed", data.message || "Your payment could not be processed.", "error");
+        }
+
+      } catch (err) {
+        console.error("Status check error:", err);
+        Swal.fire("⚠️ Error", "Unable to verify payment status. Please contact support.", "error");
+      }
+    })();
+  </script>
+</body>
+</html>

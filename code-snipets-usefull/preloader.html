@@ -1,0 +1,62 @@
+<style>
+    /* Loader overlay */
+    .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: white; /* White background */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000; /* Ensures it stays on top of other elements */
+        transition: opacity 0.5s ease-out; /* Smooth transition effect */
+    }
+
+    /* Loader content */
+    .loader-content {
+        position: relative;
+        top: -10%; /* Moves the logo slightly upwards */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Loader image */
+    .loader-loader {
+        width: 120px; /* Smaller width for better visibility */
+        height: auto; /* Maintains aspect ratio */
+    }
+
+    /* Adjust the loader image size for mobile devices */
+    @media only screen and (max-width: 600px) {
+        .loader-loader {
+            width: 100px; /* Reduced width for mobile devices */
+        }
+    }
+
+    /* Class to hide the loader after the transition */
+    .loader.hidden {
+        opacity: 0; /* Hide loader with opacity transition */
+        pointer-events: none; /* Prevent interaction */
+    }
+</style>
+
+<div class="loader">
+    <div class="loader-content">
+        <img src="images/dcintro.gif" alt="Loader" class="loader-loader" />
+    </div>
+</div>
+
+<script>
+    window.addEventListener('load', function () {
+        // Show loader initially
+        document.querySelector('.loader').style.display = 'flex';
+
+        // Hide loader after a certain delay (e.g., 3 seconds)
+        setTimeout(function () {
+            document.querySelector('.loader').classList.add('hidden');
+        }, 3000); // 3000 milliseconds = 3 seconds
+    });
+</script>

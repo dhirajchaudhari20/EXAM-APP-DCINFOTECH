@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Cloud Exam Voucher Submission</title>
+
+    <!-- Notiflix Library -->
+    <script src="https://cdn.jsdelivr.net/npm/notiflix@3.2.6/dist/notiflix-aio-3.2.6.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <div class="background">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
+    <div class="container">
+        <h2>Google Cloud Exam Voucher Submission</h2>
+
+        <label>Exam Name:</label>
+        <input type="text" id="examName" value="Google Cloud Exam" disabled>
+
+        <label>Voucher Code:</label>
+        <input type="text" id="voucherCode" placeholder="Enter Voucher Code" required>
+
+        <button id="submitBtn" onclick="submitData()">
+            <span>Submit</span>
+            <div class="spinner" id="spinner"></div>
+        </button>
+    </div>
+
+    <footer>
+        &copy; 2022 DC Cloud Solutions | <a href="https://dcinfotech.org.in
+" target="_blank">Visit Us</a>
+    </footer>
+    <script src="../js/voucher-form.js"></script>
+
+
+
+</body>
+
+</html>

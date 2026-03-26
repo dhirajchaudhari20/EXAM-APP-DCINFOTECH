@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DC Cloud Solutions ExamPortal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Glowing animated background -->
+  <div class="bg-animation"></div>
+
+  <!-- Login -->
+  <div id="loginOverlay" class="overlay">
+    <div class="card login-card animate-pop">
+      <h2>🚀 Exam Login</h2>
+      <input id="loginEmail" type="email" placeholder="Email" autocomplete="username" />
+      <input id="loginPass" type="password" placeholder="Password" autocomplete="current-password" />
+      <div id="loginError" class="muted error-msg" style="display:none;">Invalid credentials</div>
+      <button onclick="handleLogin()" class="btn btn-blue login-btn" type="button">Login</button>
+      <div class="muted login-hint">Demo: <strong>test@example.com</strong> / <strong>12345</strong></div>
+    </div>
+  </div>
+
+  <!-- Coupon -->
+  <div id="couponOverlay" class="overlay" style="display:none;">
+    <div class="card login-card animate-pop">
+      <h2>🎫 Coupon Verification</h2>
+      <input id="couponInput" placeholder="Enter Coupon Code" />
+      <div id="couponError" class="muted error-msg" style="display:none;">Invalid coupon</div>
+      <button onclick="handleCoupon()" class="btn btn-blue login-btn" type="button">Submit</button>
+      <div class="muted login-hint">Valid: <strong>CAT2025</strong></div>
+    </div>
+  </div>
+
+  <!-- Camera -->
+  <div id="cameraOverlay" class="overlay" style="display:none;">
+    <div class="card animate-pop">
+      <h2>📷 Camera Check</h2>
+      <p class="muted">Allow camera to proceed. You will be monitored.</p>
+      <video id="cameraVideo" autoplay playsinline style="width:100%;border-radius:6px;background:#000"></video>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button onclick="startCamera()" class="btn btn-green" type="button">Enable Camera</button>
+        <button onclick="cancelCamera()" class="btn btn-red" type="button">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Exam -->
+  <div class="page" id="mainPage" style="display:none;">
+    <div class="panel animate-fade">
+      <div class="topbar">
+        <div>DC Cloud Solutions Exam</div>
+        <div style="font-size:14px;color:var(--muted)">Time Left <strong id="topTimer"></strong></div>
+      </div>
+
+      <div class="content">
+        <div class="question-title" id="qTitle">Question 1</div>
+        <div class="question-text" id="qText">Question text goes here...</div>
+        <div id="optionsWrap" class="options"></div>
+
+        <div class="nav-bar">
+          <div class="left">
+            <button class="btn btn-purple" onclick="toggleReview()" type="button">Mark for review</button>
+            <button class="btn btn-ghost" id="prevBtn" onclick="prevQuestion()" type="button">Previous</button>
+            <button class="btn btn-blue" id="nextBtn" onclick="nextQuestion()" type="button">Next</button>
+          </div>
+          <div class="right">
+            <button class="btn btn-green" onclick="submitTest()" type="button">Submit Test</button>
+          </div>
+        </div>
+
+        <div class="legend">
+          <div><span class="box current"></span> Current</div>
+          <div><span class="box notattempted"></span> Not Attempted</div>
+          <div><span class="box answered"></span> Answered</div>
+          <div><span class="box notanswered"></span> Not Answered</div>
+          <div><span class="box review"></span> Review</div>
+        </div>
+        <div class="muted" id="statusCounter">Answered: 0 | Remaining: 10</div>
+      </div>
+    </div>
+
+    <aside class="sidebar animate-fade">
+      <div class="timer-card">
+        <div class="title">Time Left</div>
+        <div class="time" id="timerDisplay">02:00:00</div>
+        <div class="small muted" id="timerSmall">00 hours : 00 minutes : 00 seconds</div>
+      </div>
+
+      <div id="liveCameraBox" class="livecam">
+        <div class="muted">Camera Feed</div>
+        <video id="liveCameraVideo" autoplay playsinline muted></video>
+      </div>
+
+      <div class="palette-card">
+        <div class="palette-title">Questions</div>
+        <div class="palette-grid" id="paletteGrid"></div>
+        <div class="muted" id="paletteInfo">Answered: 0 | Remaining: 10</div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Results -->
+  <div id="resultsOverlay" class="overlay" style="display:none;">
+    <div class="card results-modal animate-pop">
+      <h3>🎉 Congratulations</h3>
+      <div id="resultText" class="small">You completed the test.</div>
+      <button onclick="closeResults()" class="btn btn-blue">Close</button>
+    </div>
+  </div>
+<script></script>
+  <script src="script.js"></script>
+</body>
+</html>

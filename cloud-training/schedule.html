@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule - Cloud Training Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Dark Mode Support (Basic) */
+        @media (prefers-color-scheme: dark) {
+            .page-loader {
+                background: #121212;
+            }
+
+            .loader-text {
+                color: #e8eaed;
+            }
+        }
+
+        body.dark-mode .page-loader {
+            background: #121212;
+        }
+
+        body.dark-mode .loader-text {
+            color: #e8eaed;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notiflix/dist/notiflix-3.2.6.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body onload="loadPage()">
+    <!-- Page Transition Loader -->
+    <div id="page-transition-loader" class="page-loader">
+        <div class="loader-content">
+            <div class="spinner-circle"></div>
+            <div class="loader-text">Loading...</div>
+        </div>
+    </div>
+
+
+
+    <!-- Video Background -->
+    <div class="video-background">
+        <video autoplay muted loop playsinline id="bgVideo">
+            <source src="video/video.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
+    <!-- Dashboard Container (SaaS Layout) -->
+    <div id="dashboardContainer" class="saas-container">
+
+        <!-- Sidebar -->
+        <!-- Sidebar (Injected by js/sidebar.js) -->
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h2 class="page-title">Schedule</h2>
+                    <span class="current-date" id="currentTime"></span>
+                </div>
+
+                <div class="topbar-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search schedule...">
+                    </div>
+
+                    <button id="darkModeToggle" class="icon-btn" title="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button onclick="loadPage()" class="icon-btn refresh-btn" title="Refresh Data">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button onclick="downloadPDF()" class="icon-btn" title="Download Schedule as PDF">
+                        <i class="fas fa-file-pdf"></i>
+                    </button>
+                    <button class="icon-btn notification-btn" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="content-scrollable">
+                <div class="content-wrapper">
+
+                    <div class="section-header">
+                        <h3>Full Schedule</h3>
+                        <div class="filter-tabs">
+                            <button class="filter-tab active" data-filter="all">All</button>
+                            <button class="filter-tab" data-filter="upcoming">Upcoming</button>
+                            <button class="filter-tab" data-filter="completed">Completed</button>
+                        </div>
+                    </div>
+
+                    <!-- Schedule Container -->
+                    <div id="schedule" class="schedule-list">
+                        <!-- Skeleton Loader -->
+                        <div class="skeleton-card">
+                            <div class="skeleton-line title"></div>
+                            <div class="skeleton-line subtitle"></div>
+                            <div class="skeleton-line text"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton-line title"></div>
+                            <div class="skeleton-line subtitle"></div>
+                            <div class="skeleton-line text"></div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden inputs preserved -->
+                    <input type="email" id="userEmail" value="user@example.com" hidden />
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Scripts -->
+    <script src="js/sidebar.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="../js/agenda.js"></script>
+    <script src="js/session.js"></script>
+    <script src="js/fix-layout.js"></script>
+    <script src="js/interactions.js"></script>
+    <script src="js/profile-photo.js"></script>
+
+    <script>
+        // Simple logout confirmation
+    </script>
+</body>
+
+</html>

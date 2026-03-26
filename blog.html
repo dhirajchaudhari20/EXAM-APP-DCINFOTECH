@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Title optimized for SEO -->
+  <title>DC Cloud Solutions - Insights & Blog</title>
+  <meta name="description"
+    content="Explore the latest insights, trends, and tutorials on cloud computing, web development, and IT security from DC Cloud Solutions experts.">
+
+  <!-- Bootstrap CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Custom Styles -->
+  <link href="css/style.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-color: #1a73e8;
+      --secondary-color: #e8f0fe;
+      --text-dark: #1f2937;
+      --text-light: #6b7280;
+      --accent-color: #f9ab00;
+      --card-bg: #ffffff;
+      --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e8f0fe 100%);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f9fafb;
+      color: var(--text-dark);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+    }
+
+    /* Hero Section */
+    .blog-hero {
+      background: var(--bg-gradient);
+      padding: 120px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .blog-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: rgba(26, 115, 232, 0.1);
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      background: rgba(26, 115, 232, 0.1);
+      color: var(--primary-color);
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      line-height: 1.2;
+      margin-bottom: 24px;
+      background: linear-gradient(to right, #1a73e8, #0d47a1);
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-light);
+      margin-bottom: 40px;
+    }
+
+    /* Featured Post */
+    .featured-post {
+      margin-top: 50px;
+      /* Moved down as requested */
+      margin-bottom: 80px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .featured-card {
+      background: #fff;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease;
+    }
+
+    .featured-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .featured-img-col {
+      position: relative;
+      min-height: 400px;
+    }
+
+    .featured-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .featured-content {
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+    }
+
+    /* Blog Grid */
+    .blog-card {
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      height: 100%;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .blog-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .blog-img-wrapper {
+      position: relative;
+      padding-top: 60%;
+      /* 16:9 Aspect Ratio */
+      overflow: hidden;
+    }
+
+    .blog-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .blog-card:hover .blog-img {
+      transform: scale(1.1);
+    }
+
+    .category-badge {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(5px);
+    }
+
+    .blog-body {
+      padding: 30px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .blog-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+
+    .blog-meta i {
+      color: var(--primary-color);
+      margin-right: 6px;
+    }
+
+    .blog-title {
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .blog-title a {
+      color: var(--text-dark);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .blog-title a:hover {
+      color: var(--primary-color);
+    }
+
+    .blog-excerpt {
+      color: var(--text-light);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+
+    .read-more-link {
+      display: inline-flex;
+      align-items: center;
+      font-weight: 600;
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: gap 0.2s;
+    }
+
+    .read-more-link i {
+      margin-left: 8px;
+      transition: transform 0.2s;
+    }
+
+    .read-more-link:hover {
+      gap: 8px;
+    }
+
+    .read-more-link:hover i {
+      transform: translateX(4px);
+    }
+
+    /* Newsletter */
+    .newsletter-section {
+      background: #1e293b;
+      padding: 80px 0;
+      margin-top: 80px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      margin-bottom: 80px;
+    }
+
+    .newsletter-bg-shape {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top right, #334155, transparent 60%);
+      opacity: 0.5;
+    }
+
+    .newsletter-input {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 16px 24px;
+      border-radius: 50px;
+      backdrop-filter: blur(10px);
+    }
+
+    .newsletter-input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .newsletter-input:focus {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
+      color: #fff;
+      box-shadow: none;
+    }
+
+    /* Loader */
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      transition: opacity 0.8s ease-in-out;
+    }
+
+    .loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loader-content {
+      position: relative;
+      top: 0;
+      padding-top: 0;
+    }
+
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+
+      .featured-img-col {
+        min-height: 250px;
+      }
+
+      .featured-content {
+        padding: 30px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Loader -->
+  <div class="loader">
+    <div class="loader-content">
+      <img src="images/dcintro.gif" alt="Loader" style="width: 120px;">
+    </div>
+  </div>
+
+  <!-- Header Placeholder -->
+  <div id="header-placeholder"></div>
+
+  <!-- Hero Section -->
+  <div class="banner-part subpage-banner">
+    <div class="container">
+      <div class="banner-div-content d-grid align-content-center" data-aos="fade-up">
+        <h1 class="text-center">Blog</h1>
+        <ul class="list-unstyled d-flex justify-content-center">
+          <li> Home </li>
+          <li> <a href="blog.html"> Blog</a> </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+
+    <!-- Featured Post -->
+    <div class="featured-post" data-aos="fade-up" data-aos-delay="100">
+      <div class="featured-card">
+        <div class="row g-0">
+          <div class="col-lg-6 featured-img-col">
+            <img src="images/pexels-photo-5673488.jpg" alt="Featured Post" class="featured-img">
+            <span class="category-badge">Cloud Computing</span>
+          </div>
+          <div class="col-lg-6">
+            <div class="featured-content">
+              <div class="blog-meta">
+                <span><i class="far fa-calendar"></i> Nov 24, 2025</span>
+                <span><i class="far fa-user"></i> Dhiraj Chaudhari</span>
+              </div>
+              <h2 class="mb-4"><a href="cloud-computing-trends.html" class="text-dark text-decoration-none">The Future
+                  of Cloud: Trends Defining 2026</a></h2>
+              <p class="blog-excerpt mb-4">As we approach 2026, cloud computing is evolving rapidly. From serverless
+                architectures to AI-driven infrastructure management, discover the key trends that will shape the
+                digital landscape.</p>
+              <a href="cloud-computing-trends.html" class="btn btn-primary rounded-pill px-4 py-2 fw-bold">Read
+                Article</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blog Grid -->
+    <div class="row g-4 mb-5">
+
+      <!-- Post 1 -->
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+        <article class="blog-card">
+          <div class="blog-img-wrapper">
+            <img src="images/developing-a-web-solution-1024x660-1024x660.jpg" alt="Web Development" class="blog-img">
+            <span class="category-badge">Web Dev</span>
+          </div>
+          <div class="blog-body">
+            <div class="blog-meta">
+              <span><i class="far fa-calendar"></i> Nov 20, 2025</span>
+              <span><i class="far fa-clock"></i> 5 min read</span>
+            </div>
+            <h3 class="blog-title"><a href="modern-web-development.html">Modern Web Development: Beyond React</a></h3>
+            <p class="blog-excerpt">Exploring the next generation of frontend frameworks and why performance is becoming
+              the #1 metric for success.</p>
+            <a href="modern-web-development.html" class="read-more-link">Read More <i
+                class="fas fa-arrow-right"></i></a>
+          </div>
+        </article>
+      </div>
+
+      <!-- Post 2 -->
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+        <article class="blog-card">
+          <div class="blog-img-wrapper">
+            <img src="images/pexels-photo-443383.jpg" alt="Project Management" class="blog-img">
+            <span class="category-badge">Management</span>
+          </div>
+          <div class="blog-body">
+            <div class="blog-meta">
+              <span><i class="far fa-calendar"></i> Nov 18, 2025</span>
+              <span><i class="far fa-clock"></i> 7 min read</span>
+            </div>
+            <h3 class="blog-title"><a href="it-project-management.html">Agile vs. Waterfall: What Really Works?</a></h3>
+            <p class="blog-excerpt">A deep dive into IT project management methodologies. When to pivot and when to
+              stick to the plan.</p>
+            <a href="it-project-management.html" class="read-more-link">Read More <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </article>
+      </div>
+
+      <!-- Post 3 -->
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+        <article class="blog-card">
+          <div class="blog-img-wrapper">
+            <img src="images/pexels-photo-5673488.jpg" alt="Cybersecurity" class="blog-img">
+            <span class="category-badge">Security</span>
+          </div>
+          <div class="blog-body">
+            <div class="blog-meta">
+              <span><i class="far fa-calendar"></i> Nov 15, 2025</span>
+              <span><i class="far fa-clock"></i> 4 min read</span>
+            </div>
+            <h3 class="blog-title"><a href="#">Zero Trust Architecture Explained</a></h3>
+            <p class="blog-excerpt">Why "never trust, always verify" is the new standard for enterprise security in a
+              remote-first world.</p>
+            <a href="#" class="read-more-link">Read More <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </article>
+      </div>
+
+    </div>
+
+    <!-- Newsletter Section -->
+    <div class="newsletter-section text-center text-white" data-aos="zoom-in">
+      <div class="newsletter-bg-shape"></div>
+      <div class="container position-relative z-1">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <h2 class="mb-3">Subscribe to Our Newsletter</h2>
+            <p class="mb-4 text-white-50">Get the latest tech insights, tutorials, and company updates delivered
+              straight to your inbox.</p>
+            <form id="newsletterForm" action="https://formsubmit.co/support@dcinfotech.org.in" method="POST"
+              class="d-flex flex-column flex-sm-row gap-3 justify-content-center px-lg-5">
+              <input type="hidden" name="_subject" value="New Newsletter Subscription">
+              <input type="hidden" name="_captcha" value="false">
+              <input type="email" name="email" class="form-control newsletter-input"
+                placeholder="Enter your email address" required>
+              <button type="submit" id="subscribeBtn" class="btn btn-primary rounded-pill px-4 py-3 fw-bold">
+                <span class="btn-text">Subscribe</span>
+                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+              </button>
+            </form>
+            <div id="newsletterMessage" class="mt-3" style="display: none; font-weight: 500;"></div>
+
+            <script>
+              document.getElementById('newsletterForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                const form = this;
+                const btn = document.getElementById('subscribeBtn');
+                const btnText = btn.querySelector('.btn-text');
+                const spinner = btn.querySelector('.spinner-border');
+                const messageDiv = document.getElementById('newsletterMessage');
+
+                // Show spinner
+                btnText.classList.add('d-none');
+                spinner.classList.remove('d-none');
+                btn.disabled = true;
+
+                fetch(form.action, {
+                  method: 'POST',
+                  body: new FormData(form),
+                  headers: {
+                    'Accept': 'application/json'
+                  }
+                })
+                  .then(response => {
+                    if (response.ok) {
+                      messageDiv.style.display = 'block';
+                      messageDiv.style.color = '#4ade80'; // Light green
+                      messageDiv.textContent = "Your email is added! Don't worry, we will not spam you.";
+                      form.reset();
+                    } else {
+                      throw new Error('Network response was not ok.');
+                    }
+                  })
+                  .catch(error => {
+                    messageDiv.style.display = 'block';
+                    messageDiv.style.color = '#f87171'; // Light red
+                    messageDiv.textContent = "Something went wrong. Please try again.";
+                  })
+                  .finally(() => {
+                    // Reset button
+                    btnText.classList.remove('d-none');
+                    spinner.classList.add('d-none');
+                    btn.disabled = false;
+
+                    // Hide message after 5 seconds
+                    setTimeout(() => {
+                      messageDiv.style.display = 'none';
+                    }, 5000);
+                  });
+              });
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100
+    });
+
+    // Header Loader
+    async function loadHeader() {
+      try {
+        const response = await fetch('template/header.html');
+        if (response.ok) {
+          const content = await response.text();
+          document.getElementById('header-placeholder').innerHTML = content;
+          setActiveNavLink();
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    function setActiveNavLink() {
+      let currentPath = window.location.pathname;
+      if (currentPath.endsWith('/')) currentPath = currentPath.slice(0, -1);
+      let page = currentPath.split('/').pop() || '/';
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        let href = link.getAttribute('href');
+        if (href === page || href === currentPath || (href === '/' && (page === '' || page === 'index.html'))) {
+          link.classList.add('active');
+        }
+        if ((href.replace(/^\//, '') + '.html') === page) {
+          link.classList.add('active');
+        }
+      });
+    }
+
+    // Footer Loader
+    async function loadFooter() {
+      try {
+        const response = await fetch('template/footer.html');
+        if (response.ok) {
+          document.getElementById('footer-placeholder').innerHTML = await response.text();
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    loadHeader();
+    loadFooter();
+
+    // Loader Fadeout
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loader = document.querySelector('.loader');
+        loader.classList.add('hidden');
+        setTimeout(() => loader.style.display = 'none', 500);
+      }, 1000);
+    });
+  </script>
+
+  <!-- Tawk.to Script -->
+  <script type="text/javascript">
+    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    (function () {
+      var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+      s1.async = true;
+      s1.src = 'https://embed.tawk.to/673b87e22480f5b4f59ffc23/1id08lk55';
+      s1.charset = 'UTF-8';
+      s1.setAttribute('crossorigin', '*');
+      s0.parentNode.insertBefore(s1, s0);
+    })();
+  </script>
+
+</body>
+
+</html>

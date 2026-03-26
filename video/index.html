@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            flex-direction: column;
+        }
+        video {
+            max-width: 80%;
+            border: 2px solid #333;
+            border-radius: 10px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <video id="myVideo" controls>
+        <source src="video.mkv" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div>
+        <button onclick="playVideo()">Play</button>
+        <button onclick="pauseVideo()">Pause</button>
+    </div>
+    <script>
+        function playVideo() {
+            document.getElementById("myVideo").play();
+        }
+        function pauseVideo() {
+            document.getElementById("myVideo").pause();
+        }
+    </script>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 20px;
+        background-color: #f4f4f4;
+    }
+    .container {
+        max-width: 600px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2 {
+        color: #333;
+    }
+    p {
+        font-size: 16px;
+    }
+    a {
+        color: #007BFF;
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+    .highlight {
+        font-weight: bold;
+        color: #D32F2F;
+    }
+    .checklist {
+        margin-top: 10px;
+        padding-left: 20px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Email: <span class="highlight">support@dcinfotech.me</span></h1>
+    <h2>Password: <span class="highlight">intern@123</span></h2>
+
+    <p>If you encounter any issues while watching the video, please 
+        <a href="https://youtu.be/9BHu0MCSi3A" target="_blank">click here</a> to open it.
+    </p>
+
+    <p>Access the platform: 
+        <a href="https://partner.cloudskillsboost.google/" target="_blank">Cloud Skills Boost</a>
+    </p>
+
+    <p>If you need any assistance, feel free to start a live chat. Our support team is available to help you.</p>
+
+    <h3>✅ Solution Steps:</h3>
+    <ol>
+        <li><strong>Step 1: Sign Out of Any Other Accounts</strong><br>
+            📌 Go to 👉 <a href="https://partner.cloudskillsboost.google" target="_blank">Cloud Skills Boost</a> and click **Sign Out** if already logged in. Ensure no other accounts are active.
+        </li>
+
+        <li><strong>Step 2: Log In With the Correct Credentials</strong><br>
+            👉 Use the provided DC Cloud Solutions email & password:<br>
+            <strong>Email:</strong> support@dcinfotech.me<br>
+            <strong>Password:</strong> intern@123
+        </li>
+
+        <li><strong>Step 3: Find the Join Button</strong><br>
+            ✅ Go to the session page<br>
+            ✅ Check the schedule (**IST Timezone**)<br>
+            ✅ The **"Join" button** should now be visible
+        </li>
+    </ol>
+
+    <h3>📌 Additional Notes:</h3>
+    <ul>
+        <li>If the issue persists, send a **screenshot** of your login page.</li>
+        <li>Ensure you are logging in **at the correct time (IST time zone).**</li>
+        <li>Follow the instructions given in the video: 
+            <a href="https://dcinfotech.org.in
+/video/" target="_blank">Click Here</a>
+        </li>
+    </ul>
+
+    <h3>🎯 Quick Troubleshooting Checklist:</h3>
+    <ul class="checklist">
+        <li>✅ Are you using <strong>support@dcinfotech.me</strong> instead of your personal email?</li>
+        <li>✅ Did you **sign out** before logging in?</li>
+        <li>✅ Did you **verify your email**?</li>
+        <li>✅ Are you trying to join **at the scheduled time (IST)**?</li>
+    </ul>
+
+    <h3>🔴 Still Facing Issues?</h3>
+    <p>Start a live chat with us: 
+        <a href="https://dcinfotech.org.in
+/live-chat" target="_blank">Click Here for Live Chat</a>
+    </p>
+</div>
+
+</body>
+</html>

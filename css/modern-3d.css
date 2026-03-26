@@ -1,0 +1,271 @@
+:root {
+    --bg-dark: #0a192f;
+    --bg-card: #112240;
+    --text-light: #e6f1ff;
+    --text-dim: #8892b0;
+    --primary-neon: #64ffda;
+    --secondary-purple: #bd34fe;
+    --glass-bg: rgba(17, 34, 64, 0.7);
+    --glass-border: rgba(100, 255, 218, 0.1);
+    --font-main: 'Poppins', sans-serif;
+}
+
+/* Force Dark Theme Globally */
+body {
+    background-color: var(--bg-dark) !important;
+    color: var(--text-light) !important;
+    font-family: var(--font-main);
+    overflow-x: hidden;
+}
+
+/* 3D Canvas */
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+    opacity: 1;
+    pointer-events: none;
+}
+
+/* Typography Overrides */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--text-light) !important;
+    font-family: var(--font-main);
+}
+
+p,
+span,
+li {
+    color: var(--text-dim) !important;
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    padding-top: 80px;
+}
+
+.hero-content {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px;
+    background: rgba(10, 25, 47, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.hero-content h1 {
+    font-size: 4.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.hero-content h1 span {
+    background: linear-gradient(45deg, var(--primary-neon), var(--secondary-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+.hero-content p {
+    font-size: 1.3rem;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+/* Buttons */
+.glass-btn {
+    display: inline-block;
+    padding: 15px 35px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-neon) !important;
+    background: rgba(100, 255, 218, 0.05);
+    border: 1px solid var(--primary-neon);
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 10px;
+}
+
+.glass-btn:hover {
+    background: rgba(100, 255, 218, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2);
+}
+
+/* Section Styling */
+section,
+.about-block,
+.why-choose-block,
+.trust-choose-block,
+.testimonal-sec {
+    background: transparent !important;
+    position: relative;
+    z-index: 2;
+    padding: 80px 0;
+}
+
+/* Cards (Services, Features, Testimonials) */
+.modern-service-card,
+.why-feature-card,
+.trust-feature-card,
+.testimonial-card {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 15px !important;
+    padding: 30px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 10px 30px -10px rgba(2, 12, 27, 0.7) !important;
+    backdrop-filter: blur(5px);
+}
+
+.modern-service-card:hover,
+.why-feature-card:hover,
+.trust-feature-card:hover,
+.testimonial-card:hover {
+    transform: translateY(-10px) !important;
+    border-color: var(--primary-neon) !important;
+    box-shadow: 0 20px 40px -15px rgba(2, 12, 27, 0.9) !important;
+}
+
+/* Icons */
+.service-icon,
+.why-feature-icon,
+.trust-feature-icon,
+.testimonial-quote i {
+    color: var(--primary-neon) !important;
+    background: rgba(100, 255, 218, 0.1) !important;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.why-feature-icon,
+.trust-feature-icon {
+    margin-right: 15px;
+    margin-bottom: 0;
+    min-width: 60px;
+}
+
+/* About Section */
+.about-block figure img {
+    border-radius: 15px;
+    border: 2px solid var(--primary-neon);
+    box-shadow: 0 0 20px rgba(100, 255, 218, 0.2);
+}
+
+.skill-bar {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.skill-level {
+    background: linear-gradient(90deg, var(--primary-neon), var(--secondary-purple)) !important;
+}
+
+.skill-status {
+    color: var(--primary-neon) !important;
+}
+
+/* Testimonials */
+.testimonial-rating i {
+    color: #ffc107 !important;
+    /* Keep stars yellow */
+}
+
+.testimonial-avatar {
+    border: 2px solid var(--primary-neon) !important;
+}
+
+/* Footer */
+footer {
+    background: #020c1b !important;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 50px;
+    color: var(--text-dim);
+}
+
+footer h5,
+footer h6,
+footer a {
+    color: var(--text-light) !important;
+}
+
+footer a:hover {
+    color: var(--primary-neon) !important;
+}
+
+/* Navbar Overrides */
+header {
+    background: rgba(10, 25, 47, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.navbar-brand img {
+    filter: brightness(0) invert(1);
+}
+
+.nav-link {
+    color: var(--text-light) !important;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--primary-neon) !important;
+}
+
+.signiup {
+    border: 1px solid var(--primary-neon) !important;
+    color: var(--primary-neon) !important;
+}
+
+.signiup:hover {
+    background: rgba(100, 255, 218, 0.1) !important;
+}
+
+/* Hide SVGs that don't fit the dark theme */
+.about-svg,
+.about-svg-bt {
+    display: none !important;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .glass-btn {
+        display: block;
+        margin: 10px auto;
+        width: 100%;
+    }
+}

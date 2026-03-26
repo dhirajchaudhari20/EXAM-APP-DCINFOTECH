@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Completion Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
+    <!-- Include Notiflix CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notiflix@3.2.5/dist/notiflix-3.2.5.min.css" />
+
+    <!-- Include Notiflix JS -->
+    <script src="https://cdn.jsdelivr.net/npm/notiflix@3.2.5/dist/notiflix-3.2.5.min.js"></script>
+
+    <style>
+        /* General Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #e1bee7);
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Form Container */
+        form {
+            max-width: 550px;
+            width: 100%;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        form:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* Section Headings */
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin: 15px 0 10px;
+        }
+
+        /* Label Styling */
+        label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        /* Input Fields */
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 18px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            background-color: #fafafa;
+            color: #333;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #6200ea;
+            box-shadow: 0 0 5px rgba(98, 0, 234, 0.3);
+            outline: none;
+        }
+
+        /* Button Styling */
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6200ea, #304ffe);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #304ffe, #6200ea);
+            box-shadow: 0 4px 8px rgba(48, 79, 254, 0.2);
+        }
+
+        button:active {
+            box-shadow: 0 2px 6px rgba(48, 79, 254, 0.15);
+        }
+
+        /* Loading Spinner */
+        #loader {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+
+        .spinner {
+            border: 6px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #6200ea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            margin-top: 20px;
+        }
+
+        .footer span {
+            color: #6200ea;
+            font-weight: bold;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 20px;
+            }
+
+            form {
+                padding: 20px;
+            }
+
+            button {
+                padding: 12px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <style></style>
+    <div class="form-container">
+        <h2>Internship Completion Form</h2>
+        <form id="internshipForm">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Start typing your name..." autocomplete="off">
+            <ul id="suggestions" class="autocomplete-list"></ul>
+
+
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="position">Internship Position:</label>
+            <input type="text" id="position" name="position" required>
+            <div id="suggestions" class="autocomplete-container"></div> <!-- Autocomplete Suggestions Container -->
+
+            <label for="startDate">Internship Start Date:</label>
+            <input type="date" id="startDate" name="startDate" required>
+
+            <label for="endDate">Internship End Date:</label>
+            <input type="date" id="endDate" name="endDate" required>
+
+            <label for="responsibilities">Primary Responsibilities:</label>
+            <textarea id="responsibilities" name="responsibilities" placeholder="Describe your primary responsibilities"
+                required></textarea>
+
+            <label for="projects">Projects Worked On:</label>
+            <textarea id="projects" name="projects" placeholder="List the projects you worked on" required></textarea>
+
+            <label for="skills">Skills Developed:</label>
+            <textarea id="skills" name="skills" placeholder="Describe the skills you developed" required></textarea>
+
+            <label for="github1">GitHub Repository Links (separated by commas):</label>
+            <input type="text" id="github1" name="github1"
+                placeholder="https://github.com/your-repo1, https://github.com/your-repo2">
+
+            <label for="hostedLink1">If Hosted, Hosted Project Links (separated by commas):</label>
+            <input type="text" id="hostedLink1" name="hostedLink1"
+                placeholder="https://yourproject1.com, https://yourproject2.com">
+
+            <label for="feedback">Overall Experience:</label>
+            <select id="feedback" name="feedback" required>
+                <option value="Excellent">Excellent</option>
+                <option value="Good">Good</option>
+                <option value="Average">Average</option>
+                <option value="Poor">Poor</option>
+            </select>
+
+            <label for="enjoy">What Did You Enjoy Most?</label>
+            <textarea id="enjoy" name="enjoy" placeholder="What did you enjoy the most during the internship?"
+                required></textarea>
+
+            <label for="improve">Suggestions for Improvement:</label>
+            <textarea id="improve" name="improve" placeholder="Any suggestions for improvement?" required></textarea>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <!-- Loading Spinner -->
+        <div id="loader"></div>
+        <style>
+            /* Loader Spinner */
+            #loader {
+                display: none;
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                border: 4px solid #f3f3f3;
+                /* Light grey */
+                border-top: 4px solid #3498db;
+                /* Blue */
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: translate(-50%, -50%) rotate(0deg);
+                }
+
+                100% {
+                    transform: translate(-50%, -50%) rotate(360deg);
+                }
+            }
+        </style>
+
+        <div class="footer">
+            Made by <span>DC Cloud Solutions</span> 2022
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Notiflix/3.2.5/notiflix-aio-3.2.5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Form Submission
+        document.getElementById("internshipForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            // Disable all form fields
+            const formElements = document.querySelectorAll("#internshipForm input, #internshipForm textarea, #internshipForm select, #internshipForm button");
+            formElements.forEach(element => element.disabled = true);
+
+            document.getElementById("loader").style.display = "block"; // Show loading spinner
+
+            const fullName = document.getElementById('name').value;
+            const formData = {
+                "data": {
+                    "Full Name": fullName,
+                    "Email Address": document.getElementById('email').value,
+                    "Internship Position": document.getElementById('position').value,
+                    "Internship Start Date": document.getElementById('startDate').value,
+                    "Internship End Date": document.getElementById('endDate').value,
+                    "Responsibilities": document.getElementById('responsibilities').value,
+                    "Projects": document.getElementById('projects').value,
+                    "Skills Developed": document.getElementById('skills').value,
+                    "GitHub Links": document.getElementById('github1').value,
+                    "Hosted Links": document.getElementById('hostedLink1').value,
+                    "Overall Experience": document.getElementById('feedback').value,
+                    "Enjoyment": document.getElementById('enjoy').value,
+                    "Suggestions": document.getElementById('improve').value,
+                }
+            };
+
+            fetch("https://sheetdb.io/api/v1/5apw0wt6xer1q", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Data sent to SheetDB:", data);
+                    document.getElementById("loader").style.display = "none"; // Hide loading spinner
+
+                    // SweetAlert Success Notification
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Form Submitted!',
+                        text: `Thank you, ${fullName}! Your form has been submitted successfully. Please follow up with a message on our LinkedIn page if you do not receive a response from our team upon the completion of your internship.`,
+                        confirmButtonText: 'Okay',
+                        confirmButtonColor: '#4CAF50'
+                    });
+
+                    document.getElementById("internshipForm").reset(); // Reset form fields
+                    formElements.forEach(element => element.disabled = false); // Re-enable fields after reset
+                })
+                .catch(error => {
+                    console.error("Error submitting form:", error);
+                    document.getElementById("loader").style.display = "none"; // Hide loading spinner
+
+                    // SweetAlert Error Notification
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Submission Failed',
+                        text: 'An error occurred while submitting the form. Please try again.',
+                        confirmButtonText: 'Retry',
+                        confirmButtonColor: '#d33'
+                    });
+
+                    formElements.forEach(element => element.disabled = false); // Re-enable fields on failure
+                });
+        });
+    </script>
+
+
+</body>
+
+</html>

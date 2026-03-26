@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Cloud Certification Support</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Colors */
+            --primary-blue: #1a73e8;
+            --primary-blue-dark: #185abc;
+            --text-color-dark: #202124;
+            --text-color-light: #fff;
+            --text-color-medium: #5f6368;
+            --bg-light: #f8f9fa;
+            --bg-white: #fff;
+            --border-color: #dadce0;
+            --focus-ring-color: #d2e3fc;
+            --tip-bg: #e8f0fe;
+            --tip-border: #1a73e8;
+            --alert-bg: #fef7e0;
+            --alert-border: #f9ab00;
+
+            /* Spacing */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+
+            /* Border Radius */
+            --border-radius: 4px;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-color-dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .page-width-container {
+            max-width: 800px;
+            margin: var(--spacing-lg) auto;
+            background-color: var(--bg-white);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .contact-form__intro {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .contact-form__intro p {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .contact-form__intro a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .contact-form__intro a:hover {
+            text-decoration: underline;
+        }
+
+        .contact-form__intro img {
+            display: block; /* Center image */
+            margin: 0 auto var(--spacing-sm);
+            max-width: 100%;
+            height: auto;
+        }
+
+        .message-box {
+            padding: var(--spacing-sm);
+            margin: var(--spacing-sm) 0;
+            border-radius: var(--border-radius);
+        }
+
+        .message-box--tip {
+            background-color: var(--tip-bg);
+            border-left: 4px solid var(--tip-border);
+        }
+
+        .message-box--alert {
+            background-color: var(--alert-bg);
+            border-left: 4px solid var(--alert-border);
+        }
+
+        .field {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .field label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .field input[type="text"],
+        .field input[type="email"],
+        .field textarea {
+            width: 100%;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        .field input:focus,
+        .field textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px var(--focus-ring-color);
+        }
+
+        textarea {
+            resize: vertical; /* Allow vertical resizing only */
+            min-height: 80px; /* Sensible default height */
+        }
+
+        .material-radio {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-xs);
+            cursor: pointer; /* Indicate interactivity */
+        }
+
+        .material-radio__input {
+            /* Hide default radio button visually but keep accessible */
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .material-radio__label-text {
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-left: 28px; /* Space for custom radio button */
+            cursor: pointer;
+            user-select: none; /* Prevent text selection on label click */
+        }
+
+        .material-radio__circle, .material-radio__fill {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--text-color-medium);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .material-radio__fill {
+            background-color: var(--primary-blue);
+            transform: translateY(-50%) scale(0);
+            border: none;
+            opacity: 0;
+        }
+
+        .material-radio__input:checked ~ .material-radio__label-text .material-radio__circle {
+            border-color: var(--primary-blue);
+        }
+
+        .material-radio__input:checked ~ .material-radio__label-text .material-radio__fill {
+            transform: translateY(-50%) scale(0.6);
+            opacity: 1;
+        }
+
+        .submit-button {
+            background-color: var(--primary-blue);
+            color: var(--text-color-light);
+            border: none;
+            padding: var(--spacing-xs) var(--spacing-md);
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .submit-button:hover {
+            background-color: var(--primary-blue-dark);
+        }
+
+        .submit-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .required-disclaimer {
+            font-size: 0.875rem;
+            color: var(--text-color-medium);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .character-count {
+            font-size: 0.875rem;
+            color: var(--text-color-medium);
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .validation-message {
+            color: #d93025; /* Google's error red */
+            font-size: 0.875rem;
+            margin-top: 4px;
+            display: none; /* Hidden by default, shown by JS */
+        }
+
+        .field.has-error input,
+        .field.has-error textarea {
+            border-color: #d93025;
+        }
+
+        .field.has-error .material-radio__circle {
+            border-color: #d93025;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-width-container" id="page-width-container">
+        <header>
+            <!-- A more semantic header could go here, e.g., for site navigation -->
+        </header>
+        <main class="main-content">
+            <article class="article page no-article-survey" itemscope="">
+                <form class="cf" id="certificationSupportForm" novalidate>
+                    <div class="contact-form__intro">
+                        <p class="align-center">
+                            <img src="https://i.ibb.co/d01wMGvY/Generated-Image-October-29-2025-9-08-PM.webp" width="auto" height="auto" alt="Google Cloud Logo">
+                        </p>
+                        <h1>Google Cloud Certification Support</h1>
+                        <p>Thank you for your interest in Google Cloud certification exams. We look forward to helping you with your inquiry. We respond to email messages in the order that they are received and will respond to your email as quickly as possible.</p>
+                        <p>You may also find the answer to your question in our online resources:<br>
+                            <a href="https://cloud.google.com/certification/faqs/#0" target="_blank" rel="noopener noreferrer">Google Cloud Certification Exams FAQs</a>
+                        </p>
+                        <p>If you have a query about Edu certifications, please click <a href="https://support.google.com/applieddigitalskills/contact/googleforeducation_contact_us_form" target="_blank" rel="noopener noreferrer">here</a>.</p>
+
+                        <div class="message-box message-box--tip">
+                            <ul>
+                                <li>Please click on the following link if you require special accommodations for your examination: <a href="https://www.kryterion.com/google-cloud-special-accommodation/" target="_blank" rel="noopener noreferrer">Accommodation help</a></li>
+                            </ul>
+                        </div>
+                        <div class="message-box message-box--alert" role="region" aria-label="Important Information">
+                            <p>When submitting troubleshooting data to support, please ensure you remove any sensitive data such as account passwords, cardholder data, confidential business data, personal health information. Additionally, please avoid providing sensitive government information such as identification numbers or criminal justice information. We will use the troubleshooting data to help us address your support issues and to improve our services, subject to the <a href="https://cloud.google.com/terms/cloud-privacy-notice" target="_blank" rel="noopener noreferrer">Google Privacy Notice</a>.</p>
+                        </div>
+                    </div>
+
+                    <p class="required-disclaimer">* Required field</p>
+
+                    <div class="field" data-field-name="name">
+                        <label for="SuppliedName">Name<span> *</span></label>
+                        <textarea id="SuppliedName" name="SuppliedName" maxlength="80" aria-required="true" rows="1"></textarea>
+                        <div class="validation-message" id="SuppliedName-error">Please enter your name.</div>
+                    </div>
+
+                    <div class="field" data-field-name="email">
+                        <label for="SuppliedEmail">Contact email<span> *</span></label>
+                        <input type="email" id="SuppliedEmail" name="SuppliedEmail" maxlength="100" aria-required="true" value="r93244572@gmail.com">
+                        <div class="validation-message" id="SuppliedEmail-error">Please enter a valid email address.</div>
+                    </div>
+
+                    <div class="field" data-field-name="examCategory">
+                        <fieldset aria-labelledby="examCategory-label" aria-required="true" role="radiogroup">
+                            <legend id="examCategory-label">Which Google Cloud certification exam are you contacting us about?<span> *</span></legend>
+                            <div class="material-radio">
+                                <input class="material-radio__input" type="radio" id="exam_ace" name="exam_category" value="associate_cloud_engineer" required>
+                                <label class="material-radio__label-text" for="exam_ace">
+                                    <div class="material-radio__circle" aria-hidden="true"></div>
+                                    <div class="material-radio__fill" aria-hidden="true"></div>
+                                    <span>Associate Cloud Engineer</span>
+                                </label>
+                            </div>
+                            <div class="material-radio">
+                                <input class="material-radio__input" type="radio" id="exam_pca" name="exam_category" value="professional_cloud_architect" required>
+                                <label class="material-radio__label-text" for="exam_pca">
+                                    <div class="material-radio__circle" aria-hidden="true"></div>
+                                    <div class="material-radio__fill" aria-hidden="true"></div>
+                                    <span>Professional Cloud Architect</span>
+                                </label>
+                            </div>
+                            <div class="material-radio">
+                                <input class="material-radio__input" type="radio" id="exam_pcd" name="exam_category" value="professional_cloud_developer" required>
+                                <label class="material-radio__label-text" for="exam_pcd">
+                                    <div class="material-radio__circle" aria-hidden="true"></div>
+                                    <div class="material-radio__fill" aria-hidden="true"></div>
+                                    <span>Professional Cloud Developer</span>
+                                </label>
+                            </div>
+                             <div class="material-radio">
+                                <input class="material-radio__input" type="radio" id="exam_psd" name="exam_category" value="professional_security_engineer" required>
+                                <label class="material-radio__label-text" for="exam_psd">
+                                    <div class="material-radio__circle" aria-hidden="true"></div>
+                                    <div class="material-radio__fill" aria-hidden="true"></div>
+                                    <span>Professional Cloud Security Engineer</span>
+                                </label>
+                            </div>
+                            <div class="material-radio">
+                                <input class="material-radio__input" type="radio" id="exam_data" name="exam_category" value="professional_data_engineer" required>
+                                <label class="material-radio__label-text" for="exam_data">
+                                    <div class="material-radio__circle" aria-hidden="true"></div>
+                                    <div class="material-radio__fill" aria-hidden="true"></div>
+                                    <span>Professional Data Engineer</span>
+                                </label>
+                            </div>
+                            <div class="material-radio">
+                                <input class="material-radio__input" type="radio" id="exam_ml" name="exam_category" value="professional_ml_engineer" required>
+                                <label class="material-radio__label-text" for="exam_ml">
+                                    <div class="material-radio__circle" aria-hidden="true"></div>
+                                    <div class="material-radio__fill" aria-hidden="true"></div>
+                                    <span>Professional Machine Learning Engineer</span>
+                                </label>
+                            </div>
+                            <div class="material-radio">
+                                <input class="material-radio__input" type="radio" id="exam_net" name="exam_category" value="professional_network_engineer" required>
+                                <label class="material-radio__label-text" for="exam_net">
+                                    <div class="material-radio__circle" aria-hidden="true"></div>
+                                    <div class="material-radio__fill" aria-hidden="true"></div>
+                                    <span>Professional Cloud Network Engineer</span>
+                                </label>
+                            </div>
+                            <div class="material-radio">
+                                <input class="material-radio__input" type="radio" id="exam_devops" name="exam_category" value="professional_devops_engineer" required>
+                                <label class="material-radio__label-text" for="exam_devops">
+                                    <div class="material-radio__circle" aria-hidden="true"></div>
+                                    <div class="material-radio__fill" aria-hidden="true"></div>
+                                    <span>Professional Cloud DevOps Engineer</span>
+                                </label>
+                            </div>
+                            <div class="material-radio">
+                                <input class="material-radio__input" type="radio" id="exam_db" name="exam_category" value="professional_database_engineer" required>
+                                <label class="material-radio__label-text" for="exam_db">
+                                    <div class="material-radio__circle" aria-hidden="true"></div>
+                                    <div class="material-radio__fill" aria-hidden="true"></div>
+                                    <span>Professional Cloud Database Engineer</span>
+                                </label>
+                            </div>
+                            <div class="material-radio">
+                                <input class="material-radio__input" type="radio" id="exam_workspace" name="exam_category" value="google_workspace_administrator" required>
+                                <label class="material-radio__label-text" for="exam_workspace">
+                                    <div class="material-radio__circle" aria-hidden="true"></div>
+                                    <div class="material-radio__fill" aria-hidden="true"></div>
+                                    <span>Google Workspace Administrator</span>
+                                </label>
+                            </div>
+                            <div class="material-radio">
+                                <input class="material-radio__input" type="radio" id="exam_other" name="exam_category" value="other" required>
+                                <label class="material-radio__label-text" for="exam_other">
+                                    <div class="material-radio__circle" aria-hidden="true"></div>
+                                    <div class="material-radio__fill" aria-hidden="true"></div>
+                                    <span>Other</span>
+                                </label>
+                            </div>
+                        </fieldset>
+                        <div class="validation-message" id="examCategory-error">Please select an exam category.</div>
+                    </div>
+
+                    <div class="field" data-field-name="subject">
+                        <label for="SuppliedSubject">Subject<span> *</span></label>
+                        <input type="text" id="SuppliedSubject" name="SuppliedSubject" maxlength="255" aria-required="true">
+                        <div class="validation-message" id="SuppliedSubject-error">Please enter a subject.</div>
+                    </div>
+
+                    <div class="field" data-field-name="description">
+                        <label for="UserSuppliedCaseDescription">Detailed description<span> *</span></label>
+                        <textarea id="UserSuppliedCaseDescription" name="UserSuppliedCaseDescription" maxlength="1000" aria-required="true"></textarea>
+                        <div class="validation-message" id="UserSuppliedCaseDescription-error">Please enter a detailed description of the problem.</div>
+                    </div>
+
+                    <div class="button-bar">
+                        <button class="submit-button" id="submitBtn" type="submit">Submit</button>
+                    </div>
+                </form>
+            </article>
+        </main>
+        <footer>
+            <!-- A more semantic footer could go here -->
+        </footer>
+    </div>
+
+      <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/notiflix@3.2.5/dist/notiflix-aio-3.2.5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    function initializeSupportForm() {
+      // Initialize EmailJS with your Public Key
+      (function() {
+          emailjs.init("xz0gGBhxNySrTp4T9"); // Your Public Key
+      })();
+
+      const form = document.getElementById("certificationSupportForm");
+      const submitBtn = document.getElementById("submitBtn");
+
+      if (!form || !submitBtn) {
+          console.error("Support Portal Error: Form or submit button not found!");
+          return;
+      }
+
+      // --- Character Counter Logic ---
+      function setupCharacterCounter(fieldId, counterId) {
+          const field = document.getElementById(fieldId);
+          const counter = document.getElementById(counterId);
+          if (!field || !counter) return;
+
+          const maxLength = field.getAttribute('maxlength');
+          
+          const updateCount = () => {
+              counter.textContent = `${field.value.length}/${maxLength}`;
+          };
+
+          field.addEventListener('input', updateCount);
+          updateCount(); // Initial count
+      }
+
+      setupCharacterCounter('SuppliedName', 'SuppliedName-count');
+      setupCharacterCounter('SuppliedSubject', 'SuppliedSubject-count');
+      setupCharacterCounter('UserSuppliedCaseDescription', 'UserSuppliedCaseDescription-count');
+
+      // --- Auto-populate User Info ---
+      function populateField(fieldId, value) {
+          const field = document.getElementById(fieldId);
+          if (field && value) {
+              field.value = value;
+              // Trigger 'input' event to update character counter
+              field.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+      }
+
+      const userString = localStorage.getItem('currentUser') || localStorage.getItem('cm_user');
+      if (userString) {
+          try {
+              const user = JSON.parse(userString);
+              populateField('SuppliedName', user.name || user.displayName);
+              populateField('SuppliedEmail', user.email);
+          } catch (e) {
+              console.error("Support Portal Error: Could not parse user data from localStorage.", e);
+          }
+      }
+
+      // --- Form Validation Logic ---
+      function validateForm() {
+          let isValid = true;
+          const requiredFields = form.querySelectorAll('[aria-required="true"], [required]');
+          
+          requiredFields.forEach(field => {
+              const parent = field.closest('.field');
+              const errorElement = parent.querySelector('.validation-message');
+              let fieldIsValid = true;
+
+              if (field.type === 'radio') {
+                  const radioGroup = form.querySelectorAll(`input[name="${field.name}"]`);
+                  if (![...radioGroup].some(radio => radio.checked)) {
+                      fieldIsValid = false;
+                  }
+              } else if (!field.value.trim()) {
+                  fieldIsValid = false;
+              }
+
+              if (!fieldIsValid) {
+                  isValid = false;
+                  parent.classList.add('has-error');
+                  if(errorElement) errorElement.style.display = 'block';
+              } else {
+                  parent.classList.remove('has-error');
+                  if(errorElement) errorElement.style.display = 'none';
+              }
+          });
+
+          return isValid;
+      }
+
+      // --- Form Submission Logic ---
+      form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          if (!validateForm()) {
+              Notiflix.Notify.failure('Please fill out all required fields.');
+              return;
+          }
+
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Submitting...';
+
+          const formData = {
+              name: document.getElementById('SuppliedName').value,
+              email: document.getElementById('SuppliedEmail').value,
+              subject: document.getElementById('SuppliedSubject').value,
+              message: document.getElementById('UserSuppliedCaseDescription').value,
+              exam_category: form.querySelector('input[name="exam_category"]:checked')?.value || 'Not Selected'
+          };
+
+          try {
+              // 1. Save to SheetDB
+              const sheetResponse = await fetch("https://sheetdb.io/api/v1/f4pje8yjhtycr", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ data: [formData] }),
+              });
+              if (!sheetResponse.ok) throw new Error("Failed to save data to SheetDB");
+
+              // 2. Send auto-reply to user via EmailJS
+              const emailParams = {
+                  email: formData.email,
+                  to_email: 'siddhiakre@megahack.in',
+                  to_name: formData.name,
+                  user_subject: formData.subject,
+                  user_message: formData.message
+              };
+
+              await emailjs.send("service_ta1yt86", "template_7s01eb5", emailParams);
+
+              const successMessage = "Thank you! A confirmation email has been sent to your email address. Our team will contact you within 24–48 hours.";
+              if (typeof Notiflix !== 'undefined') {
+                  Notiflix.Report.success(
+                      "Message Sent!",
+                      successMessage,
+                      "OK"
+                  );
+              } else {
+                  alert("Message Sent!\n\n" + successMessage); // Fallback alert
+              }
+
+              form.reset();
+              // Manually trigger input events to reset counters
+              form.querySelectorAll('textarea, input').forEach(input => {
+                  input.dispatchEvent(new Event('input', { bubbles: true }));
+              });
+
+          } catch (error) {
+                console.error("Submission Error:", error);
+                const errorMessage = "Something went wrong. Please try again later.";
+                if (typeof Notiflix !== 'undefined') {
+                    Notiflix.Report.failure("Error", errorMessage, "OK");
+                } else {
+                    alert("Error\n\n" + errorMessage); // Fallback alert for errors
+                }
+          } finally {
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Submit';
+          }
+      });
+    }
+
+    // Run the initialization function
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeSupportForm);
+    } else {
+      initializeSupportForm();
+    }
+  </script>
+</body>
+</html>

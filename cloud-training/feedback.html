@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intern Progress Dashboard - DC Cloud Solutions</title>
+    <!-- CSS Dependencies -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- JS Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/notiflix/dist/notiflix-3.2.6.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --primary: #1a73e8;
+            --text-main: #202124;
+            --text-sec: #5f6368;
+            --danger: #d93025;
+            --success: #1e8e3e;
+            --warning: #f9ab00;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        input,
+        select {
+            padding: 10px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .report-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            border-left: 5px solid #bdc1c6;
+        }
+
+        .report-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-card.sentiment-Positive {
+            border-left-color: var(--success);
+        }
+
+        .report-card.sentiment-Neutral {
+            border-left-color: var(--warning);
+        }
+
+        .report-card.sentiment-Negative {
+            border-left-color: var(--danger);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .intern-name {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .report-date {
+            font-size: 12px;
+            color: var(--text-sec);
+        }
+
+        .summary-text {
+            font-size: 14px;
+            color: #3c4043;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .blockers-box {
+            background: #fce8e6;
+            color: #c5221f;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .blockers-box.none {
+            background: #e6f4ea;
+            color: #137333;
+        }
+
+        .action-bytes {
+            background: #e8f0fe;
+            color: #1967d2;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .sentiment-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .sentiment-Positive {
+            background: #e6f4ea;
+            color: #137333;
+        }
+
+        .sentiment-Neutral {
+            background: #fef7e0;
+            color: #b06000;
+        }
+
+        .sentiment-Negative {
+            background: #fce8e6;
+            color: #c5221f;
+        }
+
+        .charts-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            height: 300px;
+            /* Fixed height for Chart.js */
+            position: relative;
+        }
+
+        .chart-card h3 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            color: var(--text-sec);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h1>Intern Progress Dashboard</h1>
+                <p style="margin:5px 0 0; color:var(--text-sec)">AI-Analyzed Weekly Updates</p>
+            </div>
+            <div class="controls">
+                <input type="text" id="searchInput" placeholder="Search Intern Name..." onkeyup="filterReports()">
+                <select id="sentimentFilter" onchange="filterReports()">
+                    <option value="All">All Sentiments</option>
+                    <option value="Positive">Positive</option>
+                    <option value="Neutral">Neutral</option>
+                    <option value="Negative">Negative</option>
+                </select>
+                <a href="https://calendar.app.google/GchxwkQsXwHbEfKVA" target="_blank"
+                    style="text-decoration:none; padding:10px 20px; background:var(--primary); color:white; border-radius:8px;">Back
+                    to Scheduler</a>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-row">
+            <div class="chart-card">
+                <h3>Sentiment Overview</h3>
+                <canvas id="sentimentChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Blocker Status</h3>
+                <canvas id="blockerChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-value" id="totalReports">0</div>
+                <div style="color:var(--text-sec)">Total Reports</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="activeBlockers" style="color:var(--danger)">0</div>
+                <div style="color:var(--text-sec)">Active Blockers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="positiveRate" style="color:var(--success)">0%</div>
+                <div style="color:var(--text-sec)">Positive Sentiment</div>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="reports-grid" id="reportsGrid">
+            <!-- Cards injected here -->
+            <div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-sec)">
+                <i class="fas fa-spinner fa-spin"></i> Loading reports...
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCohKlqNu0I1sXcLW4D_fv-OEw9x0S50q8",
+            authDomain: "dc-infotechpvt-1-d1a4b.firebaseapp.com",
+            databaseURL: "https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com",
+            projectId: "dc-infotechpvt-1-d1a4b",
+            storageBucket: "dc-infotechpvt-1-d1a4b.firebasestorage.app",
+        };
+        try { firebase.initializeApp(firebaseConfig); } catch (e) { }
+        const db = firebase.database();
+
+        let allReports = [];
+        let sentimentChart = null;
+        let blockerChart = null;
+
+        // 2. Fetch Data (Real-time)
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchReports();
+        });
+
+        function fetchReports() {
+            const grid = document.getElementById('reportsGrid');
+
+            // Changed from .once() to .on() for Real-time updates
+            db.ref('reports').on('value', snapshot => {
+                const data = snapshot.val();
+                if (!data) {
+                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center;">No reports found.</div>';
+                    updateStats([]);
+                    renderCharts([]);
+                    return;
+                }
+
+                allReports = [];
+                // Flatten structural data: reports/{uid}/{date}/{timestamp}
+                Object.values(data).forEach(userDates => {
+                    Object.values(userDates).forEach(dateReports => {
+                        Object.values(dateReports).forEach(report => {
+                            allReports.push(report);
+                        });
+                    });
+                });
+
+                // Sort by new
+                allReports.sort((a, b) => b.timestamp - a.timestamp);
+
+                renderReports(allReports);
+                updateStats(allReports);
+                renderCharts(allReports);
+            });
+        }
+
+        // 3. Render
+        function renderReports(reports) {
+            const grid = document.getElementById('reportsGrid');
+            grid.innerHTML = '';
+
+            if (reports.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center;">No matching reports.</div>';
+                return;
+            }
+
+            reports.forEach(r => {
+                const sentiment = r.aiAnalysis?.sentiment || "Neutral";
+                const sentimentClass = `sentiment-${sentiment.split('/')[0]}`;
+                const hasBlockers = r.aiAnalysis?.blockers && r.aiAnalysis.blockers.toLowerCase() !== 'none' && r.aiAnalysis.blockers.toLowerCase() !== 'unknown';
+
+                const card = document.createElement('div');
+                card.className = `report-card ${sentimentClass}`;
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div>
+                            <div class="intern-name">${r.userName || r.userId}</div>
+                            <div class="report-date">${new Date(r.timestamp).toLocaleString()}</div>
+                        </div>
+                        <div>
+                            <span class="sentiment-badge ${sentimentClass}">${sentiment}</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-text">
+                        <strong>Summary:</strong><br>
+                        ${r.aiAnalysis?.summary || "No summary available."}
+                    </div>
+
+                    <div class="blockers-box ${hasBlockers ? '' : 'none'}">
+                        <i class="fas ${hasBlockers ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> 
+                        <strong>Blockers:</strong> ${r.aiAnalysis?.blockers || "None"}
+                    </div>
+
+                    <div class="action-bytes">
+                        <i class="fas fa-lightbulb"></i>
+                        <strong>Action:</strong> ${r.aiAnalysis?.actionBytes || "None"}
+                    </div>
+
+                    <!-- Snapshots -->
+                    ${r.snapshots && r.snapshots.length ? `
+                    <div style="margin-top:12px; padding-top:10px; border-top:1px solid #f1f3f4;">
+                        <div style="font-size:11px; font-weight:600; color:#5f6368; margin-bottom:6px;">SESSION SNAPSHOTS</div>
+                        <div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:4px;">
+                            ${r.snapshots.map(s => `
+                                <img src="data:image/jpeg;base64,${s.image.split(',')[1] || s.image}" 
+                                     title="${new Date(s.timestamp).toLocaleTimeString()}"
+                                     style="height:50px; border-radius:4px; border:1px solid #dadce0; cursor:pointer; transition:transform 0.2s;"
+                                     onmouseover="this.style.transform='scale(1.1)'"
+                                     onmouseout="this.style.transform='scale(1)'"
+                                     onclick="Notiflix.Report.info('Snapshot', '<img src=\\'${s.image}\\' style=\\'width:100%\\'>', 'Close')">
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function updateStats(reports) {
+            document.getElementById('totalReports').innerText = reports.length;
+
+            const blockerCount = reports.filter(r => {
+                const b = r.aiAnalysis?.blockers || "";
+                return b.toLowerCase() !== 'none' && b.toLowerCase() !== 'unknown';
+            }).length;
+            document.getElementById('activeBlockers').innerText = blockerCount;
+
+            const positiveCount = reports.filter(r => (r.aiAnalysis?.sentiment || "").includes("Positive")).length;
+            const rate = reports.length ? Math.round((positiveCount / reports.length) * 100) : 0;
+            document.getElementById('positiveRate').innerText = `${rate}%`;
+        }
+
+        function renderCharts(reports) {
+            // Data Processing
+            let sentiments = { Positive: 0, Neutral: 0, Negative: 0 };
+            let blockers = { None: 0, Active: 0 };
+
+            reports.forEach(r => {
+                // Sentiment
+                let s = (r.aiAnalysis?.sentiment || "Neutral").split('/')[0];
+                if (sentiments[s] !== undefined) sentiments[s]++;
+                else sentiments['Neutral']++;
+
+                // Blockers
+                let b = r.aiAnalysis?.blockers || "None";
+                if (b.toLowerCase().includes('none') || b.toLowerCase() === 'unknown') blockers.None++;
+                else blockers.Active++;
+            });
+
+            // 1. Sentiment Chart
+            const ctx1 = document.getElementById('sentimentChart').getContext('2d');
+            if (sentimentChart) sentimentChart.destroy();
+
+            sentimentChart = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Positive', 'Neutral', 'Negative'],
+                    datasets: [{
+                        data: [sentiments.Positive, sentiments.Neutral, sentiments.Negative],
+                        backgroundColor: ['#1e8e3e', '#f9ab00', '#d93025'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right' }
+                    }
+                }
+            });
+
+            // 2. Blocker Chart
+            const ctx2 = document.getElementById('blockerChart').getContext('2d');
+            if (blockerChart) blockerChart.destroy();
+
+            blockerChart = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Clear Sailing', 'Active Blockers'],
+                    datasets: [{
+                        label: 'Interns',
+                        data: [blockers.None, blockers.Active],
+                        backgroundColor: ['#1e8e3e', '#d93025'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // 4. Filters
+        function filterReports() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const sentiment = document.getElementById('sentimentFilter').value;
+
+            const filtered = allReports.filter(r => {
+                const nameMatch = (r.userName || "").toLowerCase().includes(search) || (r.userId || "").toLowerCase().includes(search);
+                const sentMatch = sentiment === 'All' || (r.aiAnalysis?.sentiment || "").includes(sentiment);
+                return nameMatch && sentMatch;
+            });
+
+            renderReports(filtered);
+            // Optional: Update charts based on filter? 
+            // Usually dashboard charts show global stats, but we can update stats row at least.
+            // Let's keep charts global for now to see overall health.
+        }
+
+    </script>
+</body>
+
+</html>

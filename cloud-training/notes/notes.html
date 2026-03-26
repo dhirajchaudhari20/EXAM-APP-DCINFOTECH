@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DC Cloud Solutions Learning Services Team [PLS] Certification Academy - Lecture Notes</title>
+  <!-- SweetAlert2 CSS -->
+  <script type="text/javascript">
+    // Access Control: Check if user is logged in
+    (function () {
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      const cloudUser = localStorage.getItem('cloudUser');
+
+      if (!isLoggedIn && !cloudUser) {
+        // Not logged in, redirect to login page
+        // Using window.location.replace to prevent back button from returning here
+        window.location.replace("../index.html");
+      }
+    })();
+
+    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    (function () {
+      var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+      s1.async = true;
+      s1.src = 'https://embed.tawk.to/673b87e22480f5b4f59ffc23/1id08lk55';
+      s1.charset = 'UTF-8';
+      s1.setAttribute('crossorigin', '*');
+      s0.parentNode.insertBefore(s1, s0);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      /* Ensures body takes full height */
+    }
+
+    /* Sliding text style */
+    .sliding-text-container {
+      background-color: #f44336;
+      /* Red background for the sliding text */
+      color: white;
+      font-weight: bold;
+      padding: 10px;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .sliding-text {
+      position: absolute;
+      white-space: nowrap;
+      animation: slideText 15s linear infinite;
+    }
+
+    @keyframes slideText {
+      0% {
+        transform: translateX(100%);
+      }
+
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    .header {
+      background-color: #1A73E8;
+      color: white;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .header-buttons button {
+      background-color: #fff;
+      color: #1A73E8;
+      border: 1px solid #1A73E8;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .header-buttons button:hover {
+      background-color: #cde0ff;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      overflow: hidden;
+      /* Ensures content doesn't overflow */
+    }
+
+    .sidebar {
+      width: 250px;
+      background: #F8F9FA;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .sidebar ul li:hover,
+    .sidebar ul li.active {
+      background: #1A73E8;
+      color: white;
+    }
+
+    .content {
+      flex: 1;
+      padding: 20px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      overflow-y: auto;
+      /* Allows scrolling if the content is too long */
+    }
+
+    .pdf-viewer {
+      border: 1px solid #ddd;
+      width: 90%;
+      height: 80vh;
+      overflow: auto;
+      /* Ensures PDF content is scrollable */
+    }
+
+    footer {
+      background: #F8F9FA;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    /* Mobile view adjustments */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        padding: 10px;
+      }
+
+      .sidebar ul {
+        display: flex;
+        overflow-x: auto;
+      }
+
+      .sidebar ul li {
+        padding: 10px;
+        font-size: 14px;
+        margin-right: 10px;
+        flex: 0 0 auto;
+      }
+
+      .content {
+        padding: 10px;
+      }
+
+      .pdf-viewer {
+        width: 100%;
+        height: 60vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <div id="headerTitle">
+      DC Cloud Solutions Learning Services Team [PLS] Certification Academy - Lecture Notes
+    </div>
+    <div class="header-buttons">
+      <span id="userGreeting" style="margin-right: 10px;"></span>
+      <button onclick="goBack()">Go Back</button>
+      <script>
+        function goBack() {
+          window.open("index.html", "_self");
+        }
+      </script>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- Sliding Text Container -->
+  <div class="sliding-text-container" style="
+  padding-bottom: 20px;
+">
+    <div class="sliding-text">
+      The information in this presentation is classified: ● Do not record or take screenshots of this presentation. ● Do
+      not share or otherwise distribute the information in this presentation with anyone outside of your organization.
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="sidebar">
+
+      <ul id="pdfList">
+        <!-- List items will be populated dynamically -->
+      </ul>
+    </div>
+    <div class="content" id="pdfContent">
+      <iframe id="pdfViewer" class="pdf-viewer" src="about:blank" title="PDF Viewer">
+        <p>Select a note from the sidebar to view.</p>
+      </iframe>
+      <div id="placeholderMessage" style="position: absolute; text-align: center; color: #666;">
+        <h3>Select a note to view</h3>
+        <p>Choose a topic from the sidebar index</p>
+      </div>
+      <script>
+        // Simple script to toggle placeholder
+        const viewer = document.getElementById('pdfViewer');
+        const placeholder = document.getElementById('placeholderMessage');
+        const updatePlaceholder = () => {
+          if (viewer.getAttribute('src') === 'about:blank' || viewer.getAttribute('src') === '') {
+            viewer.style.opacity = '0';
+            placeholder.style.display = 'block';
+          } else {
+            viewer.style.opacity = '1';
+            placeholder.style.display = 'none';
+          }
+        }
+        // Hook into loadPDF
+        const originalLoadPDF = window.loadPDF; // This is defined in script tag, might be safer to modify loadPDF definition itself.
+        // Actually, let's just modify loadPDF in the script block in next step if needed, or rely on CSS.
+        // For now just adding the elements.
+        updatePlaceholder();
+      </script>
+    </div>
+  </div>
+
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="./js/logs.js"></script>
+  <script src="./js/notes-data.js"></script>
+
+  <style>
+    /* ... existing styles ... */
+    .collapsible-section {
+      margin-bottom: 10px;
+    }
+
+    .collapsible-header {
+      background-color: #e9ecef;
+      color: #333;
+      cursor: pointer;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .collapsible-header:hover {
+      background-color: #dde0e3;
+    }
+
+    .collapsible-header:after {
+      content: '\002B';
+      /* Plus sign */
+      color: #777;
+      font-weight: bold;
+      float: right;
+      margin-left: 5px;
+    }
+
+    .active-header:after {
+      content: "\2212";
+      /* Minus sign */
+    }
+
+    .collapsible-content {
+      padding: 0 10px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.2s ease-out;
+      background-color: #f1f1f1;
+      border-radius: 0 0 5px 5px;
+    }
+
+    .collapsible-content ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .collapsible-content li {
+      padding: 8px 0;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    .collapsible-content li:last-child {
+      border-bottom: none;
+    }
+
+    .collapsible-content li:hover {
+      color: #1A73E8;
+    }
+
+    /* Default list style for items not in a section */
+    #pdfList>li {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
+  <script>
+    function loadPDF(element, pdfFile) {
+      // Remove 'active' class from all sidebar items
+      const listItems = document.querySelectorAll('.sidebar li');
+      listItems.forEach(item => item.classList.remove('active'));
+
+      // Add 'active' class to the clicked item
+      if (element) {
+        element.classList.add('active');
+      }
+
+      // Change the PDF being displayed
+      const pdfViewer = document.getElementById('pdfViewer');
+      const pdfPath = 'pdf/' + pdfFile;
+      const placeholder = document.getElementById('placeholderMessage');
+
+      // Use src for iframe
+      pdfViewer.src = pdfPath;
+
+      // Show viewer, hide placeholder
+      if (placeholder) placeholder.style.display = 'none';
+      pdfViewer.style.opacity = '1';
+
+      const downloadLink = document.getElementById('pdfDownloadLink');
+      if (downloadLink) downloadLink.href = pdfPath;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const track = urlParams.get('track');
+      const pdfList = document.getElementById('pdfList');
+      const headerTitle = document.getElementById('headerTitle');
+
+      if (track && notesData[track]) {
+        const data = notesData[track];
+        headerTitle.textContent = `DC Cloud Solutions Learning Services Team [PLS] Certification Academy - ${data.title}: Lecture Notes`;
+
+        let currentSectionContent = null;
+        let isFirstPDF = true;
+
+        // Helper to create a collapsible section
+        function createSection(title) {
+          const section = document.createElement('div');
+          section.className = 'collapsible-section';
+
+          const button = document.createElement('button');
+          button.className = 'collapsible-header';
+          button.textContent = title.replace('Below notes are for ', '').replace(':', '');
+
+          button.onclick = function () {
+            this.classList.toggle("active-header");
+            const content = this.nextElementSibling;
+            if (content.style.maxHeight) {
+              content.style.maxHeight = null;
+            } else {
+              content.style.maxHeight = content.scrollHeight + "px";
+            }
+          };
+
+          const contentDiv = document.createElement('div');
+          contentDiv.className = 'collapsible-content';
+          const ul = document.createElement('ul');
+          contentDiv.appendChild(ul);
+
+          section.appendChild(button);
+          section.appendChild(contentDiv);
+          pdfList.appendChild(section);
+
+          return ul; // Return the UL to append items to
+        }
+
+        // Create a default section for the main track notes if they appear first
+        let mainTrackUl = createSection(data.title);
+        // Open the first section by default
+        mainTrackUl.parentElement.previousElementSibling.classList.add("active-header");
+        mainTrackUl.parentElement.style.maxHeight = "100%"; // Auto expand
+
+        data.pdfs.forEach((item, index) => {
+          if (item.header) {
+            // Start a new section
+            mainTrackUl = createSection(item.header);
+          } else {
+            const li = document.createElement('li');
+            li.textContent = item.title;
+            li.onclick = () => loadPDF(li, item.file);
+            mainTrackUl.appendChild(li);
+
+            // Load the first PDF by default
+            // Load the first PDF by default - DISABLED for performance
+            if (isFirstPDF) {
+              // loadPDF(li, item.file); <--- Removed to prevent auto-download
+              isFirstPDF = false;
+              // Ensure the section containing the first PDF is open
+              const sectionContent = mainTrackUl.parentElement;
+              sectionContent.style.maxHeight = sectionContent.scrollHeight + "px";
+              sectionContent.previousElementSibling.classList.add("active-header");
+            }
+          }
+        });
+      } else {
+        // Handle invalid or missing track
+        headerTitle.textContent = "Select a Certification Track";
+        pdfList.innerHTML = "<li>Please select a track from the main page.</li>";
+      }
+    });
+  </script>
+
+  <footer>
+    2022 © All rights reserved. Developed by DC Cloud Solutions
+  </footer>
+
+</body>
+
+</html>

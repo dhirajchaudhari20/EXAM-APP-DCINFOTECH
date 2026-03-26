@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Cloud Exam Registration Confirmation</title>
+    <!-- Importing Google Sans for that authentic Google feel -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Base Resets */
+        body,
+        table,
+        td,
+        div,
+        p,
+        a {
+            font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #3c4043;
+            width: 100% !important;
+            height: 100% !important;
+            line-height: 1.5;
+        }
+
+        /* Container */
+        .wrapper {
+            width: 100%;
+            table-layout: fixed;
+            background-color: #f5f5f5;
+            padding: 40px 0;
+        }
+
+        .main-content {
+            background-color: #ffffff;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 650px;
+            border-spacing: 0;
+            font-family: 'Roboto', sans-serif;
+            color: #3c4043;
+            border-radius: 8px;
+            /* Rounded corners for the card look */
+            overflow: hidden;
+            /* Ensures header corners are rounded too */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            /* improved shadow */
+        }
+
+        /* Header */
+        .header {
+            background-color: #1a73e8;
+            /* Google Blue */
+            color: #ffffff;
+            padding: 30px 40px;
+            text-align: left;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            font-family: 'Google Sans', sans-serif;
+            font-size: 24px;
+            font-weight: 500;
+            margin: 0;
+            line-height: 1.2;
+            letter-spacing: 0.2px;
+        }
+
+        .header-subtext {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 8px;
+            font-weight: 400;
+        }
+
+        /* Body Content */
+        .content-body {
+            padding: 40px;
+        }
+
+        h2 {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 18px;
+            color: #202124;
+            font-weight: 500;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f1f3f4;
+            /* Subtle section divider */
+        }
+
+        h3 {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 16px;
+            color: #202124;
+            font-weight: 500;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            font-size: 15px;
+            /* Slightly larger for readability */
+            margin-bottom: 16px;
+            line-height: 24px;
+            color: #3c4043;
+        }
+
+        ul,
+        ol {
+            padding-left: 20px;
+            margin-bottom: 24px;
+        }
+
+        li {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #3c4043;
+            line-height: 22px;
+        }
+
+        /* Exam Details Card */
+        .details-card {
+            background-color: #f8f9fa;
+            border: 1px solid #e8eaed;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .details-row {
+            margin-bottom: 14px;
+            font-size: 14px;
+            display: flex;
+            /* attempt flex layout for better alignment */
+        }
+
+        .details-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .label {
+            color: #5f6368;
+            font-weight: 500;
+            width: 140px;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .value {
+            color: #202124;
+            font-weight: 400;
+            font-family: 'Google Sans', sans-serif;
+            /* Use sans for values */
+        }
+
+        /* Alert/Warning */
+        .alert-box {
+            background-color: #fce8e6;
+            color: #c5221f;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 22px;
+            margin: 32px 0;
+            border-left: 4px solid #d93025;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .alert-icon {
+            font-size: 18px;
+            margin-right: 12px;
+            line-height: 22px;
+        }
+
+        /* Button */
+        .button-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: #1a73e8;
+            color: #ffffff !important;
+            font-family: 'Google Sans', sans-serif;
+            font-size: 16px;
+            /* Larger button text */
+            font-weight: 500;
+            line-height: 48px;
+            /* Taller button */
+            padding: 0 32px;
+            border-radius: 4px;
+            text-decoration: none;
+            box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-button:hover {
+            background-color: #1765cc;
+            box-shadow: 0 2px 6px 2px rgba(60, 64, 67, 0.15);
+        }
+
+        /* Legal Section */
+        .legal-section {
+            background-color: #f8f9fa;
+            padding: 32px 40px;
+            font-size: 12px;
+            color: #5f6368;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .legal-section h4 {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 13px;
+            color: #3c4043;
+            margin: 20px 0 8px 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .legal-section h4:first-child {
+            margin-top: 0;
+        }
+
+        .legal-section p {
+            font-size: 12px;
+            line-height: 18px;
+            color: #5f6368;
+            margin-bottom: 12px;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #ffffff;
+            padding: 32px 40px;
+            font-size: 11px;
+            color: #5f6368;
+            line-height: 16px;
+            border-top: 1px solid #f1f3f4;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #5f6368;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <table class="main-content" role="presentation">
+            <!-- Header -->
+            <tr>
+                <td class="header">
+                    <h1>Registration Confirmed</h1>
+                    <div class="header-subtext">Google Cloud Certification Exam</div>
+                </td>
+            </tr>
+
+            <!-- Body -->
+            <tr>
+                <td class="content-body">
+                    <p>Hello <strong>{{user_name}}</strong>,</p>
+                    <p>Thank you for registering. This email confirms your appointment for the following Google Cloud
+                        certification exam:</p>
+
+                    <div style="margin-bottom: 24px;">
+                        <span style="font-family: 'Google Sans', sans-serif; font-size: 18px; color: #202124;">
+                            {{exam_name}}
+                        </span>
+                        <div style="font-size: 13px; color: #5f6368; margin-top: 4px;">
+                            Price Paid: USD 0.00 (Voucher Applied)
+                        </div>
+                    </div>
+
+                    <div class="details-card">
+                        <div class="details-row">
+                            <span class="label">Date:</span>
+                            <span class="value">{{exam_date}}</span>
+                        </div>
+                        <div class="details-row">
+                            <span class="label">Delivery Method:</span>
+                            <span class="value">Online Proctored</span>
+                        </div>
+                        <div class="details-row">
+                            <span class="label">Exam Portal:</span>
+                            <span class="value"><a href="https://dcinfotech.org.in/exam-portal/"
+                                    style="color: #1a73e8; text-decoration: none;">DC Cloud Solutions Exam Portal</a></span>
+                        </div>
+                    </div>
+
+                    <div class="alert-box">
+                        <div class="alert-icon">⚠️</div>
+                        <div>
+                            <strong>Critical Launch Policy:</strong><br>
+                            You must begin the check-in process between <strong>15 minutes before</strong> and
+                            <strong>15 minutes after</strong> your scheduled appointment time. Failure to launch within
+                            this window will result in a <strong>"No Show"</strong> status and forfeiture of your exam
+                            fee.
+                        </div>
+                    </div>
+
+                    <h2>Pre-Exam Checklist</h2>
+                    <ul style="list-style-type: disc;">
+                        <li><strong>Identity Verification:</strong> Ensure your legal name in the portal matches your
+                            government-issued ID exactly.</li>
+                        <li><strong>Environment Check:</strong> Clear your desk of all papers, books, and electronic
+                            devices. The room must be quiet and private.</li>
+                        <li><strong>System Test:</strong> Verify your webcam, microphone, and internet connection are
+                            functioning correctly.</li>
+                    </ul>
+
+                    <h2>How to Launch Your Exam</h2>
+                    <ol>
+                        <li>Log in to your <strong>DC Cloud Solutions Exam Portal</strong> account.</li>
+                        <li>Navigate to the <strong>Dashboard</strong> or "Scheduled Exams" section.</li>
+                        <li>Click the <strong>"Start Exam"</strong> button next to your exam name.</li>
+                        <li>Follow the on-screen prompts to complete the security check-in.</li>
+                    </ol>
+
+                    <p style="font-size: 13px; color: #5f6368; font-style: italic; margin-top: 16px;">
+                        Tip: We recommend logging in 15 minutes early to resolve any potential technical issues.
+                    </p>
+
+                    <div class="button-container">
+                        <a href="https://dcinfotech.org.in/exam-portal/dashboard.html" class="cta-button">Go to Exam
+                            Dashboard</a>
+                    </div>
+
+                    <h2>Cancellations & Rescheduling</h2>
+                    <p>To reschedule or cancel, please access the portal immediately. Changes made within <strong>24
+                            hours</strong> of your scheduled time are not permitted and will result in fee forfeiture.
+                    </p>
+
+                    <p style="margin-top: 32px;">
+                        Best regards,<br>
+                        <strong>The Google Cloud Certification Team</strong><br>
+                        <span style="font-size: 13px; color: #5f6368;">at DC Cloud Solutions</span>
+                    </p>
+                </td>
+            </tr>
+
+            <!-- Legal Section -->
+            <tr>
+                <td class="legal-section">
+                    <h4>Legal Guarantee</h4>
+                    <p>If you’re an EEA-based consumer of digital content, services, or goods, and you’ve agreed to our
+                        Terms of Service, then EEA consumer laws provide you with a legal guarantee. Under this
+                        guarantee, we’re liable for any lack of conformity that you discover within two years of the
+                        delivery of goods or the one-time supply of digital content or services.</p>
+
+                    <h4>Right of Withdrawal</h4>
+                    <p>If you’re an EEA-based consumer, this service is by law subject to an automatic right of
+                        withdrawal for 14 days from the date of the conclusion of the contract. To exercise the right of
+                        withdrawal, you must inform us of your decision to withdraw from this contract by an unequivocal
+                        statement (e.g. a letter sent by post or an e-mail).</p>
+
+                    <h4>Support Contact</h4>
+                    <p>
+                        <strong>India Support:</strong> +91 92261 25654<br>
+                        Email: support@dcinfotech.org.in
+                    </p>
+                </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+                <td class="footer">
+                    <p>&copy; 2025 DC Cloud Solutions All rights reserved.<br>
+                        Pune, Maharashtra, India.</p>
+                    <p><em>This email was sent to {{user_email}} regarding your exam registration.</em></p>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussion Forum - Cloud Training</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/notiflix/dist/notiflix-3.2.6.min.js"></script>
+    <style>
+        /* Glassmorphism Variables are usually in styles.css, 
+           but applying specific overrides here for the forum look */
+
+        .thread-container {
+            display: flex;
+            gap: 24px;
+        }
+
+        /* Filter Sidebar */
+        .forum-sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+        }
+
+        .filter-group-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-medium);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .filter-btn:hover {
+            background: var(--bg-default);
+        }
+
+        .filter-btn.active {
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .filter-btn i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Thread List */
+        .thread-list-wrapper {
+            flex: 1;
+        }
+
+        .thread-card {
+            background: rgba(255, 255, 255, 0.7);
+            /* Glass-like fallbacks */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Dark mode fallback if JS logic toggles class */
+        body.dark-mode .thread-card {
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .thread-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary);
+        }
+
+        .thread-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .vote-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 50px;
+            background: var(--bg-default);
+            border-radius: 8px;
+            padding: 8px 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .vote-count {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin: 4px 0;
+        }
+
+        .thread-content {
+            flex: 1;
+        }
+
+        .thread-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .thread-snippet {
+            color: var(--text-medium);
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .thread-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-color);
+            padding-top: 12px;
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .author-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        .tag-pill {
+            padding: 4px 10px;
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .stats-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Floating New Thread Button */
+        .fab-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            z-index: 100;
+        }
+
+        .fab-btn:hover {
+            transform: scale(1.1);
+            background: #4338ca;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="page-transition-loader" class="page-loader">
+        <div class="loader-content">
+            <div class="spinner-circle"></div>
+            <div class="loader-text">Loading...</div>
+        </div>
+    </div>
+
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="video/video.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
+    <div id="dashboardContainer" class="saas-container">
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h2 class="page-title">💬 Community Forum</h2>
+                    <span class="current-date" id="currentTime"></span>
+                </div>
+                <div class="topbar-right">
+                    <button id="darkModeToggle" class="icon-btn">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="icon-btn notification-btn">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-scrollable">
+                <div class="content-wrapper">
+
+                    <div class="thread-container">
+                        <!-- Sidebar Filters -->
+                        <div class="forum-sidebar">
+                            <div class="filter-group-title">Topics</div>
+                            <button class="filter-btn active" onclick="filterByTag('all')">
+                                <i class="fas fa-layer-group"></i> All Topics
+                            </button>
+                            <button class="filter-btn" onclick="filterByTag('general')">
+                                <i class="fas fa-hashtag"></i> General Discussion
+                            </button>
+                            <button class="filter-btn" onclick="filterByTag('announcements')">
+                                <i class="fas fa-bullhorn"></i> Announcements
+                            </button>
+
+                            <div class="filter-group-title" style="margin-top: 20px;">Technical</div>
+                            <button class="filter-btn" onclick="filterByTag('compute')">
+                                <i class="fas fa-server"></i> Compute Engine
+                            </button>
+                            <button class="filter-btn" onclick="filterByTag('storage')">
+                                <i class="fas fa-database"></i> Cloud Storage
+                            </button>
+                            <button class="filter-btn" onclick="filterByTag('networking')">
+                                <i class="fas fa-network-wired"></i> Networking
+                            </button>
+                            <button class="filter-btn" onclick="filterByTag('security')">
+                                <i class="fas fa-shield-alt"></i> Security & IAM
+                            </button>
+                        </div>
+
+                        <!-- Main Feed -->
+                        <div class="thread-list-wrapper" id="threadList">
+
+                            <!-- Pinned -->
+                            <div class="thread-card" data-tags="announcements" onclick="viewThread(0)">
+                                <div class="thread-header">
+                                    <div class="vote-box">
+                                        <i class="fas fa-thumbtack" style="color: var(--primary);"></i>
+                                    </div>
+                                    <div class="thread-content">
+                                        <div class="thread-title">Welcome to the New Community Forum! 🎉</div>
+                                        <div class="thread-snippet">
+                                            We've upgraded our discussion platform. Please review the community
+                                            guidelines before posting. Happy learning!
+                                        </div>
+                                        <div class="thread-footer">
+                                            <div class="author-info">
+                                                <div class="author-avatar">A</div>
+                                                <span>Admin</span>
+                                            </div>
+                                            <div class="stats-group">
+                                                <span class="tag-pill">Announcements</span>
+                                                <span class="stat"><i class="fas fa-comment-alt"></i> 12</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Thread 1 -->
+                            <div class="thread-card" data-tags="compute" onclick="viewThread(1)">
+                                <div class="thread-header">
+                                    <div class="vote-box">
+                                        <i class="fas fa-chevron-up"></i>
+                                        <span class="vote-count">128</span>
+                                    </div>
+                                    <div class="thread-content">
+                                        <div class="thread-title">How to auto-scale Compute Engine based on custom
+                                            metrics?</div>
+                                        <div class="thread-snippet">
+                                            I'm trying to scale my instance group based on queue depth rather than CPU.
+                                            Has anyone implemented this using Stackdriver?
+                                        </div>
+                                        <div class="thread-footer">
+                                            <div class="author-info">
+                                                <div class="author-avatar">RS</div>
+                                                <span>Rahul Sharma</span>
+                                                <span style="opacity: 0.6; font-size: 0.8rem;">• 2h ago</span>
+                                            </div>
+                                            <div class="stats-group">
+                                                <span class="tag-pill">Compute</span>
+                                                <span class="stat"><i class="fas fa-comment-alt"></i> 4</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Thread 2 -->
+                            <div class="thread-card" data-tags="security" onclick="viewThread(2)">
+                                <div class="thread-header">
+                                    <div class="vote-box">
+                                        <i class="fas fa-chevron-up"></i>
+                                        <span class="vote-count">85</span>
+                                    </div>
+                                    <div class="thread-content">
+                                        <div class="thread-title">Best practices for Service Account key rotation?</div>
+                                        <div class="thread-snippet">
+                                            What tools do you recommend for automating key rotation? Is Vault the best
+                                            option or just simple Cloud Functions?
+                                        </div>
+                                        <div class="thread-footer">
+                                            <div class="author-info">
+                                                <div class="author-avatar">PS</div>
+                                                <span>Priya Singh</span>
+                                                <span style="opacity: 0.6; font-size: 0.8rem;">• 5h ago</span>
+                                            </div>
+                                            <div class="stats-group">
+                                                <span class="tag-pill">Security</span>
+                                                <span class="stat"><i class="fas fa-comment-alt"></i> 15</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Thread 3 -->
+                            <div class="thread-card" data-tags="networking" onclick="viewThread(3)">
+                                <div class="thread-header">
+                                    <div class="vote-box">
+                                        <i class="fas fa-chevron-up"></i>
+                                        <span class="vote-count">42</span>
+                                    </div>
+                                    <div class="thread-content">
+                                        <div class="thread-title">Troubleshooting PVC Peering connectivity</div>
+                                        <div class="thread-snippet">
+                                            I have established peering between two VPCs but cannot ping internal IPs.
+                                            Firewall rules seem correct. Any checklist?
+                                        </div>
+                                        <div class="thread-footer">
+                                            <div class="author-info">
+                                                <div class="author-avatar">AK</div>
+                                                <span>Amit Kumar</span>
+                                                <span style="opacity: 0.6; font-size: 0.8rem;">• 1d ago</span>
+                                            </div>
+                                            <div class="stats-group">
+                                                <span class="tag-pill">Networking</span>
+                                                <span class="stat"><i class="fas fa-comment-alt"></i> 7</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Floating Action Button -->
+            <button class="fab-btn" onclick="openGoogleGroup()" title="Open Google Groups">
+                <i class="fas fa-plus"></i>
+            </button>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/sidebar.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/session.js"></script>
+    <script src="js/fix-layout.js"></script>
+    <script src="js/interactions.js"></script>
+    <script src="js/profile-photo.js"></script>
+
+    <script>
+        function filterByTag(tag) {
+            // UI Active State
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            const threads = document.querySelectorAll('.thread-card');
+            threads.forEach(thread => {
+                if (tag === 'all') {
+                    thread.style.display = 'block';
+                } else {
+                    const tags = thread.dataset.tags || '';
+                    if (tags.includes(tag)) {
+                        thread.style.display = 'block';
+                    } else {
+                        thread.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        function viewThread(id) {
+            // For now, redirects to Google Group
+            openGoogleGroup();
+        }
+
+        function openGoogleGroup() {
+            window.open('https://groups.google.com/g/DC Cloud Solutions-cloud', '_blank');
+        }
+    </script>
+</body>
+
+</html>

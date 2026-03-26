@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weekly Feedback Form - GCP Internship</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Animated Gradient Background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(-45deg, #74ebd5, #ACB6E5, #e0c3fc, #8ec5fc);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      z-index: -2;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      max-width: 750px;
+      background: rgba(255, 255, 255, 0.9);
+      margin: 50px auto;
+      padding: 40px 50px;
+      border-radius: 15px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      text-align: center;
+      color: #1a73e8;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    p.description {
+      text-align: center;
+      color: #555;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    label {
+      margin-top: 20px;
+      display: block;
+      font-weight: 600;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: #f9f9f9;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #1a73e8;
+      outline: none;
+      background: #fff;
+    }
+
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 15px;
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:disabled {
+      background-color: #a8c7f2;
+      cursor: not-allowed;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #0c59cf;
+    }
+
+    .footer-msg {
+      text-align: center;
+      font-size: 13px;
+      color: #888;
+      margin-top: 25px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        margin: 30px 15px;
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Google Cloud Internship - Weekly Feedback</h1>
+    <p class="description">Please fill this form every Friday/Saturday to help us track your progress and provide better support.</p>
+
+    <form id="feedbackForm">
+      <label for="name">Your Name:</label>
+      <input type="text" id="name" name="name" required placeholder="Enter your full name" />
+
+      <label for="code">Your Batch Code:</label>
+      <input type="text" id="code" name="code" required placeholder="e.g., Month Of Your Training" />
+
+      <label>1. Did you attend the live sessions this week?</label>
+      <select name="live_sessions" required>
+        <option value="">-- Select --</option>
+        <option>Yes, attended all</option>
+        <option>Missed 1</option>
+        <option>Missed more than 1</option>
+      </select>
+
+      <label>2. Are you able to understand the content?</label>
+      <select name="understanding_content" required>
+        <option value="">-- Select --</option>
+        <option>Yes, everything was clear</option>
+        <option>Some topics were difficult</option>
+        <option>Need additional help</option>
+      </select>
+
+<label>3. Did you receive proper mentorship this week? <br><small style="color:#555;">(e.g., help from DC Cloud Solutions team, support in your portal, or follow-up call from program manager)</small></label>
+      <select name="mentorship" required>
+        <option value="">-- Select --</option>
+        <option>Yes</option>
+        <option>Not yet</option>
+        <option>I didn't reach out</option>
+      </select>
+
+      <label>4. How was your overall experience this week?</label>
+      <select name="overall_experience" required>
+        <option value="">-- Select --</option>
+        <option>Excellent</option>
+        <option>Good</option>
+        <option>Average</option>
+        <option>Needs improvement</option>
+      </select>
+
+      <label>5. Did you complete the labs or tasks assigned?</label>
+      <select name="tasks_completed" required>
+        <option value="">-- Select --</option>
+        <option>Yes</option>
+        <option>Partially</option>
+        <option>No</option>
+      </select>
+
+      <label>6. Suggestions / feedback for us:</label>
+      <textarea name="suggestions" rows="3" placeholder="Your honest feedback helps us improve." required></textarea>
+
+      <label>7. Any issue with mentorship, tasks, or portal?</label>
+      <textarea name="issues" rows="3" placeholder="Describe if you faced anything." required></textarea>
+
+      <button type="submit" id="submitBtn">Submit Feedback</button>
+      <p class="footer-msg">Developed with ❤️ by DC Cloud Solutions Team</p>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('feedbackForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Submitting...';
+
+      const data = {
+        name: form.name.value,
+        code: form.code.value,
+        live_sessions: form.live_sessions.value,
+        understanding_content: form.understanding_content.value,
+        mentorship: form.mentorship.value,
+        overall_experience: form.overall_experience.value,
+        tasks_completed: form.tasks_completed.value,
+        suggestions: form.suggestions.value,
+        issues: form.issues.value
+      };
+
+      fetch("https://sheetdb.io/api/v1/62i0hz5yg7qs5", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data })
+      })
+      .then(response => response.json())
+      .then(() => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Thank you! 🎉',
+          text: 'Your weekly feedback has been submitted successfully.',
+          confirmButtonColor: '#1a73e8'
+        });
+        form.reset();
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit Feedback';
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Something went wrong. Please try again later.',
+          confirmButtonColor: '#e53935'
+        });
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit Feedback';
+      });
+    });
+  </script>
+</body>
+</html>

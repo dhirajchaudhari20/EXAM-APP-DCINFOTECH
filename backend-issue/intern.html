@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submit Offer Letter Details</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+  <div class="bg-white p-6 rounded-2xl w-full max-w-md shadow-xl">
+    <h2 class="text-2xl font-bold mb-4 text-center">Submit Your Offer Letter Details</h2>
+
+    <form id="offerForm">
+      <input type="text" name="name" placeholder="Full Name" required class="w-full p-3 border mb-3 rounded-lg" />
+      <input type="email" name="email" placeholder="Email" required class="w-full p-3 border mb-3 rounded-lg" />
+      <input type="tel" name="phone" placeholder="Phone Number" required class="w-full p-3 border mb-3 rounded-lg" />
+      <textarea name="comments" placeholder="Any comments or queries" class="w-full p-3 border mb-4 rounded-lg"></textarea>
+
+      <button type="submit" id="submitBtn" class="bg-green-600 text-white px-4 py-3 rounded-lg w-full flex items-center justify-center">
+        <span id="btnText">Submit</span>
+        <svg id="btnLoader" class="animate-spin h-5 w-5 ml-2 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+        </svg>
+      </button>
+    </form>
+  </div>
+
+  <script>
+    const offerForm = document.getElementById("offerForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const btnText = document.getElementById("btnText");
+    const btnLoader = document.getElementById("btnLoader");
+
+    offerForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      btnText.classList.add("hidden");
+      btnLoader.classList.remove("hidden");
+
+      const formData = new FormData(offerForm);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch("https://sheetdb.io/api/v1/hcy28yxp1rntu");
+        const entries = await response.json();
+
+        const emailExists = entries.some(entry =>
+          entry.email?.toLowerCase() === data.email.toLowerCase() ||
+          entry.Email?.toLowerCase() === data.email.toLowerCase()
+        );
+
+        if (emailExists) {
+          Swal.fire({
+            icon: 'info',
+            title: 'Already Submitted!',
+            text: 'Your email is already in our records.',
+            confirmButtonColor: '#3085d6'
+          });
+        } else {
+          const submitRes = await fetch("https://sheetdb.io/api/v1/hcy28yxp1rntu", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ data }),
+          });
+
+          if (submitRes.ok) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Success!',
+              text: 'Your details have been submitted.',
+              confirmButtonColor: '#38a169'
+            });
+            offerForm.reset();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Submission Failed',
+              text: 'There was an issue submitting the form.',
+              confirmButtonColor: '#d33'
+            });
+          }
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Network Error',
+          text: 'Please check your internet connection.',
+          confirmButtonColor: '#d33'
+        });
+      } finally {
+        btnText.classList.remove("hidden");
+        btnLoader.classList.add("hidden");
+      }
+    });
+  </script>
+<footer></footer>
+</body>
+</html>
+<!-- This HTML file is a simple form for submitting offer letter details. It uses Tailwind CSS for styling and SweetAlert2 for notifications. The form includes fields for name, email, phone number, and comments. When the form is submitted, it checks if the email already exists in the database using the SheetDB API. If it does, an info alert is shown; if not, it submits the data and shows a success alert. Error handling is included for network issues and submission failures. -->
+<!-- The form is responsive and designed to be user-friendly, with a loading spinner on the submit button during processing. -->

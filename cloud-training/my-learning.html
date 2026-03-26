@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Learning - Cloud Training Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Dark Mode Support (Basic) */
+        @media (prefers-color-scheme: dark) {
+            .page-loader {
+                background: #121212;
+            }
+
+            .loader-text {
+                color: #e8eaed;
+            }
+        }
+
+        body.dark-mode .page-loader {
+            background: #121212;
+        }
+
+        body.dark-mode .loader-text {
+            color: #e8eaed;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notiflix/dist/notiflix-3.2.6.min.js"></script>
+</head>
+
+<body>
+    <!-- Page Transition Loader -->
+    <div id="page-transition-loader" class="page-loader">
+        <div class="loader-content">
+            <div class="spinner-circle"></div>
+            <div class="loader-text">Loading...</div>
+        </div>
+    </div>
+
+
+
+    <!-- Video Background -->
+    <div class="video-background">
+        <video autoplay muted loop playsinline id="bgVideo">
+            <source src="video/video.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
+    <!-- Dashboard Container (SaaS Layout) -->
+    <div id="dashboardContainer" class="saas-container">
+
+        <!-- Sidebar (Injected by js/sidebar.js) -->
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h2 class="page-title">My Learning</h2>
+                    <span class="current-date" id="currentTime"></span>
+                </div>
+
+                <div class="topbar-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search resources...">
+                    </div>
+
+                    <button id="darkModeToggle" class="icon-btn" title="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="icon-btn notification-btn" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="content-scrollable">
+                <div class="content-wrapper">
+
+                    <div class="section-header">
+                        <h3>Learning Resources</h3>
+                    </div>
+
+                    <div id="resourcesList" class="actions-row">
+                        <!-- Lecture Notes Card -->
+                        <div class="action-card" id="notesCard" onclick="openNotes()">
+                            <div class="icon-box info" id="notesIcon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="spinner-circle" id="notesSpinner"
+                                style="display: none; width: 24px; height: 24px; border-width: 3px; margin-right: 12px;">
+                            </div>
+                            <div class="action-text">
+                                <span class="action-title">Lecture Notes</span>
+                                <span class="action-desc">Access your batch-specific study materials</span>
+                            </div>
+                        </div>
+
+                        <!-- Placeholder for other resources -->
+                        <div class="action-card" onclick="openRecordings()">
+                            <div class="icon-box warning">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <div class="action-text">
+                                <span class="action-title">Recorded Sessions</span>
+                                <span class="action-desc">Watch past lectures</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Embedded Notes Container (Hidden by default) -->
+                    <div id="notesContainer" style="display: none; height: 100%; flex-direction: column;">
+                        <div style="margin-bottom: 16px;">
+                            <button onclick="closeNotes()" class="icon-btn"
+                                style="display: flex; align-items: center; gap: 8px; width: auto; padding: 8px 16px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer;">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>Back to Resources</span>
+                            </button>
+                        </div>
+                        <iframe id="notesFrame" src="" allow="fullscreen"
+                            style="width: 100%; flex: 1; border: none; border-radius: 8px; background: #fff; min-height: 600px;"></iframe>
+                    </div>
+
+                    <!-- Recorded Sessions Container (Hidden by default) -->
+                    <div id="recordingsContainer" style="display: none; flex-direction: column;">
+                        <div style="margin-bottom: 16px;">
+                            <button onclick="closeRecordings()" class="icon-btn"
+                                style="display: flex; align-items: center; gap: 8px; width: auto; padding: 8px 16px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer;">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>Back to Resources</span>
+                            </button>
+                        </div>
+                        <div id="recordingsList" class="actions-row">
+                            <!-- Recordings will be injected here -->
+                        </div>
+                    </div>
+
+                    <!-- Checklist Section -->
+                    <section class="checklist-section" id="checklistSection" style="display: none;">
+                        <h2 id="checklistTitle">Certification Pre-exam Checklist</h2>
+                        <div class="checklist-grid" id="checklistGrid">
+                            <!-- Dynamic Content Will Be Loaded Here -->
+                        </div>
+                    </section>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            // Wait for user data to be available (from agenda.js/login logic)
+                            // We use a small delay or check for the user object
+                            setTimeout(loadDynamicChecklist, 1000);
+                        });
+
+                        function loadDynamicChecklist() {
+                            let user = JSON.parse(sessionStorage.getItem("loggedInUser"));
+                            if (!user) {
+                                user = JSON.parse(localStorage.getItem("cloudUser"));
+                            }
+
+                            if (!user || !user.batch) {
+                                console.log("No user or batch found for checklist.");
+                                return;
+                            }
+
+                            const batch = user.batch.toUpperCase();
+                            let checklistData = null;
+
+                            // Determine which checklist to use
+                            if (batch.includes("ACE") || batch.includes("ASSOCIATE")) {
+                                checklistData = examChecklists["ACE"];
+                            } else if (batch.includes("DATA") || batch.includes("ENGINEER")) {
+                                checklistData = examChecklists["DATAENGINEER"];
+                            } else {
+                                // Fallback or check for other specific matches
+                                checklistData = examChecklists[batch] || examChecklists["DEFAULT"];
+                            }
+
+                            if (checklistData) {
+                                renderChecklist(checklistData);
+                            }
+                        }
+
+                        function renderChecklist(data) {
+                            const section = document.getElementById('checklistSection');
+                            const title = document.getElementById('checklistTitle');
+                            const grid = document.getElementById('checklistGrid');
+
+                            if (!section || !title || !grid) return;
+
+                            title.textContent = data.title;
+                            grid.innerHTML = ''; // Clear existing
+
+                            data.items.forEach(item => {
+                                const itemDiv = document.createElement('div');
+                                itemDiv.className = 'checklist-item';
+                                itemDiv.innerHTML = `
+                                    <div class="item-icon">${item.icon}</div>
+                                    <h3>${item.title}</h3>
+                                    <p>${item.description}</p>
+                                    <a href="${item.link}" class="btn" target="_blank">${item.linkText}</a>
+                                `;
+                                grid.appendChild(itemDiv);
+                            });
+
+                            section.style.display = 'block';
+                        }
+                    </script>
+
+                    <!-- Video Player Modal -->
+                    <div id="videoPlayerModal" class="modal-overlay" style="display: none;">
+                        <div class="modal-content video-modal">
+                            <div class="modal-header">
+                                <h3 id="videoTitle">Video Title</h3>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <a id="openInYoutubeBtn" href="#" target="_blank" class="icon-btn"
+                                        style="display: flex; align-items: center; gap: 6px; background: #ff0000; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 0.85rem;">
+                                        <i class="fab fa-youtube"></i> Open in YouTube
+                                    </a>
+                                    <button onclick="closeVideoModal()" class="icon-btn close-btn"><i
+                                            class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                            <div class="modal-body video-layout">
+                                <div class="video-container">
+                                    <div class="iframe-wrapper">
+                                        <iframe id="youtubePlayer" src="" frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen></iframe>
+                                    </div>
+                                    <div class="video-info">
+                                        <p id="videoDescription">Description goes here...</p>
+                                    </div>
+                                </div>
+
+                                <!-- Right Column: AI + Notes -->
+                                <div class="right-column">
+                                    <div class="ai-panel">
+                                        <div class="ai-header">
+                                            <i class="fas fa-robot"></i>
+                                            <span>AI Tutor</span>
+                                            <div style="flex: 1;"></div>
+                                            <button onclick="toggleLiveMode()" id="liveModeBtn" class="icon-btn"
+                                                title="Enable Live Mode"
+                                                style="font-size: 0.9rem; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color);">
+                                                <i class="fas fa-headset"></i> Live Mode
+                                            </button>
+                                        </div>
+                                        <div class="ai-content" id="chatContainer">
+                                            <div id="chatHistory" class="chat-messages">
+                                                <div class="message ai-message">
+                                                    Hello! I'm your AI Tutor created by <strong>DC Cloud
+                                                        Solutions</strong>. I
+                                                    can
+                                                    help you summarize this video, answer questions, or create quizzes.
+                                                    How
+                                                    can I help you today?
+                                                </div>
+                                                <!-- Quick Action Chips -->
+                                                <div class="quick-actions"
+                                                    style="padding: 0 14px; margin-bottom: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
+                                                    <button onclick="sendQuickMessage('Summarize this video')"
+                                                        class="chip-btn">
+                                                        <i class="fas fa-magic"></i> Summarize
+                                                    </button>
+                                                    <button onclick="sendQuickMessage('What are the key takeaways?')"
+                                                        class="chip-btn">
+                                                        <i class="fas fa-list-ul"></i> Key Takeaways
+                                                    </button>
+                                                    <button onclick="sendQuickMessage('Explain the main concept')"
+                                                        class="chip-btn">
+                                                        <i class="fas fa-lightbulb"></i> Explain Concept
+                                                    </button>
+                                                    <button onclick="sendQuickMessage('Create a short quiz about this')"
+                                                        class="chip-btn">
+                                                        <i class="fas fa-question-circle"></i> Quiz Me
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div id="chatLoading" class="chat-loading" style="display: none;">
+                                                <div class="typing-indicator">
+                                                    <span></span><span></span><span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="ai-input-area">
+                                            <div class="chat-input-area" id="chatInputArea">
+                                                <div class="file-preview" id="filePreview" style="display: none;">
+                                                    <span id="fileName"></span>
+                                                    <button class="clear-file-btn" onclick="clearFile()"><i
+                                                            class="fas fa-times"></i></button>
+                                                </div>
+                                                <div
+                                                    style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                                                    <label for="fileInput" class="attachment-btn">
+                                                        <i class="fas fa-paperclip"></i>
+                                                    </label>
+                                                    <input type="file" id="fileInput" hidden
+                                                        onchange="handleFileUpload(this)" accept=".pdf,.txt,.docx">
+                                                    <input type="text" id="userMessage"
+                                                        placeholder="Ask AI or upload notes..."
+                                                        onkeypress="handleEnter(event)">
+                                                    <button class="send-btn" onclick="sendMessage()">
+                                                        <i class="fas fa-paper-plane"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Voice Visualizer (Hidden by default) -->
+                                            <div class="voice-visualizer" id="voiceVisualizer">
+                                                <div class="voice-bar"></div>
+                                                <div class="voice-bar"></div>
+                                                <div class="voice-bar"></div>
+                                                <div class="voice-bar"></div>
+                                                <div class="voice-bar"></div>
+                                                <span class="live-status" id="liveStatus">Listening...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Embedded Notes Panel -->
+                                    <div class="notes-panel-embedded">
+                                        <div class="notes-header-embedded">
+                                            <i class="fas fa-book-open"></i>
+                                            <span>Session Notes</span>
+                                        </div>
+                                        <div class="notes-content-embedded">
+                                            <iframe id="embeddedNotesFrame" src="" frameborder="0"></iframe>
+                                            <div id="noNotesMessage"
+                                                style="display: none; padding: 20px; text-align: center; color: var(--text-medium);">
+                                                No notes available for this session.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <style>
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100000;
+            /* Increased z-index */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content.video-modal {
+            background: var(--bg-surface);
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-surface);
+        }
+
+        .modal-body.video-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .video-container {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+        }
+
+        .iframe-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            /* 16:9 Aspect Ratio */
+            height: 0;
+            background: #000;
+        }
+
+        .iframe-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .video-info {
+            padding: 20px;
+        }
+
+        .ai-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-default);
+            min-width: 300px;
+        }
+
+        .ai-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+        }
+
+        .ai-content {
+            padding: 0;
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            background: #f9fafb;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-bottom-left-radius: 2px;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-loading {
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .typing-indicator span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: #ccc;
+            border-radius: 50%;
+            margin-right: 4px;
+            animation: typing 1s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-4px);
+            }
+        }
+
+        .chat-input-area {
+            padding: 12px;
+            background: #fff;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-input-area input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .chat-input-area input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        .attachment-btn,
+        .send-btn {
+            color: var(--text-medium);
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .attachment-btn:hover,
+        .send-btn:hover {
+            background: var(--bg-surface);
+            color: var(--primary);
+        }
+
+        .file-preview {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #e0e7ff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: var(--primary);
+        }
+
+        .clear-file-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-medium);
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Quick Action Chips */
+        .chip-btn {
+            background: #e0e7ff;
+            color: var(--primary);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .notes-content-embedded {
+            flex: 1;
+            position: relative;
+            background: #fff;
+        }
+
+        .notes-content-embedded iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Video Modal Layout - Consolidated */
+        .modal-content.video-modal {
+            background: var(--bg-surface);
+            width: 95%;
+            /* Increased width */
+            max-width: 1400px;
+            /* Increased max-width */
+            height: 90vh;
+            /* Increased height */
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-body.video-layout {
+            display: flex;
+            flex-direction: row;
+            /* Explicitly row */
+            gap: 24px;
+            flex: 1;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .video-container {
+            flex: 2;
+            /* Takes 2/3 space */
+            display: flex;
+            flex-direction: column;
+            background: #000;
+            justify-content: center;
+            min-width: 0;
+            /* Critical for flex child */
+            position: relative;
+        }
+
+        .iframe-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            /* 16:9 Aspect Ratio */
+            height: 0;
+            background: #000;
+        }
+
+        .iframe-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-info {
+            padding: 16px;
+            color: #fff;
+            background: #1a1a1a;
+            border-top: 1px solid #333;
+        }
+
+        .video-info p {
+            color: #ccc;
+            margin: 0;
+        }
+
+        .right-column {
+            flex: 1;
+            /* Takes 1/3 space */
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            height: 100%;
+            min-width: 350px;
+            padding: 16px 16px 16px 0;
+            overflow-y: auto;
+        }
+
+        .ai-panel,
+        .notes-panel-embedded {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            min-height: 300px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .modal-body.video-layout {
+                flex-direction: column;
+                overflow-y: auto;
+                padding: 16px;
+            }
+
+            .video-container {
+                flex: none;
+                width: 100%;
+                border-radius: 8px;
+                overflow: hidden;
+                margin-bottom: 16px;
+            }
+
+            .right-column {
+                flex: none;
+                width: 100%;
+                height: auto;
+                padding: 0;
+                gap: 24px;
+            }
+
+            .ai-panel,
+            .notes-panel-embedded {
+                height: 500px;
+            }
+        }
+
+        /* Voice Visualizer */
+        .voice-visualizer {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 60px;
+            background: #f0f4f8;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        .voice-bar {
+            width: 6px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 3px;
+            animation: voice-wave 1s infinite ease-in-out;
+        }
+
+        .voice-bar:nth-child(1) {
+            animation-delay: 0.0s;
+        }
+
+        .voice-bar:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .voice-bar:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .voice-bar:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .voice-bar:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes voice-wave {
+
+            0%,
+            100% {
+                height: 20px;
+                opacity: 0.5;
+            }
+
+            50% {
+                height: 40px;
+                opacity: 1;
+            }
+        }
+
+        .live-status {
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-left: 10px;
+        }
+    </style>
+
+    <!-- Hidden inputs preserved -->
+    <input type="email" id="userEmail" value="user@example.com" hidden />
+    </div>
+    </div>
+    </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/activity-tracker.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="../js/agenda.js?v=2.6"></script>
+    <script src="js/session.js"></script>
+    <script src="js/fix-layout.js"></script>
+    <script src="js/interactions.js"></script>
+    <script src="js/profile-photo.js"></script>
+
+    <script>
+        // Simple logout confirmation
+
+
+        // Batch to Notes Mapping (Copied from agenda.js for reliability)
+        const batchToNotesMap = {
+            ACE: "notes.html?track=ace",
+            ACEJULY: "notes.html?track=ace",
+            ACEJULY2025: "notes.html?track=ace",
+            ACE4AUGUST: "notes.html?track=ace",
+            DEVOPS: "notes.html?track=devops",
+            CLOUDARCHITECT: "notes.html?track=pca",
+            CLOUDARCHITECTJULY: "notes.html?track=pca",
+            CLOUDDEVELOPER: "notes.html?track=developer",
+            CLOUDDEVOPSAUGUST: "notes.html?track=devops",
+            GENAI: "notes.html?track=gen-ai",
+            ML: "notes.html?track=ml-engineer",
+            SECURITY: "notes.html?track=security",
+            PCA: "notes.html?track=pca",
+            DIGITALLEADER: "notes.html?track=digital-leader",
+            NETWORKAUGUST2025: "notes.html?track=network",
+            ACE20: "notes.html?track=ace",
+            ACE21: "notes.html?track=ace",
+            ACE22: "notes.html?track=ace",
+            ACE23: "notes.html?track=ace",
+            ACE24: "notes.html?track=ace",
+            ACE25: "notes.html?track=pca",
+            PDE01: "notes.html?track=data-engineer",
+            ACE35: "notes.html?track=data-engineer",
+        };
+
+        function getNotesLink() {
+            const user = JSON.parse(sessionStorage.getItem("loggedInUser")) || JSON.parse(localStorage.getItem("cloudUser"));
+            if (user && user.batch) {
+                const batches = Array.isArray(user.batch) ? user.batch : [user.batch];
+                for (const b of batches) {
+                    const upper = b.toUpperCase();
+                    if (batchToNotesMap[upper]) {
+                        return batchToNotesMap[upper];
+                    }
+                }
+            }
+            return null;
+        }
+
+        function openNotes() {
+            const notesFile = getNotesLink();
+
+            if (notesFile) {
+                const icon = document.getElementById('notesIcon');
+                const spinner = document.getElementById('notesSpinner');
+
+                // Show spinner
+                if (icon) icon.style.display = 'none';
+                if (spinner) spinner.style.display = 'block';
+
+                // Simulate loading delay for better UX
+                setTimeout(() => {
+                    const notesUrl = 'notes/' + notesFile;
+                    document.getElementById('resourcesList').style.display = 'none';
+                    document.getElementById('notesContainer').style.display = 'flex';
+                    document.getElementById('notesFrame').src = notesUrl;
+
+                    // Reset spinner state
+                    if (icon) icon.style.display = 'flex';
+                    if (spinner) spinner.style.display = 'none';
+                }, 800);
+            } else {
+                Notiflix.Notify.failure('Notes not available for your batch.');
+            }
+        }
+
+        function closeNotes() {
+            document.getElementById('notesContainer').style.display = 'none';
+            document.getElementById('resourcesList').style.display = 'grid'; // Restore grid layout
+            document.getElementById('notesFrame').src = ''; // Stop loading/playing
+        }
+
+
+
+        function closeRecordings() {
+            document.getElementById('recordingsContainer').style.display = 'none';
+            document.getElementById('resourcesList').style.display = 'grid';
+        }
+
+        // --- Video Player & AI Summary Logic ---
+
+        // --- Video Player & AI Chat Logic ---
+
+        const GEMINI_URL = "/.netlify/functions/gemini-proxy";
+        let chatHistory = [];
+        let currentFileData = null;
+
+        // Live Mode Variables
+        let isLiveMode = false;
+        let recognition = null;
+        let synthesis = window.speechSynthesis;
+        let isSpeaking = false;
+        let preferredVoice = null;
+
+        // Initialize Speech Recognition if supported
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false; // Stop after each sentence for processing
+            recognition.interimResults = false;
+            recognition.lang = 'en-US'; // Default, but AI can handle mixed input
+
+            recognition.onstart = () => {
+                // BARGE-IN: Stop AI speaking when user starts speaking
+                if (synthesis.speaking) {
+                    synthesis.cancel();
+                    isSpeaking = false;
+                }
+                if (isLiveMode) {
+                    document.getElementById('liveStatus').innerText = "Listening...";
+                    document.querySelector('.voice-visualizer').style.background = '#e3f2fd';
+                }
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                console.log("User said:", transcript);
+                document.getElementById('userMessage').value = transcript;
+
+                if (isLiveMode) {
+                    document.getElementById('liveStatus').innerText = "Processing...";
+                }
+                sendMessage(); // Auto-send in Live Mode
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error", event.error);
+                if (isLiveMode) {
+                    document.getElementById('liveStatus').innerText = "Listening...";
+                    if (event.error === 'no-speech') {
+                        try { recognition.start(); } catch (e) { }
+                    } else {
+                        console.warn("Voice error, retrying...", event.error);
+                    }
+                }
+            };
+
+            recognition.onend = () => {
+                if (isLiveMode && !isSpeaking) {
+                    try { recognition.start(); } catch (e) { }
+                }
+            };
+        }
+
+        function toggleLiveMode() {
+            isLiveMode = !isLiveMode;
+            const btn = document.getElementById('liveModeBtn');
+            const chatInputArea = document.getElementById('chatInputArea');
+            const voiceVisualizer = document.getElementById('voiceVisualizer');
+
+            if (isLiveMode) {
+                if (!recognition) {
+                    Notiflix.Notify.failure("Speech recognition not supported in this browser.");
+                    isLiveMode = false;
+                    return;
+                }
+
+                btn.classList.add('active');
+                btn.style.background = '#ffebee';
+                btn.style.color = '#d32f2f';
+                btn.innerHTML = '<i class="fas fa-microphone-alt"></i> End Call';
+
+                // UI Switch: Hide Text Input, Show Visualizer
+                chatInputArea.style.display = 'none';
+                voiceVisualizer.style.display = 'flex';
+
+                // Load voices
+                if (synthesis) {
+                    const voices = synthesis.getVoices();
+                    preferredVoice = voices.find(v => v.name.includes('Google US English')) ||
+                        voices.find(v => v.name.includes('Samantha')) ||
+                        voices.find(v => v.lang.startsWith('en'));
+                }
+
+                try { recognition.start(); } catch (e) { }
+                Notiflix.Notify.success("Voice Call Active");
+            } else {
+                btn.classList.remove('active');
+                btn.style.background = '';
+                btn.style.color = '';
+                btn.innerHTML = '<i class="fas fa-headset"></i> Live Mode';
+
+                // UI Switch: Show Text Input, Hide Visualizer
+                chatInputArea.style.display = 'block';
+                voiceVisualizer.style.display = 'none';
+
+                if (recognition) recognition.stop();
+                if (synthesis) synthesis.cancel();
+                Notiflix.Notify.info("Call Ended");
+            }
+        }
+
+        function speakResponse(text) {
+            if (!synthesis) return;
+
+            // Strip markdown/HTML for speech
+            const cleanText = text.replace(/<[^>]*>/g, '').replace(/\*\*/g, '');
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            if (preferredVoice) {
+                utterance.voice = preferredVoice;
+            }
+
+            utterance.rate = 1.0;
+            utterance.pitch = 1.05;
+
+            isSpeaking = true;
+            if (recognition) recognition.stop();
+
+            // Visualizer State: Speaking
+            if (isLiveMode) {
+                document.getElementById('liveStatus').innerText = "Speaking...";
+                document.querySelector('.voice-visualizer').style.background = '#e8f5e9';
+            }
+
+            utterance.onend = () => {
+                isSpeaking = false;
+                if (isLiveMode) {
+                    document.getElementById('liveStatus').innerText = "Listening...";
+                    document.querySelector('.voice-visualizer').style.background = '#f0f4f8';
+                    try { recognition.start(); } catch (e) { }
+                }
+            };
+
+            synthesis.speak(utterance);
+        }
+
+        function extractYouTubeId(url) {
+            if (!url) return null;
+            // Added support for 'live/' URLs
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|live\/)([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function playVideo(url, title, description) {
+            console.log("Playing video:", title);
+
+            // Track activity
+            if (typeof activityTracker !== 'undefined') {
+                activityTracker.trackSessionView(title);
+            }
+
+            const videoId = extractYouTubeId(url);
+            if (!videoId) {
+                console.warn("Invalid YouTube URL:", url);
+                window.open(url, '_blank'); // Fallback
+                return;
+            }
+
+            document.getElementById('videoTitle').innerText = title;
+            document.getElementById('videoDescription').innerText = description;
+            document.getElementById('youtubePlayer').src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            document.getElementById('openInYoutubeBtn').href = url;
+
+            // Initialize Chat
+            initializeChat(title, description);
+
+            // Load Embedded Notes
+            const notesFile = getNotesLink();
+            const notesFrame = document.getElementById('embeddedNotesFrame');
+            const noNotesMsg = document.getElementById('noNotesMessage');
+
+            if (notesFile) {
+                notesFrame.src = 'notes/' + notesFile;
+                notesFrame.style.display = 'block';
+                noNotesMsg.style.display = 'none';
+            } else {
+                notesFrame.src = '';
+                notesFrame.style.display = 'none';
+                noNotesMsg.style.display = 'block';
+            }
+
+            document.getElementById('videoPlayerModal').style.display = 'flex';
+        }
+
+        function closeVideoModal() {
+            document.getElementById('videoPlayerModal').style.display = 'none';
+            document.getElementById('youtubePlayer').src = ''; // Stop video
+            document.getElementById('embeddedNotesFrame').src = ''; // Stop notes loading
+            if (isLiveMode) toggleLiveMode(); // End call on close
+        }
+
+        function initializeChat(title, description) {
+            chatHistory = []; // Reset history
+            const messagesDiv = document.getElementById('chatHistory');
+            if (!messagesDiv) return;
+
+            messagesDiv.innerHTML = `
+                <div class="message ai-message">
+                    Hello! I'm your AI Tutor. Click "Live Mode" to start a voice call!
+                </div>
+                <!-- Quick Action Chips -->
+                <div class="quick-actions"
+                    style="padding: 0 14px; margin-bottom: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button onclick="sendQuickMessage('Summarize this video')" class="chip-btn"><i class="fas fa-magic"></i> Summarize</button>
+                    <button onclick="sendQuickMessage('What are the key takeaways?')" class="chip-btn"><i class="fas fa-list-ul"></i> Key Takeaways</button>
+                    <button onclick="sendQuickMessage('Explain the main concept')" class="chip-btn"><i class="fas fa-lightbulb"></i> Explain Concept</button>
+                    <button onclick="sendQuickMessage('Create a short quiz about this')" class="chip-btn"><i class="fas fa-question-circle"></i> Quiz Me</button>
+                </div>
+            `;
+
+            // Initial System Context - Enhanced Persona
+            chatHistory.push({
+                role: "user",
+                parts: [{
+                    text: `
+                    SYSTEM INSTRUCTION:
+                    You are an expert AI Tutor created by "DC Cloud Solutions".
+                    
+                    **YOUR PERSONA:**
+                    - You are a friendly, enthusiastic, and empathetic human tutor.
+                    - Use natural, conversational language.
+                    - NEVER say "As an AI...".
+                    
+                    **LANGUAGE SKILLS:**
+                    - Fluent in **English, Hindi, and Marathi**.
+                    - Detect language and respond in same.
+                    
+                    **CONTEXT:**
+                    User is watching video: "${title}"
+                    Description: "${description}"
+                ` }]
+            });
+            chatHistory.push({
+                role: "model",
+                parts: [{ text: "Understood! Ready to chat." }]
+            });
+        }
+
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendQuickMessage(text) {
+            document.getElementById('userMessage').value = text;
+            sendMessage();
+        }
+
+        function handleFileUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const base64Data = e.target.result.split(',')[1]; // Remove data:application/pdf;base64, prefix
+                const mimeType = file.type;
+
+                currentFileData = {
+                    inlineData: {
+                        data: base64Data,
+                        mimeType: mimeType
+                    }
+                };
+
+                document.getElementById('fileName').innerText = file.name;
+                document.getElementById('filePreview').style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearFile() {
+            currentFileData = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('filePreview').style.display = 'none';
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userMessage');
+            const message = input.value.trim();
+
+            if (!message && !currentFileData) return;
+
+            // Add User Message to UI
+            const messagesDiv = document.getElementById('chatHistory');
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'message user-message';
+            userMsgDiv.innerText = message || (currentFileData ? "[Uploaded File]" : "");
+            messagesDiv.appendChild(userMsgDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            input.value = '';
+            document.getElementById('chatLoading').style.display = 'flex';
+
+            // Prepare API Payload
+            const parts = [];
+            if (currentFileData) {
+                parts.push(currentFileData);
+                clearFile(); // Clear after sending
+            }
+
+            // Add context to the message for the AI
+            let finalMessage = message;
+            if (isLiveMode) {
+                // AI LIVE PROMPT: Force short, conversational responses
+                finalMessage += "\n\n[System Context: User is in LIVE VOICE CALL MODE. Keep response VERY SHORT (1-2 sentences max). Be conversational. Act like you are on a phone call. Speak in the user's language.]";
+            }
+
+            if (finalMessage) {
+                parts.push({ text: finalMessage });
+            }
+
+            chatHistory.push({ role: "user", parts: parts });
+
+            try {
+                const responseText = await callAIChatAPI(chatHistory); // Use the new chat API function
+
+                // Add AI Message to UI
+                const aiMsgDiv = document.createElement('div');
+                aiMsgDiv.className = 'message ai-message';
+                // Simple markdown to HTML (bolding)
+                aiMsgDiv.innerHTML = responseText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+                messagesDiv.appendChild(aiMsgDiv);
+
+                chatHistory.push({ role: "model", parts: [{ text: responseText }] });
+
+                // Speak response if in Live Mode
+                if (isLiveMode) {
+                    speakResponse(responseText);
+                }
+
+            } catch (error) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'message ai-message';
+                errorDiv.style.color = 'red';
+                errorDiv.innerText = "Error: " + error.message;
+                messagesDiv.appendChild(errorDiv);
+            } finally {
+                document.getElementById('chatLoading').style.display = 'none';
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+        }
+
+        // Existing callAISummaryAPI for summary (renamed for clarity)
+        async function callAISummaryAPI(prompt) {
+            // Reuse the robust chat API logic but wrap the prompt in history format
+            const history = [{
+                role: "user",
+                parts: [{ text: prompt }]
+            }];
+            return await callAIChatAPI(history);
+        }
+
+        // Robust API Call with Dynamic Model Discovery
+        let cachedModelName = null;
+
+        async function getBestAvailableModel() {
+            // Updated to available model for this project
+            return "models/gemini-2.0-flash";
+        }
+
+        // ... (skip to callGeminiChatAPI) ...
+
+        async function callAIChatAPI(history) {
+            const url = GEMINI_URL;
+
+            const payload = {
+                contents: history
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error?.message || 'API Error');
+                }
+
+                if (data.candidates && data.candidates.length > 0 && data.candidates[0].content) {
+                    return data.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error('No response generated.');
+                }
+            } catch (error) {
+                console.error("AI API Error:", error);
+                throw error;
+            }
+        }
+
+        async function generateSummary() {
+            // Use the hardcoded key if available, otherwise check local storage (fallback)
+            let apiKey = "PROXIED"; // Using Netlify Proxy
+
+            // If GEMINI_API_KEY is somehow not set or empty, try local storage (legacy support)
+            if (!apiKey || apiKey === "YOUR_API_KEY") {
+                apiKey = localStorage.getItem('gemini_api_key');
+            }
+
+            if (!apiKey) {
+                Notiflix.Confirm.prompt(
+                    'AI API Key Required',
+                    'To use AI features, please contact your administrator.',
+                    '',
+                    'Save & Summarize',
+                    'Cancel',
+                    (clientAnswer) => {
+                        if (clientAnswer.trim().length > 0) {
+                            localStorage.setItem('gemini_api_key', clientAnswer.trim());
+                            // Reload page to pick up key or just set variable? 
+                            // Ideally we should update a global var, but for now let's reload to be safe
+                            window.location.reload();
+                        }
+                    }
+                );
+                return;
+            }
+
+            // ... (rest of summary logic) ...
+            // Since we are fixing the main chat API, let's ensure this uses the same robust call
+
+            // For the "Summarize this video" quick action, we can just delegate to the chat interface
+            // which provides a better UX (streaming-like feel, history).
+            // So instead of a separate summary modal/area, let's just send a message to the chat.
+
+            // However, if the user specifically clicked a "Generate Summary" button outside the chat,
+            // we might want to keep the old behavior. 
+            // But the user asked for "pre inputs that user can gvie liek suzmmzr sie the video".
+            // This implies they want it IN the chat.
+
+            // Let's implement the "Quick Action" handler the user asked for.
+        }
+
+        function sendQuickMessage(text) {
+            const input = document.getElementById('userMessage');
+            if (input) {
+                input.value = text;
+                sendMessage();
+            }
+        }
+
+        function startDictation() {
+            if (recognition) {
+                try {
+                    recognition.start();
+                } catch (e) {
+                    console.log("Recognition already started");
+                }
+            } else {
+                Notiflix.Notify.failure("Voice input not supported in this browser.");
+            }
+        }
+
+        function openRecordings() {
+            // getScheduleForUser is defined in agenda.js
+            if (typeof getScheduleForUser !== 'function') {
+                Notiflix.Notify.failure('Error loading schedule data.');
+                return;
+            }
+
+            const schedule = getScheduleForUser();
+            const recordings = schedule.filter(s => s.recording && s.recording.trim() !== "");
+
+            if (recordings.length === 0) {
+                document.getElementById('customAlertModal').style.display = 'flex';
+                return;
+            }
+
+            const listContainer = document.getElementById('recordingsList');
+            listContainer.innerHTML = '';
+
+            recordings.forEach(rec => {
+                const card = document.createElement('div');
+                card.className = 'action-card';
+                card.style.cursor = 'default';
+                card.style.flexDirection = 'column';
+                card.style.alignItems = 'flex-start';
+
+                // Robust escaping for onclick handler
+                const safeTitle = (rec.day || "").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                const safeDesc = (rec.description || "").replace(/'/g, "\\'").replace(/"/g, "&quot;").replace(/\n/g, " ");
+                const safeUrl = (rec.recording || "").replace(/'/g, "\\'");
+
+                card.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:16px; width:100%; margin-bottom:12px;">
+                        <div class="icon-box warning"><i class="fas fa-play-circle"></i></div>
+                        <div class="action-text">
+                            <span class="action-title">${rec.day}</span>
+                            <span class="action-desc" style="font-size:0.75rem;">${rec.time}</span>
+                        </div>
+                    </div>
+                    <p style="font-size:0.9rem; color:var(--text-medium); margin-bottom:16px;">${rec.description}</p>
+                    <button onclick="playVideo('${safeUrl}', '${safeTitle}', '${safeDesc}')" style="width:100%; padding:8px; background:var(--primary); color:#fff; border:none; border-radius:4px; cursor:pointer;">
+                        Watch Recording
+                    </button>
+                `;
+                listContainer.appendChild(card);
+            });
+
+            document.getElementById('resourcesList').style.display = 'none';
+            document.getElementById('recordingsContainer').style.display = 'flex';
+        }
+    </script>
+    <!-- Custom Alert Modal -->
+    <div id="customAlertModal" class="custom-modal-overlay" style="display: none;">
+        <div class="custom-modal-content">
+            <div class="custom-modal-icon">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <h3 class="custom-modal-title">Recording Not Available</h3>
+            <p class="custom-modal-text">Recordings are not available for your batch yet. Contact admin at
+                support@dcinfotech.org.in for more info.</p>
+            <button onclick="closeCustomAlert()" class="custom-modal-btn">Okay</button>
+        </div>
+    </div>
+
+    <style>
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .custom-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: scale(0.9);
+            animation: scaleIn 0.3s ease forwards;
+        }
+
+        @keyframes scaleIn {
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .custom-modal-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .custom-modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-high);
+            margin-bottom: 8px;
+        }
+
+        .custom-modal-text {
+            color: var(--text-medium);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .custom-modal-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 1rem;
+        }
+
+        .custom-modal-btn:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+
+    <script>
+        function closeCustomAlert() {
+            document.getElementById('customAlertModal').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Form Submissions - DC Cloud Solutions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #eef2f7;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      color: #1a237e;
+      margin-bottom: 25px;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .actions button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      background: #1a73e8;
+      color: white;
+      transition: 0.3s;
+    }
+
+    .actions button:hover {
+      background: #0d5bcc;
+    }
+
+    .search-box {
+      max-width: 400px;
+      margin: 0 auto 20px;
+      display: flex;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead {
+      background: #1a73e8;
+      color: #fff;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    tr:hover {
+      background: #e9f2ff;
+    }
+
+    tr.reviewed-row {
+      background-color: #e0f7e9 !important;
+    }
+
+    .review-btn {
+      background: #43a047;
+      color: #fff;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .review-btn:hover {
+      background: #388e3c;
+    }
+
+    .review-label {
+      color: #43a047;
+      font-weight: 600;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 13px;
+      color: #777;
+    }
+  </style>
+  <link rel="stylesheet" href="components/layout.css">
+</head>
+
+<body>
+  <!-- Main Content Wrapper injected by unified layout -->
+  <main class="admin-main">
+    <header class="admin-header">
+      <h1 class="admin-header-title">Contact Form Submissions</h1>
+    </header>
+
+    <div class="admin-content">
+      <div class="admin-table-card">
+        <!-- Actions -->
+        <div class="actions">
+          <button onclick="exportCSV()">📄 Export as CSV</button>
+          <button onclick="clearReviewed()">🧹 Clear Reviewed Marks</button>
+        </div>
+
+        <!-- Search -->
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Search by name, email, or message...">
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+          <table id="contactTable">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Subject</th>
+                <th>Message</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+  </main>
+
+  <!-- Unified Sidebar Injector -->
+  <script src="components/sidebar.js"></script>
+
+  <script>
+    const API_URL = "https://sheetdb.io/api/v1/f4pje8yjhtycr";
+    const tableBody = document.getElementById("tableBody");
+    const searchInput = document.getElementById("searchInput");
+    let reviewedList = JSON.parse(localStorage.getItem("contactReviewed")) || [];
+
+    // Load Data
+    async function loadData() {
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+
+        tableBody.innerHTML = "";
+        data.forEach(row => {
+          const id = (row.email + row.name).toLowerCase().replace(/\s+/g, "-");
+          const isReviewed = reviewedList.includes(id);
+
+          const tr = document.createElement("tr");
+          tr.className = isReviewed ? "reviewed-row" : "";
+
+          tr.innerHTML = `
+            <td id="status-${id}">
+              ${isReviewed
+              ? `<span class='review-label'>✅ Reviewed</span>`
+              : `<button class='review-btn' onclick="markReviewed('${id}', this)">Mark Reviewed</button>`}
+            </td>
+            <td>${row.name || ""}</td>
+            <td>${row.email || ""}</td>
+            <td>${row.phone || ""}</td>
+            <td>${row.subject || ""}</td>
+            <td>${row.message || ""}</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      } catch (error) {
+        tableBody.innerHTML = `<tr><td colspan="6" style="color:red;text-align:center;">Error loading contact details</td></tr>`;
+        console.error(error);
+      }
+    }
+
+    // Mark as Reviewed
+    function markReviewed(id, btn) {
+      if (!reviewedList.includes(id)) {
+        reviewedList.push(id);
+        localStorage.setItem("contactReviewed", JSON.stringify(reviewedList));
+        const row = btn.closest("tr");
+        row.classList.add("reviewed-row");
+        const statusCell = document.getElementById(`status-${id}`);
+        statusCell.innerHTML = `<span class='review-label'>✅ Reviewed</span>`;
+      }
+    }
+
+    // Search Functionality
+    searchInput.addEventListener("keyup", function () {
+      const filter = this.value.toLowerCase();
+      const rows = tableBody.getElementsByTagName("tr");
+      for (let i = 0; i < rows.length; i++) {
+        let rowText = rows[i].innerText.toLowerCase();
+        rows[i].style.display = rowText.includes(filter) ? "" : "none";
+      }
+    });
+
+    // Export as CSV
+    function exportCSV() {
+      const rows = document.querySelectorAll("table tr");
+      const csv = [];
+      for (let row of rows) {
+        const cols = row.querySelectorAll("td, th");
+        const rowData = Array.from(cols).map(col => `"${col.innerText.replace(/"/g, '""')}"`);
+        csv.push(rowData.join(","));
+      }
+      const blob = new Blob([csv.join("\n")], { type: "text/csv" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "Contact_Submissions.csv";
+      link.click();
+    }
+
+    // Clear reviewed list
+    function clearReviewed() {
+      if (confirm("Clear all reviewed marks?")) {
+        localStorage.removeItem("contactReviewed");
+        reviewedList = [];
+        loadData();
+      }
+    }
+
+    // Initialize
+    loadData();
+  </script>
+
+</body>
+
+</html>

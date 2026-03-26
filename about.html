@@ -1,0 +1,1453 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Title optimized for SEO -->
+  <title>DC Cloud Solutions - About </title>
+
+  <!-- Bootstrap CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/aos@3.0.0-beta.6/dist/aos.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" type="text/css"
+    href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- Meta Description optimized for SEO -->
+  <meta name="description"
+    content="DC Cloud Solutions offers top-notch web development, cloud solutions, and SEO services. Partner with us to boost your online presence and drive business growth.">
+
+  <!-- Open Graph meta tags for social media optimization -->
+  <meta property="og:title" content="DC Cloud Solutions | Web Development, Cloud Solutions, & SEO Services">
+  <meta property="og:description"
+    content="Elevate your business with our expert web development, cloud services, and SEO strategies at DC Cloud Solutions.">
+  <meta property="og:image" content="https://www.dcinfotech.org.in
+/DC Cloud Solutionslogo.png">
+  <meta property="og:url" content="https://www.dcinfotech.org.in
+/">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Cards meta tags for Twitter optimization -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DC Cloud Solutions | Web Development, Cloud Solutions, & SEO Services">
+  <meta name="twitter:description"
+    content="Boost your business with top-notch web development, cloud services, and SEO strategies. Partner with DC Cloud Solutions.">
+  <meta name="twitter:image" content="https://www.dcinfotech.org.in
+/DC Cloud Solutionslogo.png">
+
+  <!-- Favicon -->
+  <link rel="icon" href="DC Cloud Solutionslogo.ico" type="image/x-icon">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&amp;family=Poppins:wght@500;600;700&amp;display=swap"
+    rel="stylesheet">
+
+  <!-- CSS Files -->
+  <link href="css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/owl.carousel.min.css" />
+  <link rel="stylesheet" href="css/owl.theme.default.min.css" />
+  <link rel="stylesheet" type="text/css" href="css/jquery.fancybox.min.css">
+  <link href="css/style.css" rel="stylesheet" media="all">
+
+  <!-- Additional Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+  <!-- Loader -->
+  <div class="loader">
+    <style>
+      .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        transition: opacity 0.5s ease-out;
+      }
+
+      .loader-content {
+        position: relative;
+        top: -10%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .loader-loader {
+        width: 120px;
+        height: auto;
+      }
+
+      @media only screen and (max-width: 600px) {
+        .loader-loader {
+          width: 100px;
+        }
+      }
+
+      .loader.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
+    <div class="loader-content">
+      <img src="images/dcintro.gif" alt="Loader" class="loader-loader" />
+    </div>
+    <script>
+      window.addEventListener('load', function () {
+        document.querySelector('.loader').style.display = 'flex';
+        setTimeout(function () {
+          document.querySelector('.loader').classList.add('hidden');
+        }, 3000);
+      });
+    </script>
+  </div>
+  <!-- loader html -->
+
+  <!-- Header -->
+  <div id="header-placeholder"></div>
+  <script>
+    async function loadHeader() {
+      try {
+        const response = await fetch('template/header.html');
+        if (response.ok) {
+          const headerContent = await response.text();
+          document.getElementById('header-placeholder').innerHTML = headerContent;
+          setActiveNavLink(); // <-- Make sure this runs AFTER header is loaded
+        } else {
+          console.error("Failed to load header:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error loading header:", error);
+      }
+    }
+    function setActiveNavLink() {
+      let currentPath = window.location.pathname;
+      // Remove trailing slash if present
+      if (currentPath.endsWith('/')) currentPath = currentPath.slice(0, -1);
+      // Get last part after slash, or '/' for home
+      let page = currentPath.split('/').pop() || '/';
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        let href = link.getAttribute('href');
+        // Match for both /about and about.html
+        if (
+          href === page ||
+          href === currentPath ||
+          (href === '/' && (page === '' || page === 'index.html'))
+        ) {
+          link.classList.add('active');
+        }
+        // Also match if href is like '/about' and page is 'about.html'
+        if (
+          (href.replace(/^\//, '') + '.html') === page
+        ) {
+          link.classList.add('active');
+        }
+      });
+    }
+    loadHeader();
+  </script>
+
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Quick Modal -->
+  <div class="modal fade quick-contact" id="quickModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Get IT Support</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="quick-form-div">
+            <div class="form-group">
+              <input type="text" id="fullName" class="form-control" placeholder="Full Name" />
+            </div>
+            <div class="form-group">
+              <input type="email" id="email" class="form-control" placeholder="Email" />
+            </div>
+            <div class="form-group">
+              <input type="text" id="subject" class="form-control" placeholder="Subject" />
+            </div>
+            <div class="form-group">
+              <textarea id="message" class="form-control" placeholder="Message"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn subimt-comment" onclick="submitForm()">Send Message</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function submitForm() {
+      const fullName = document.getElementById('fullName').value;
+      const email = document.getElementById('email').value;
+      const subject = document.getElementById('subject').value;
+      const message = document.getElementById('message').value;
+      if (fullName && email && subject && message) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Message Sent!',
+          text: 'Thank you, ' + fullName + '. We will get back to you shortly.',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          document.getElementById('fullName').value = '';
+          document.getElementById('email').value = '';
+          document.getElementById('subject').value = '';
+          document.getElementById('message').value = '';
+          $('#quickModal').modal('hide');
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Please fill in all fields before submitting.',
+          confirmButtonText: 'OK'
+        });
+      }
+    }
+  </script>
+  <!-- comon header ends  -->
+
+  <!-- Banner -->
+  <div class="banner-part mobile-comon-animation subpage-banner">
+    <div class="container">
+      <div class="banner-div-content d-grid align-content-center " data-aos="fade-up">
+        <h1 class="text-center">About Us</h1>
+        <ul class="list-unstyled d-flex justify-content-center">
+          <li> Home </li>
+          <li> <a href='/about'>About Us</a> </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Introduction Section -->
+  <section class="py-5 section-intro">
+    <div class="container py-lg-5">
+      <div class="row align-items-center gx-lg-5">
+        <div class="col-lg-6 mb-5 mb-lg-0" data-aos="fade-right">
+          <div class="position-relative">
+            <img src="images/office.jpg" alt="Modern Office"
+              class="img-fluid rounded-4 shadow-lg position-relative z-index-2">
+            <div
+              class="experience-badge bg-white shadow-sm rounded-4 p-3 position-absolute bottom-0 start-0 translate-middle-x mb-4 ms-5 z-index-3 d-none d-md-block">
+              <div class="d-flex align-items-center gap-3">
+                <div
+                  class="icon-box bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                  style="width: 50px; height: 50px;">
+                  <i class="fas fa-award fa-lg"></i>
+                </div>
+                <div>
+                  <h5 class="m-0 fw-bold">Excellence</h5>
+                  <small class="text-muted">Guaranteed Quality</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6" data-aos="fade-left">
+          <h6 class="text-uppercase text-primary fw-bold letter-spacing-2 mb-3">Who We Are</h6>
+          <h2 class="display-5 fw-bold mb-4">Driving Digital Transformation</h2>
+          <p class="text-muted lead mb-4">
+            At <strong>DC Cloud Solutions</strong>, we don't just build software; we engineer growth. We are a team of
+            passionate innovators dedicated to solving complex business challenges through cutting-edge technology.
+          </p>
+          <p class="text-muted mb-4">
+            From cloud computing and web development to advanced SEO strategies, our holistic approach ensures that your
+            business stays ahead in a rapidly evolving digital landscape. We believe in building long-term partnerships
+            rooted in trust, transparency, and results.
+          </p>
+          <div class="row g-4 mt-2">
+            <div class="col-sm-6">
+              <div class="d-flex align-items-center gap-3">
+                <i class="fas fa-check-circle text-success fa-lg"></i>
+                <span class="fw-semibold">Innovative Solutions</span>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="d-flex align-items-center gap-3">
+                <i class="fas fa-check-circle text-success fa-lg"></i>
+                <span class="fw-semibold">Client-Centric Approach</span>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="d-flex align-items-center gap-3">
+                <i class="fas fa-check-circle text-success fa-lg"></i>
+                <span class="fw-semibold">Expert Team</span>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="d-flex align-items-center gap-3">
+                <i class="fas fa-check-circle text-success fa-lg"></i>
+                <span class="fw-semibold">Proven Track Record</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-5 bg-primary text-white position-relative overflow-hidden">
+    <div class="container position-relative z-index-2">
+      <div class="row g-4 text-center">
+        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="0">
+          <h2 class="display-4 fw-bold mb-0 counter-value" data-target="3">0</h2>
+          <p class="mb-0 opacity-75">Years Experience</p>
+        </div>
+        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="100">
+          <h2 class="display-4 fw-bold mb-0 counter-value" data-target="100">0</h2>
+          <p class="mb-0 opacity-75">Projects Completed</p>
+        </div>
+        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="200">
+          <h2 class="display-4 fw-bold mb-0 counter-value" data-target="50">0</h2>
+          <p class="mb-0 opacity-75">Happy Clients</p>
+        </div>
+        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="300">
+          <h2 class="display-4 fw-bold mb-0 counter-value" data-target="20">0</h2>
+          <p class="mb-0 opacity-75">Team Members</p>
+        </div>
+      </div>
+    </div>
+    <div class="shape shape-3"></div>
+  </section>
+
+  <!-- Mission & Vision Cards -->
+  <section class="py-5 bg-light">
+    <div class="container py-lg-5">
+      <div class="row g-4">
+        <!-- Mission -->
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+          <div class="card h-100 border-0 shadow-sm hover-lift rounded-4 p-4 text-center">
+            <div class="card-body">
+              <div
+                class="icon-wrapper mb-4 mx-auto bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center">
+                <i class="fas fa-rocket fa-2x"></i>
+              </div>
+              <h3 class="h4 fw-bold mb-3">Our Mission</h3>
+              <p class="text-muted">
+                To harness the power of technology to drive business success, delivering innovative solutions that
+                address unique client needs and foster growth.
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Vision -->
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="card h-100 border-0 shadow-sm hover-lift rounded-4 p-4 text-center">
+            <div class="card-body">
+              <div
+                class="icon-wrapper mb-4 mx-auto bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center">
+                <i class="fas fa-eye fa-2x"></i>
+              </div>
+              <h3 class="h4 fw-bold mb-3">Our Vision</h3>
+              <p class="text-muted">
+                To be a global leader in digital transformation, recognized for our commitment to quality, innovation,
+                and creating lasting value for our partners.
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Values -->
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="card h-100 border-0 shadow-sm hover-lift rounded-4 p-4 text-center">
+            <div class="card-body">
+              <div
+                class="icon-wrapper mb-4 mx-auto bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center">
+                <i class="fas fa-heart fa-2x"></i>
+              </div>
+              <h3 class="h4 fw-bold mb-3">Our Values</h3>
+              <p class="text-muted">
+                Integrity, Innovation, and Excellence. We believe in doing the right thing, constantly pushing
+                boundaries, and delivering nothing but the best.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Journey Timeline Section -->
+  <section class="py-5 position-relative">
+    <div class="container py-lg-5">
+      <div class="text-center mb-5" data-aos="fade-up">
+        <h6 class="text-uppercase text-primary fw-bold letter-spacing-2 mb-2">Milestones</h6>
+        <h2 class="display-5 fw-bold">Our Journey</h2>
+      </div>
+      <div class="timeline position-relative">
+        <!-- Item 1 -->
+        <div class="timeline-item left" data-aos="fade-right">
+          <div class="content shadow-sm rounded-4 p-4 bg-white border-start border-4 border-primary">
+            <h3 class="h5 fw-bold text-primary">2022</h3>
+            <h4 class="h6 fw-bold mb-2">Inception</h4>
+            <p class="mb-0 text-muted small">Founded with a vision to simplify technology for small businesses.</p>
+          </div>
+        </div>
+        <!-- Item 2 -->
+        <div class="timeline-item right" data-aos="fade-left">
+          <div class="content shadow-sm rounded-4 p-4 bg-white border-start border-4 border-success">
+            <h3 class="h5 fw-bold text-success">2023</h3>
+            <h4 class="h6 fw-bold mb-2">Expansion</h4>
+            <p class="mb-0 text-muted small">Expanded our team and moved to a larger office to accommodate growth.</p>
+          </div>
+        </div>
+        <!-- Item 3 -->
+        <div class="timeline-item left" data-aos="fade-right">
+          <div class="content shadow-sm rounded-4 p-4 bg-white border-start border-4 border-warning">
+            <h3 class="h5 fw-bold text-warning">2024</h3>
+            <h4 class="h6 fw-bold mb-2">Global Reach</h4>
+            <p class="mb-0 text-muted small">Started serving international clients and became a Google Cloud Partner.
+            </p>
+          </div>
+        </div>
+        <!-- Item 4 -->
+        <div class="timeline-item right" data-aos="fade-left">
+          <div class="content shadow-sm rounded-4 p-4 bg-white border-start border-4 border-info">
+            <h3 class="h5 fw-bold text-info">2025</h3>
+            <h4 class="h6 fw-bold mb-2">Innovation Hub</h4>
+            <p class="mb-0 text-muted small">Launching our own AI-driven products and expanding into new markets.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Google Cloud Partner Section -->
+  <section class="py-5 position-relative overflow-hidden">
+    <div class="container py-lg-5">
+      <div class="row align-items-center justify-content-center">
+        <div class="col-lg-10" data-aos="zoom-in">
+          <div class="card border-0 shadow-lg rounded-5 overflow-hidden bg-white">
+            <div class="row g-0">
+              <div
+                class="col-lg-5 bg-primary d-flex align-items-center justify-content-center p-5 text-white text-center position-relative">
+                <div class="position-relative z-index-2">
+                  <img
+                    src="https://cdn.dribbble.com/users/1144777/screenshots/7202365/media/590d011ac7620269024fb870e40d2298.gif"
+                    alt="Google Cloud" class="img-fluid rounded-3 mb-4 shadow-sm" style="max-width: 150px;">
+                  <h3 class="fw-bold mb-2">Authorized Partner</h3>
+                  <p class="mb-0 opacity-75">Service Partner In India</p>
+                </div>
+                <div class="circle-shape"></div>
+              </div>
+              <div class="col-lg-7 p-5">
+                <h3 class="fw-bold mb-4">Powering Your Business with <span class="text-primary">Google Cloud</span></h3>
+                <p class="text-muted mb-4">
+                  As an Authorized Google Cloud Partner, we bring world-class cloud infrastructure and innovation to
+                  your doorstep. Whether it's migration, optimization, or building cloud-native apps, we have the
+                  expertise to scale your business securely and efficiently.
+                </p>
+                <a href="/contact" class="btn btn-outline-primary rounded-pill px-4 py-2 fw-semibold">Learn More</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AWS Partner Section -->
+  <section class="py-5 position-relative overflow-hidden bg-light">
+    <div class="container py-lg-5">
+      <div class="row align-items-center justify-content-center">
+        <div class="col-lg-10" data-aos="zoom-in" data-aos-delay="100">
+          <div class="card border-0 shadow-lg rounded-5 overflow-hidden bg-white">
+            <div class="row g-0">
+              <div class="col-lg-7 p-5 order-2 order-lg-1">
+                <h3 class="fw-bold mb-4">Scaling New Heights with <span style="color: #FF9900;">Amazon Web
+                    Services</span></h3>
+                <p class="text-muted mb-4">
+                  We are proud to be an official AWS Partner, expanding our multi-cloud capabilities. From robust
+                  architectural design and seamless migrations to comprehensive certification training, our expert
+                  team leverages the power of AWS to deliver secure, highly available, and scalable solutions for your
+                  enterprise.
+                </p>
+                <a href="/cloud-training/learning-paths.html"
+                  class="btn btn-outline-dark rounded-pill px-4 py-2 fw-semibold">Explore AWS Training</a>
+              </div>
+              <div
+                class="col-lg-5 d-flex align-items-center justify-content-center p-5 text-white text-center position-relative order-1 order-lg-2"
+                style="background: linear-gradient(135deg, #232F3E 0%, #151d26 100%);">
+                <div class="position-relative z-index-2">
+                  <div class="bg-white p-3 rounded-4 mb-4 shadow-sm d-inline-block">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg"
+                      alt="AWS Partner System" class="img-fluid" style="max-width: 120px;">
+                  </div>
+                  <h3 class="fw-bold mb-2 text-white">AWS Partner</h3>
+                  <p class="mb-0 text-white-50">Authorized Training & Deployment</p>
+                </div>
+                <div class="circle-shape" style="border-color: rgba(255, 153, 0, 0.2);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-5 bg-light">
+    <div class="container py-lg-5">
+      <div class="text-center mb-5" data-aos="fade-up">
+        <h6 class="text-uppercase text-primary fw-bold letter-spacing-2 mb-2">Testimonials</h6>
+        <h2 class="display-5 fw-bold">What Our Clients Say</h2>
+      </div>
+      <div class="owl-carousel owl-theme testimonial-carousel" data-aos="fade-up" data-aos-delay="100">
+        <!-- Item 1 -->
+        <div class="item">
+          <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <div class="card-body text-center">
+              <div class="mb-3 text-warning">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+              <p class="card-text text-muted mb-4">"DC Cloud Solutions transformed our digital presence. Their team is
+                professional, responsive, and incredibly skilled."</p>
+              <h5 class="fw-bold mb-1">Sarah Johnson</h5>
+              <small class="text-primary">CEO, TechStart</small>
+            </div>
+          </div>
+        </div>
+        <!-- Item 2 -->
+        <div class="item">
+          <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <div class="card-body text-center">
+              <div class="mb-3 text-warning">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+              <p class="card-text text-muted mb-4">"The cloud migration was seamless. We saw immediate improvements in
+                performance and cost savings."</p>
+              <h5 class="fw-bold mb-1">Michael Chen</h5>
+              <small class="text-primary">CTO, Innovate Corp</small>
+            </div>
+          </div>
+        </div>
+        <!-- Item 3 -->
+        <div class="item">
+          <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <div class="card-body text-center">
+              <div class="mb-3 text-warning">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+              <p class="card-text text-muted mb-4">"Highly recommend their web development services. They understood our
+                vision and delivered beyond expectations."</p>
+              <h5 class="fw-bold mb-1">Emily Davis</h5>
+              <small class="text-primary">Marketing Director, Creative Solutions</small>
+            </div>
+          </div>
+        </div>
+        <!-- Item 4 -->
+        <div class="item">
+          <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <div class="card-body text-center">
+              <div class="mb-3 text-warning">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+              <p class="card-text text-muted mb-4">"Great support team! They are always there when we need them. A true
+                partner in our success."</p>
+              <h5 class="fw-bold mb-1">David Wilson</h5>
+              <small class="text-primary">Operations Manager, Logistics Pro</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MSME & Trust Section -->
+  <section class="py-4 border-top" data-aos="fade-up">
+    <div class="container">
+      <div class="row align-items-center justify-content-center text-center">
+        <div class="col-md-8">
+          <p class="text-muted mb-3 small text-uppercase fw-bold letter-spacing-2">Recognized & Certified By</p>
+          <div class="d-flex justify-content-center align-items-center gap-4 flex-wrap grayscale-wrapper">
+            <img src="https://www.iihr.edu.in/wp-content/uploads/2020/02/MSME-Logo.png" alt="MSME" class="img-fluid"
+              style="height: 60px;">
+            <!-- Add more logos here if available -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    /* Custom Styles for Modern Look */
+    :root {
+      --primary-color: #0d6efd;
+      /* Bootstrap Primary */
+      --secondary-color: #6c757d;
+      --bg-light: #f8f9fa;
+    }
+
+    .shape-3 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: 1;
+    }
+
+
+
+    /* Cards */
+    .hover-lift {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 1rem 3rem rgba(0, 0, 0, .075) !important;
+    }
+
+    .icon-wrapper {
+      width: 80px;
+      height: 80px;
+      font-size: 1.5rem;
+    }
+
+    .bg-primary-subtle {
+      background-color: rgba(13, 110, 253, 0.1);
+    }
+
+    .bg-success-subtle {
+      background-color: rgba(25, 135, 84, 0.1);
+    }
+
+    .bg-warning-subtle {
+      background-color: rgba(255, 193, 7, 0.1);
+    }
+
+    /* Google Partner Card */
+    .circle-shape {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 300px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      z-index: 1;
+    }
+
+    /* Typography */
+    .letter-spacing-2 {
+      letter-spacing: 2px;
+    }
+
+    /* Grayscale Logos */
+    .grayscale-wrapper img {
+      filter: grayscale(100%);
+      opacity: 0.6;
+      transition: all 0.3s;
+    }
+
+    .grayscale-wrapper img:hover {
+      filter: grayscale(0%);
+      opacity: 1;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 60px 0;
+      }
+
+      .display-3 {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+
+
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+  <script>
+    async function loadFooter() {
+      try {
+        const response = await fetch('template/footer.html');
+        if (response.ok) {
+          const footerContent = await response.text();
+          document.getElementById('footer-placeholder').innerHTML = footerContent;
+        } else {
+          console.error("Failed to load footer:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error loading footer:", error);
+      }
+    }
+    loadFooter();
+  </script>
+
+  <!-- Job Modal -->
+  <div class="modal fade cv-up" id="jobModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Apply For Job</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="cv-upload-div">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Full Name" />
+            </div>
+            <div class="form-group">
+              <input type="email" class="form-control" placeholder="Email Address" />
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Phone Number" />
+            </div>
+            <div class="form-group">
+              <select class="form-select" aria-label="Default select example">
+                <option selected>Job Categorie</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <select class="form-select" aria-label="Default select example">
+                <option selected>Experience</option>
+                <option value="1">Fresher</option>
+                <option value="1">1 Year</option>
+                <option value="2">2 Years</option>
+                <option value="3">3 Years</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="formFile" class="form-label">Upload Your CV</label>
+              <input class="form-control" type="file" id="formFile">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary job-ap">Apply Job</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="offcanvas offcanvas-start menu-mobile" tabindex="-1" id="offcanvasmenu"
+    aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasExampleLabel">
+        <img src="images/logo.png" alt="logo" style="width: 100px;">
+      </h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <ul class="navbar-nav ms-auto mb-2 mt-lg-0 mb-lg-0 align-items-lg-center">
+        <li class="nav-item">
+          <a class='nav-link active' href='/'>Home</a>
+        </li>
+        <li class="nav-item">
+          <a class='nav-link' href='/about'>About</a>
+        </li>
+        <li class="nav-item">
+          <a class='nav-link' href='/pricing'>Pricing</a>
+        </li>
+        <li class="nav-item">
+          <a class='nav-link' href='/blog'>Blog</a>
+        </li>
+        <li class="nav-item">
+          <a class='nav-link' href='/career'>Career</a>
+        </li>
+        <li class="nav-item">
+          <a class='nav-link' href='/contact'>Contact</a>
+        </li>
+        <li class="nav-item">
+          <a class="signiup" data-bs-toggle="modal" data-bs-target="#quickModal">
+            Get It Support
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Loader JS -->
+  <script>
+    window.onload = function () {
+      setTimeout(function () {
+        var loader = document.getElementsByClassName("loader")[0];
+        loader.className = "loader fadeout";
+        setTimeout(function () { loader.style.display = "none" }, 1000)
+      }, 1000)
+    }
+  </script>
+
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/mixitup.min.js"></script>
+  <script>
+    var mixer = mixitup('.gallery');
+  </script>
+  <script src="js/custom.js"></script>
+
+  <!-- Custom Scroll Animation for Mission Section -->
+  <script>
+    // Simple scroll animation for mission section if AOS is not working
+    function isInViewport(el) {
+      const rect = el.getBoundingClientRect();
+      return (
+        rect.top < window.innerHeight - 60
+      );
+    }
+    function animateMissionSection() {
+      document.querySelectorAll('.mission-list li').forEach(function (li) {
+        if (isInViewport(li)) {
+          li.classList.add('show');
+        }
+      });
+      var img = document.querySelector('.mission-img');
+      if (img && isInViewport(img)) {
+        img.classList.add('show');
+      }
+    }
+    window.addEventListener('scroll', animateMissionSection);
+    window.addEventListener('DOMContentLoaded', animateMissionSection);
+  </script>
+
+  <!-- AOS (if you want to use for other sections) -->
+  <script src="https://unpkg.com/aos@3.0.0-beta.6/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      offset: 100,
+      easing: 'ease',
+      delay: 0,
+      once: true,
+      duration: 800,
+    });
+  </script>
+
+  <script async src="https://widget.squid.cloud/widget.umd.js"></script>
+
+  <style>
+    /* Modern About Section Styles */
+    .about-modern-section {
+      background: linear-gradient(120deg, #f6f8fd 60%, #eaf1fb 100%);
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 32px rgba(60, 72, 88, 0.08);
+      margin-bottom: 3rem;
+      overflow: hidden;
+      position: relative;
+      animation: fadeInSection 1.2s cubic-bezier(.77, 0, .18, 1) both;
+    }
+
+    @keyframes fadeInSection {
+      0% {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .about-modern-images {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .about-img-main img,
+    .about-img-side img {
+      border-radius: 1rem;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+      width: 260px;
+      height: 180px;
+      object-fit: cover;
+      transition: transform 0.3s, box-shadow 0.3s;
+      opacity: 0;
+      animation: imgFadeIn 1s forwards;
+    }
+
+    .about-img-main img {
+      animation-delay: 0.2s;
+    }
+
+    .about-img-side img {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes imgFadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    .about-img-main img:hover,
+    .about-img-side img:hover {
+      transform: scale(1.04) rotate(-2deg);
+      box-shadow: 0 8px 32px rgba(0, 123, 255, 0.13);
+    }
+
+    .about-img-main {
+      margin-bottom: 1rem;
+    }
+
+    .about-modern-content {
+      padding: 1rem 0 1rem 0.5rem;
+    }
+
+    .about-modern-title {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 2.1rem;
+      line-height: 1.2;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #007bff 30%, #00c6ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .about-modern-subtitle {
+      color: #4b5d6b;
+      font-weight: 500;
+      font-size: 1.1rem;
+    }
+
+    .about-modern-desc {
+      color: #5c6f7c;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .about-modern-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .about-modern-list li {
+      font-size: 1rem;
+      color: #2d3a4a;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s cubic-bezier(.77, 0, .18, 1), transform 0.7s cubic-bezier(.77, 0, .18, 1);
+    }
+
+    .about-modern-list li.show {
+      opacity: 1;
+      transform: none;
+    }
+
+    .about-modern-list i {
+      color: #007bff;
+      font-size: 1.1rem;
+    }
+
+    .about-modern-cta .btn {
+      padding: 0.7rem 2rem;
+      font-size: 1.1rem;
+      border-radius: 2rem;
+      background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%);
+      border: none;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      box-shadow: 0 2px 12px rgba(0, 123, 255, 0.07);
+      transform: scale(0.95);
+      opacity: 0;
+      animation: ctaPopIn 0.7s 1s forwards;
+    }
+
+    @keyframes ctaPopIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .about-modern-cta .btn:hover {
+      background: linear-gradient(90deg, #0056b3 60%, #009ec3 100%);
+      box-shadow: 0 6px 24px rgba(0, 123, 255, 0.12);
+      transform: scale(1.04);
+    }
+
+    @media (max-width: 991.98px) {
+      .about-modern-section {
+        border-radius: 0.8rem;
+        margin-bottom: 2rem;
+      }
+
+      .about-modern-content {
+        padding: 1rem 0;
+      }
+
+      .about-img-main img,
+      .about-img-side img {
+        width: 90vw;
+        max-width: 320px;
+        height: 160px;
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      .about-modern-title {
+        font-size: 1.3rem;
+      }
+
+      .about-modern-section {
+        padding: 1.2rem 0.2rem;
+      }
+
+      .about-modern-content {
+        padding: 0.5rem 0;
+      }
+    }
+
+    /* MSME Approval Section Styles */
+    .msme-approval-section {
+      background: linear-gradient(120deg, #f8fbff 60%, #eaf1fb 100%);
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 32px rgba(60, 72, 88, 0.07);
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .msme-badge {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: floatY 3s ease-in-out infinite;
+    }
+
+    @keyframes floatY {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    .msme-logo {
+      max-width: 140px;
+      width: 100%;
+      filter: drop-shadow(0 4px 16px rgba(0, 123, 255, 0.08));
+      border-radius: 1rem;
+      background: #fff;
+      padding: 0.5rem 1rem;
+      transition: transform 0.3s;
+    }
+
+    .msme-logo:hover {
+      transform: scale(1.06) rotate(-2deg);
+    }
+
+    .msme-title {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 2rem;
+      color: #007bff;
+      letter-spacing: 1px;
+    }
+
+    .msme-desc {
+      color: #4b5d6b;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .msme-desc .highlight {
+      color: #007bff;
+      font-weight: 700;
+    }
+
+    .msme-link {
+      display: inline-block;
+      margin-top: 1rem;
+      font-size: 1.05rem;
+      color: #007bff;
+      background: linear-gradient(90deg, #eaf1fb 60%, #f6f8fd 100%);
+      padding: 0.6rem 1.5rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 2px 12px rgba(0, 123, 255, 0.07);
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+
+    .msme-link:hover {
+      background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%);
+      color: #fff;
+      box-shadow: 0 6px 24px rgba(0, 123, 255, 0.13);
+      text-decoration: none;
+    }
+
+    @media (max-width: 991.98px) {
+      .msme-approval-section {
+        border-radius: 0.8rem;
+        margin-bottom: 2rem;
+        padding: 2rem 0.5rem;
+      }
+
+      .msme-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      .msme-approval-section {
+        padding: 1.2rem 0.2rem;
+      }
+
+      .msme-title {
+        font-size: 1.1rem;
+      }
+
+      .msme-logo {
+        max-width: 90px;
+      }
+    }
+
+    /* Mission Section Styles with Scroll Animation */
+    .our-mmison {
+      background: linear-gradient(120deg, #f6f8fd 60%, #eaf1fb 100%);
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 32px rgba(60, 72, 88, 0.08);
+      margin-bottom: 3rem;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    .about-svg-top,
+    .about-svg-bt {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      z-index: 0;
+    }
+
+    .about-svg-top {
+      top: -1px;
+    }
+
+    .about-svg-bt {
+      bottom: -1px;
+    }
+
+    .mission-title {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 2rem;
+      color: #007bff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .mission-desc {
+      color: #4b5d6b;
+      font-size: 1.15rem;
+      font-weight: 500;
+    }
+
+    .mission-list li {
+      font-size: 1.05rem;
+      color: #2d3a4a;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(0, 123, 255, 0.04);
+      border-radius: 1.2rem;
+      padding: 0.5rem 1.1rem;
+      box-shadow: 0 2px 8px rgba(0, 123, 255, 0.04);
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.7s cubic-bezier(.77, 0, .18, 1), transform 0.7s cubic-bezier(.77, 0, .18, 1);
+    }
+
+    .mission-list li.show {
+      opacity: 1;
+      transform: none;
+    }
+
+    .mission-list i {
+      color: #007bff;
+      font-size: 1.2rem;
+      transition: transform 0.2s;
+    }
+
+    .mission-list li:hover i {
+      transform: translateX(6px) scale(1.15);
+      color: #0056b3;
+    }
+
+    .mission-img-figure {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    .mission-img {
+      max-width: 340px;
+      width: 100%;
+      border-radius: 1.2rem;
+      box-shadow: 0 4px 24px rgba(0, 123, 255, 0.08);
+      transition: transform 0.3s, box-shadow 0.3s, opacity 1.2s cubic-bezier(.77, 0, .18, 1), transform 1.2s cubic-bezier(.77, 0, .18, 1);
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    .mission-img.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .mission-img:hover {
+      transform: scale(1.04) rotate(-2deg);
+      box-shadow: 0 8px 32px rgba(0, 123, 255, 0.13);
+    }
+
+    @media (max-width: 991.98px) {
+      .our-mmison {
+        border-radius: 0.8rem;
+        margin-bottom: 2rem;
+        padding: 2rem 0.5rem;
+      }
+
+      .mission-title {
+        font-size: 1.3rem;
+      }
+
+      .mission-img {
+        max-width: 220px;
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      .our-mmison {
+        padding: 1.2rem 0.2rem;
+      }
+
+      .mission-title {
+        font-size: 1.1rem;
+      }
+
+      .mission-img {
+        max-width: 120px;
+      }
+    }
+
+    /* Timeline Styles */
+    .timeline::after {
+      content: '';
+      position: absolute;
+      width: 3px;
+      background-color: #e9ecef;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -1.5px;
+    }
+
+    .timeline-item {
+      padding: 10px 40px;
+      position: relative;
+      background-color: inherit;
+      width: 50%;
+    }
+
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      right: -10px;
+      background-color: white;
+      border: 4px solid #0d6efd;
+      top: 25px;
+      border-radius: 50%;
+      z-index: 1;
+    }
+
+    .left {
+      left: 0;
+    }
+
+    .right {
+      left: 50%;
+    }
+
+    .left::before {
+      content: " ";
+      height: 0;
+      position: absolute;
+      top: 22px;
+      width: 0;
+      z-index: 1;
+      right: 30px;
+      border: medium solid white;
+      border-width: 10px 0 10px 10px;
+      border-color: transparent transparent transparent white;
+    }
+
+    .right::before {
+      content: " ";
+      height: 0;
+      position: absolute;
+      top: 22px;
+      width: 0;
+      z-index: 1;
+      left: 30px;
+      border: medium solid white;
+      border-width: 10px 10px 10px 0;
+      border-color: transparent white transparent transparent;
+    }
+
+    .right::after {
+      left: -10px;
+    }
+
+    .content {
+      position: relative;
+      border-radius: 6px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .timeline::after {
+        left: 31px;
+      }
+
+      .timeline-item {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+      }
+
+      .timeline-item::after {
+        left: 21px;
+      }
+
+      .left::after,
+      .right::after {
+        left: 21px;
+      }
+
+      .right {
+        left: 0%;
+      }
+
+      .left::before,
+      .right::before {
+        left: 60px;
+        border: medium solid white;
+        border-width: 10px 10px 10px 0;
+        border-color: transparent white transparent transparent;
+      }
+    }
+  </style>
+
+  <!-- Counter Animation Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const counters = document.querySelectorAll(".counter-value");
+      const speed = 200; // The lower the slower
+
+      const animateCounters = (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const counter = entry.target;
+            const target = +counter.getAttribute("data-target");
+
+            const updateCount = () => {
+              const count = +counter.innerText.replace('+', ''); // Handle existing + if any
+              const inc = target / speed;
+
+              if (count < target) {
+                counter.innerText = Math.ceil(count + inc) + "+";
+                setTimeout(updateCount, 20);
+              } else {
+                counter.innerText = target + "+";
+              }
+            };
+            updateCount();
+            observer.unobserve(counter);
+          }
+        });
+      };
+
+      const observer = new IntersectionObserver(animateCounters, {
+        threshold: 0.5, // Trigger when 50% visible
+      });
+
+      counters.forEach((counter) => {
+        observer.observe(counter);
+      });
+
+      // Initialize Owl Carousel for Testimonials
+      $('.testimonial-carousel').owlCarousel({
+        loop: true,
+        margin: 20,
+        nav: false,
+        dots: true,
+        autoplay: true,
+        autoplayTimeout: 5000,
+        responsive: {
+          0: {
+            items: 1
+          },
+          600: {
+            items: 2
+          },
+          1000: {
+            items: 3
+          }
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,79 @@
+[
+  {
+    "id": 59,
+    "date": "2025-11-20",
+    "image": "https://dcinfotech.org.in/images/dc-logo.gif",
+    "title": "New Update",
+    "subtitle": "We are updated! The portal has been enhanced with new features and security improvements."
+  },
+  {
+    "id": 58,
+    "date": "2025-11-03",
+    "image": "https://i.ibb.co/xKqwpC2J/Generated-Image-November-20-2025-9-12-PM.png",
+    "title": "Google Cloud November 2025 Internship Batch Started",
+    "subtitle": "The November internship cohort has officially begun! Interns can access live sessions and labs via the DC Cloud Solutions Learning Portal."
+  },
+  {
+    "id": 57,
+    "date": "2025-10-30",
+    "image": "https://i.ibb.co/D0hSQnB/Generated-Image-November-20-2025-9-16-PM.png",
+    "title": "Gemini API Integration Workshop Announced",
+    "subtitle": "Join our upcoming workshop to learn how to integrate Gemini API with your AI and cloud-based projects efficiently."
+  },
+  {
+    "id": 56,
+    "date": "2025-10-25",
+    "image": "https://i.ibb.co/1Gk3Hs3D/Generated-Image-November-20-2025-9-33-PM.png",
+    "title": "DC Cloud Solutions Scholarship Program 2025",
+    "subtitle": "Applications are open for the DC Cloud Scholarship 2025, supporting talented learners pursuing Google Cloud certifications."
+  },
+  {
+    "id": 55,
+    "date": "2025-10-18",
+    "image": "https://dcinfotech.org.in/images/acp.gif",
+    "title": "Associate Cloud Engineer: Updated Exam Guide",
+    "subtitle": "Google Cloud has released a revised exam guide for the Associate Cloud Engineer certification—review before scheduling your test."
+  },
+  {
+    "id": 54,
+    "date": "2025-10-10",
+    "image": "https://dcinfotech.org.in/images/security.gif",
+    "title": "Google Cloud Security Engineer: New Labs Added",
+    "subtitle": "Hands-on labs for the Professional Cloud Security Engineer path have been updated with real-time threat detection scenarios."
+  },
+  {
+    "id": 53,
+    "date": "2025-10-06",
+    "image": "https://dcinfotech.org.in/images/devops.gif",
+    "title": "New Professional Cloud DevOps Engineer Exam",
+    "subtitle": "The new version of the Professional Cloud DevOps Engineer exam in English will be live on Oct. 31. If you plan to take the exam on or after Oct. 31, review the new exam guide."
+  },
+  {
+    "id": 52,
+    "date": "2025-10-14",
+    "image": "https://dcinfotech.org.in/images/adp.gif",
+    "title": "Japanese ADP Exam: Now Available",
+    "subtitle": "The Associate Data Practitioner (ADP) certification is now available in Japanese!"
+  },
+  {
+    "id": 51,
+    "date": "2025-09-30",
+    "image": "https://dcinfotech.org.in/images/pca.gif",
+    "title": "New Professional Cloud Architect Exam",
+    "subtitle": "The new version of the Professional Cloud Architect exam in English will be live on Oct. 30. If you plan to take the exam on or after Oct. 30, review the new exam guide."
+  },
+  {
+    "id": 50,
+    "date": "2025-08-15",
+    "image": "https://dcinfotech.org.in/images/cda.gif",
+    "title": "Cloud Digital Leader Exam Updates",
+    "subtitle": "The Cloud Digital Leader exam has been updated to include the latest on generative AI and cloud business value. Check the exam guide for details."
+  },
+  {
+    "id": 49,
+    "date": "2025-07-20",
+    "image": "https://dcinfotech.org.in/images/genai.gif",
+    "title": "New Generative AI Learning Path",
+    "subtitle": "Explore our new learning path on Generative AI, covering fundamental concepts and practical applications on Google Cloud."
+  }
+]

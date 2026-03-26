@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <!-- Add SweetAlert2 for modern, non-blocking alerts across all loaded content -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Add Notiflix for notifications, used in exam-schedule.html -->
+  <script src="https://cdn.jsdelivr.net/npm/notiflix@3.2.5/dist/notiflix-aio-3.2.5.min.js"></script>
+  <!-- Add EmailJS SDK so it's available for dynamically loaded content -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<style>
+  /* --- Page Loader Styles --- */
+  .page-loader {
+    position: absolute;
+    top: 60px; /* Height of the topbar */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(248, 249, 250, 0.85); /* Semi-transparent background */
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .page-loader .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #e9ecef;
+    border-top: 5px solid #1a73e8; /* Blue color from your theme */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+<style>
+  /* Styles from exam-schedule.html moved here */
+  .page-section {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 2rem;
+  }
+
+  .page-section h2 {
+    font-family: 'Google Sans', sans-serif;
+    font-size: 1.5rem;
+    color: #1a73e8;
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  /* Exam Selection Grid */
+  .exam-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .material-radio {
+    position: relative;
+  }
+
+  .material-radio__input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .material-radio__label-text {
+    display: block;
+    padding: 1rem;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-weight: 500;
+  }
+
+  .material-radio__input:checked + .material-radio__label-text {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+    background-color: #f4f8ff;
+  }
+
+  /* Form Fields */
+  .form-field {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-field label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-field input[type="datetime-local"],
+  .form-field input[type="email"],
+  .form-field input[type="text"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+
+  .btn.apply-btn {
+    padding: 0.75rem 1rem;
+    flex-shrink: 0;
+  }
+
+  /* Upcoming Exams Section */
+  #upcoming-exams-list {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .exam-card {
+    background-color: #fff;
+    border-radius: 8px;
+    border-left: 5px solid #1a73e8;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .exam-card-details {
+    flex-grow: 1;
+  }
+
+  .exam-card h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+  }
+
+  .exam-card p {
+    margin: 0;
+    color: #495057;
+  }
+
+  .exam-card-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .exam-card-actions .btn, .exam-card-actions a.btn {
+    background-color: #34a853;
+  }
+
+  .exam-card-actions .btn:disabled, .exam-card-actions a.btn.disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+    color: #495057;
+  }
+
+  .exam-card-actions .btn.cancel-exam-btn, .exam-card-actions a.btn.cancel-exam-btn {
+    background-color: #ea4335;
+  }
+  .exam-card-actions .btn.cancel-exam-btn:hover { background-color: #c53929; }
+
+  .exam-card-actions .btn.remind-btn {
+      background-color: #fbbc05;
+  }
+  .exam-card-actions .btn.remind-btn:hover { background-color: #f1a800; }
+
+  .no-exams-message {
+    text-align: center;
+    color: #495057;
+    padding: 2rem;
+    border: 2px dashed #e9ecef;
+    border-radius: 8px;
+  }
+
+  .voucher-input-group {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .voucher-input-group input {
+    text-align: center;
+    color: #495057;
+    padding: 2rem;
+    border: 2px dashed #e9ecef;
+    border-radius: 8px;
+  }
+
+  .voucher-status {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .voucher-status.success {
+    color: #34a853;
+  }
+  .voucher-status.error {
+    color: #ea4335;
+  }
+</style>
+
+<body id="certmetrics" class="theme-google">
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar" aria-label="Side navigation">
+      <div class="brand"><img src="https://dcinfotech.org.in/images/dcintro.gif" alt="DC logo"></div>
+   <nav class="side-nav" aria-label="Main navigation">
+  <ul>
+    <li class="nav-item active" data-link="dashboard.html" tabindex="0"><i data-lucide="layout-dashboard"></i> My Dashboard</li>
+    <li class="nav-item" data-link="profile.html" tabindex="0"><i data-lucide="user"></i> My Profile</li>
+    <li class="nav-section">Exams</li>
+    <li class="nav-item" data-link="exam-schedule.html" tabindex="0"><i data-lucide="calendar"></i> Schedule Exam</li>
+    <li class="nav-item" data-link="exam_history.html" tabindex="0"><i data-lucide="history"></i> Exam History</li>
+    <li class="nav-section">Resources</li>
+    <li class="nav-item" data-link="training-labs.html" tabindex="0"><i data-lucide="book-open"></i> Training Labs</li>
+    <li class="nav-item" data-link="faq.html" tabindex="0"><i data-lucide="help-circle"></i> FAQ</li>
+    <li class="nav-item" data-link="support-portal.html" tabindex="0"><i data-lucide="life-buoy"></i> Support</li>
+  </ul>
+</nav> 
+    </aside>
+
+    <div class="main-column" style="position: relative;">
+      <header class="topbar" role="banner">
+        <div class="topbar-left">
+          <button class="hamburger" id="hamburger" aria-label="Toggle navigation">☰</button>
+          <span class="page-title" id="pageTitle">Home</span>
+        </div>
+
+        <div class="topbar-right" style="position:relative">
+          <div class="user-meta" id="userMeta" tabindex="0" aria-haspopup="true" aria-expanded="false" title="Account">
+            <div class="user-name" id="userName">GUEST</div>
+            <div class="user-id" id="userId"></div>
+          </div>
+
+          <div class="user-dropdown" id="userDropdown" role="menu" aria-hidden="true">
+            <a href="#" data-link="profile.html" role="menuitem" class="dynamic-link">My Profile</a>
+            <a href="/credentials" role="menuitem">My Credentials</a>
+            <a href="#" id="signOut" role="menuitem">Sign out</a>
+          </div>
+        </div>
+      </header>
+        <!-- Page Loader Element -->
+        <div id="pageLoader" class="page-loader" style="display: none;">
+          <div class="spinner"></div>
+        </div>
+
+        <main class="content" role="main">
+            <section class="hero-card" aria-label="Banner">
+            <img src="https://miro.medium.com/1*FkT5a73LOY2tOHJSCwrjNQ.gif" alt="dc XX Google Cloud banner" class="hero-image">
+            </section>
+        <!-- Include this once in your <head> -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<section class="quick-links" aria-label="Quick links">
+  <div class="tile" role="button" tabindex="0" data-link="profile.html">
+    <i data-lucide="user"></i>
+    <div class="tile-title">My Profile</div>    
+  </div>
+
+  <div class="tile" role="button" tabindex="0" data-link="exam-schedule.html">
+    <i data-lucide="calendar"></i>
+    <div class="tile-title">Schedule/Launch an Exam</div>
+  </div>
+
+  <div class="tile" role="button" tabindex="0" data-link="exam_history.html">
+    <i data-lucide="history"></i>
+    <div class="tile-title">My Exam History</div>
+  </div>
+
+  <div class="tile" role="button" tabindex="0" data-link="credentials.html">
+    <i data-lucide="award"></i>
+    <div class="tile-title">My Credentials</div>
+  </div>
+
+  <div class="tile" role="button" tabindex="0" data-link="benefits.html">
+    <i data-lucide="gift"></i>
+    <div class="tile-title">Benefits</div>
+  </div>
+
+  <div class="tile" role="button" tabindex="0" data-link="badges.html">
+    <i data-lucide="badge-check"></i>
+    <div class="tile-title">Digital Badges</div>
+  </div>
+   <div class="tile" role="button" tabindex="0" data-link="learn.dcinfotech.org.in">
+    <i data-lucide="user"></i>
+    <div class="tile-title">Go To Live Traning Portal </div>    
+  </div>
+
+</section>
+
+<script>
+  lucide.createIcons();
+</script>
+<br>
+
+        <section class="cp-page-section">
+          <header class="cp-page-section__header">
+            <h2 class="cp-page-section__title">Start Your Certification Journey</h2>
+          </header>
+          <article class="cp-page-section__main">
+            <section class="cp-page-section__content">
+              <p>View the available certifications and exam specific training materials at our certification page&nbsp; - <a href="https://dcinfotech.org.in/google-cloud-certifications" target="_blank" rel="noopener">https://dcinfotech.org.in/google-cloud-certifications</a></p>
+            </section>
+          </article>
+        </section>
+
+        <section class="cp-page-section">
+          <header class="cp-page-section__header">
+            <h2 class="cp-page-section__title">Expiration and Grace Period Reminders</h2>
+          </header>
+          <article class="cp-page-section__main">
+            <section class="cp-page-section__content cp-page-section__content--unpadded">
+              <div class="activity__none">
+                <span>No Upcoming Expirations</span>
+              </div>
+            </section>
+          </article>
+        </section>
+
+        <section class="cp-page-section">
+          <header class="cp-page-section__header">
+            <h2 class="cp-page-section__title">Upcoming Exams</h2>
+          </header>
+          <article class="cp-page-section__main">
+            <section id="dashboard-upcoming-exams" class="cp-page-section__content cp-page-section__content--unpadded">
+              <!-- Upcoming exams will be loaded here by JavaScript -->
+            </section>
+          </article>
+        </section>
+
+        <section class="news-articles" aria-labelledby="announcements-title">
+          <header class="news-articles__header">
+            <h2 id="announcements-title" class="news-articles__title">Announcements</h2>
+            <div class="news-articles__actions">
+              <a href="/announcements" class="view-all-btn">View All</a>
+              <div class="pagination">
+                <button id="announcement-prev" aria-label="Previous announcements">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                </button>
+                <button id="announcement-next" aria-label="Next announcements">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
+                </button>
+              </div>
+            </div>
+          </header>
+          <div class="news-articles__grid-container">
+            <div class="news-articles__news-grid" id="announcements-grid">
+              <!-- Announcements will be injected here by JavaScript -->
+            </div>
+          </div>
+        </section>
+<style>
+  .cookie-notice {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: #ffffff; /* ✅ White background */
+    color: #222; /* Dark text for readability */
+    padding: 16px 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: system-ui, sans-serif;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15); /* Softer shadow */
+    z-index: 9999999;
+    opacity: 1;
+    transition: opacity 0.4s ease, transform 0.3s ease;
+  }
+
+  .cookie-notice.hide {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .cookie-text {
+    font-size: 14px;
+    line-height: 1.4;
+    flex: 1;
+    margin-right: 16px;
+  }
+
+  .cookie-text a {
+    color: #007bff;
+    text-decoration: underline;
+  }
+
+  .cookie-ok {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+
+  .cookie-ok:hover {
+    background: #005dc1;
+    transform: translateY(-1px);
+  }
+</style>
+
+<div class="cookie-notice" id="cookieNotice" role="dialog" aria-live="polite">
+  <div class="cookie-inner">
+    <div class="cookie-text">
+      We use cookies that improve your experience with the website, keep statistics to optimize performance, and allow for interaction with other platforms.
+      For more information, please view our
+      <a href="https://www.dcinfotech.org.in/privacy-policy-dc/" target="_blank" rel="noopener">Privacy Statement</a>.
+    </div>
+    <button class="cookie-ok" id="cookieOk">OK</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  function initCookieNotice() {
+    const notice = document.getElementById("cookieNotice");
+    const ok = document.getElementById("cookieOk");
+
+    if (localStorage.getItem("cookieAccepted") === "true") {
+      if (notice) notice.remove();
+      return;
+    }
+
+    if (!notice || !ok) return;
+
+    ok.onclick = (e) => {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      notice.classList.add("hide");
+      localStorage.setItem("cookieAccepted", "true");
+      setTimeout(() => notice.remove(), 400);
+    };
+  }
+
+  const observer = new MutationObserver(() => initCookieNotice());
+  observer.observe(document.body, { childList: true, subtree: true });
+  window.addEventListener("load", initCookieNotice);
+})();
+</script>
+
+
+      </main>
+
+      <footer class="app-footer">
+        Need help? Contact us at <a href="mailto:support@dcinfotech.org.in">support@dcinfotech.org.in</a> or visit <a href="https://dcinfotech.org.in/contact" target="_blank" rel="noopener">dcinfotech.org.in/contact</a>.
+      </footer>
+    </div>
+  </div>
+
+  <!-- overlay used on mobile when sidebar is open -->
+  <div id="mobileOverlay" class="mobile-overlay" aria-hidden="true"></div>
+
+  <script src="js/dashboard.js"></script>
+
+  <div class="squid-chat-widget-container">
+    <script type="text/javascript">
+      var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+      (function () {
+        var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+        s1.async = true;
+        s1.src = 'https://embed.tawk.to/673b87e22480f5b4f59ffc23/1id08lk55';
+        s1.charset = 'UTF-8';
+        s1.setAttribute('crossorigin', '*');
+        s0.parentNode.insertBefore(s1, s0);
+      })();
+    </script>
+  </div>
+</body>
+</html>

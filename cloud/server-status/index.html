@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Server Status Dashboard | DC Cloud Solutions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --google-blue: #1a73e8;
+      --google-blue-dark: #1557b0;
+      --google-green: #1e8e3e;
+      --google-red: #d93025;
+      --google-yellow: #f9ab00;
+      --google-gray: #5f6368;
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --border: #dadce0;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --hover: #f1f3f4;
+      --shadow-sm: 0 1px 2px 0 rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15);
+      --shadow-md: 0 1px 3px 0 rgba(60, 64, 67, .3), 0 4px 8px 3px rgba(60, 64, 67, .15);
+      --shadow-lg: 0 4px 6px 0 rgba(32, 33, 36, .28);
+      --radius: 12px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Google Sans', 'Roboto', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--google-blue) 0%, #667eea 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.25rem;
+    }
+
+    .logo-text {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 1.375rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn-icon {
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: transparent;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      background: var(--hover);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 24px auto;
+      padding: 0 24px;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, var(--google-blue) 0%, #667eea 100%);
+      border-radius: var(--radius);
+      padding: 40px;
+      color: white;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 2rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .hero-subtitle {
+      font-size: 1.125rem;
+      opacity: 0.9;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 0.875rem;
+      margin-top: 12px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #4caf50;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+      }
+
+      50% {
+        opacity: 0.6;
+        transform: scale(1.1);
+        box-shadow: 0 0 0 8px rgba(76, 175, 80, 0);
+      }
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+    }
+
+    .stat-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      font-size: 1.25rem;
+    }
+
+    /* Charts Section */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .chart-title {
+      font-size: 1.125rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .chart-container {
+      position: relative;
+      height: 250px;
+    }
+
+    .search-container {
+      margin-bottom: 24px;
+    }
+
+    .search-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+    }
+
+    .search-box:focus-within {
+      border-color: var(--google-blue);
+      box-shadow: 0 1px 6px rgba(26, 115, 232, 0.3);
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      flex: 1;
+      font-size: 1rem;
+      color: var(--text-primary);
+      background: transparent;
+    }
+
+    .search-box i {
+      color: var(--text-secondary);
+    }
+
+    .services-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .service-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--google-blue);
+      transform: translateY(-2px);
+    }
+
+    .service-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--google-blue) 0%, #667eea 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.25rem;
+    }
+
+    .service-info {
+      flex: 1;
+    }
+
+    .service-name {
+      font-size: 1.125rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .service-desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .service-type {
+      display: inline-block;
+      background: var(--hover);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .response-time {
+      font-size: 0.75rem;
+      color: var(--google-green);
+      font-weight: 500;
+    }
+
+    .load-bar-container {
+      width: 150px;
+    }
+
+    .load-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .load-bar {
+      height: 6px;
+      background: #e8eaed;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .load-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.5s, background 0.5s;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 16px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      min-width: 140px;
+      justify-content: center;
+    }
+
+    .status-operational {
+      background: #e6f4ea;
+      color: var(--google-green);
+    }
+
+    .status-degraded {
+      background: #fef7e0;
+      color: var(--google-yellow);
+    }
+
+    .status-down {
+      background: #fce8e6;
+      color: var(--google-red);
+    }
+
+    .status-maintenance {
+      background: #e8f0fe;
+      color: var(--google-blue);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .dot-green {
+      background: var(--google-green);
+      animation: pulse 2s infinite;
+    }
+
+    .dot-yellow {
+      background: var(--google-yellow);
+    }
+
+    .dot-red {
+      background: var(--google-red);
+      animation: blink 1s infinite;
+    }
+
+    .dot-blue {
+      background: var(--google-blue);
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    @media (max-width: 768px) {
+      .service-card {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .load-bar-container {
+        width: 100%;
+      }
+
+      .hero-title {
+        font-size: 1.5rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .service-card {
+      animation: fadeIn 0.4s ease-out;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="logo-section">
+      <img src="/images/logo.png" alt="DC Cloud Solutions" style="height: 40px; width: auto; object-fit: contain;">
+      <div class="logo-text">Status Dashboard</div>
+    </div>
+    <div class="top-actions">
+      <button class="btn-icon" onclick="openMigrationModal()" title="View Migration Announcement"
+        style="position: relative;">
+        <i class="fas fa-bullhorn"></i>
+        <span
+          style="position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: #ea4335; border-radius: 50%; border: 2px solid white;"></span>
+      </button>
+      <button class="btn-icon" onclick="window.location.reload()" title="Refresh">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+      <button class="btn-icon" onclick="toggleDarkMode()" title="Toggle theme">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="hero-card">
+      <div class="hero-content">
+        <div class="hero-title">System Status Dashboard</div>
+        <div class="hero-subtitle">
+          Real-time monitoring of all DC Cloud Solutions services
+        </div>
+        <div class="live-indicator">
+          <span class="pulse-dot"></span>
+          <span>LIVE</span>
+          <span id="lastUpdate">Updated 0s ago</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #1e8e3e 0%, #4caf50 100%); color: white;">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-label">Operational</div>
+        <div class="stat-value" id="operationalCount">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #f9ab00 0%, #ffc107 100%); color: white;">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="stat-label">Degraded</div>
+        <div class="stat-value" id="degradedCount">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%); color: white;">
+          <i class="fas fa-tools"></i>
+        </div>
+        <div class="stat-label">Maintenance</div>
+        <div class="stat-value" id="maintenanceCount">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #d93025 0%, #ea4335 100%); color: white;">
+          <i class="fas fa-times-circle"></i>
+        </div>
+        <div class="stat-label">Down</div>
+        <div class="stat-value" id="downCount">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-label">Avg Response</div>
+        <div class="stat-value" id="avgResponse">0ms</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="stat-label">Uptime</div>
+        <div class="stat-value" id="uptime">99.9%</div>
+      </div>
+    </div>
+
+    <!-- GTA 5 Roleplay Server Section -->
+    <div
+      style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: var(--radius); padding: 32px; margin-bottom: 24px; color: white;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+        <div
+          style="width: 56px; height: 56px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem;">
+          🎮
+        </div>
+        <div>
+          <h2 style="margin: 0; font-size: 1.75rem; font-weight: 600;">GTA 5 Roleplay Server</h2>
+          <p style="margin: 4px 0 0 0; opacity: 0.9;">
+            Live server stats and database metrics |
+            <a href="https://servers.fivem.net/servers/detail/k53bl6" target="_blank"
+              style="color: #ffd700; text-decoration: underline;">View on FiveM</a>
+          </p>
+        </div>
+        <div
+          style="margin-left: auto; background: rgba(76, 175, 80, 0.9); padding: 8px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+          <span class="pulse-dot"></span>
+          <span id="gtaStatus">ONLINE</span>
+        </div>
+      </div>
+
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 20px;">
+        <div
+          style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 12px; backdrop-filter: blur(10px);">
+          <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 4px;">👥 Players Online</div>
+          <div style="font-size: 2rem; font-weight: 700;" id="gtaPlayers">
+            <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem;"></i>
+          </div>
+        </div>
+        <div
+          style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 12px; backdrop-filter: blur(10px);">
+          <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 4px;">📊 Database Size</div>
+          <div style="font-size: 2rem; font-weight: 700;" id="gtaDbSize">2.4 GB</div>
+        </div>
+        <div
+          style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 12px; backdrop-filter: blur(10px);">
+          <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 4px;">🚗 Total Vehicles</div>
+          <div style="font-size: 2rem; font-weight: 700;" id="gtaVehicles">1,247</div>
+        </div>
+        <div
+          style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 12px; backdrop-filter: blur(10px);">
+          <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 4px;">🏠 Properties</div>
+          <div style="font-size: 2rem; font-weight: 700;" id="gtaProperties">342</div>
+        </div>
+        <div
+          style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 12px; backdrop-filter: blur(10px);">
+          <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 4px;">💼 Businesses</div>
+          <div style="font-size: 2rem; font-weight: 700;" id="gtaBusinesses">89</div>
+        </div>
+        <div
+          style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 12px; backdrop-filter: blur(10px);">
+          <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 4px;">👤 Total Users</div>
+          <div style="font-size: 2rem; font-weight: 700;" id="gtaTotalUsers">3,562</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+        <div
+          style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 12px; backdrop-filter: blur(10px);">
+          <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 8px;">⚡ Server Performance</div>
+          <div style="font-size: 0.875rem; margin-bottom: 4px; display: flex; justify-content: space-between;">
+            <span>CPU Usage</span>
+            <span id="gtaCpu">45%</span>
+          </div>
+          <div style="height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; margin-bottom: 8px;">
+            <div id="gtaCpuBar"
+              style="width: 45%; height: 100%; background: #4caf50; border-radius: 3px; transition: width 0.5s;"></div>
+          </div>
+          <div style="font-size: 0.875rem; margin-bottom: 4px; display: flex; justify-content: space-between;">
+            <span>RAM Usage</span>
+            <span id="gtaRam">6.2/16 GB</span>
+          </div>
+          <div style="height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px;">
+            <div id="gtaRamBar"
+              style="width: 38%; height: 100%; background: #2196f3; border-radius: 3px; transition: width 0.5s;"></div>
+          </div>
+        </div>
+
+        <div
+          style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 12px; backdrop-filter: blur(10px);">
+          <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 8px;">🎯 Active Features</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <span
+              style="background: rgba(76, 175, 80, 0.9); padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">Jobs</span>
+            <span
+              style="background: rgba(33, 150, 243, 0.9); padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">Gangs</span>
+            <span
+              style="background: rgba(255, 152, 0, 0.9); padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">Heists</span>
+            <span
+              style="background: rgba(233, 30, 99, 0.9); padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">Events</span>
+            <span
+              style="background: rgba(156, 39, 176, 0.9); padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">Custom
+              Cars</span>
+          </div>
+        </div>
+
+        <div
+          style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 12px; backdrop-filter: blur(10px);">
+          <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 8px;">🌐 Server Info</div>
+          <div style="font-size: 0.75rem; line-height: 1.6;">
+            <div style="margin-bottom: 4px;">
+              <strong>IP:</strong> <code
+                style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px;">connect k53bl6</code>
+            </div>
+            <div style="margin-bottom: 4px;">
+              <strong>Location:</strong> Mumbai, India 🇮🇳
+            </div>
+            <div>
+              <strong>Uptime:</strong> <span id="gtaUptime">99.8%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Info Cards -->
+    <div
+      style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px;">
+      <div
+        style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm);">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <div
+            style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white;">
+            <i class="fas fa-network-wired"></i>
+          </div>
+          <div>
+            <div style="font-size: 0.875rem; color: var(--text-secondary);">Network Latency</div>
+            <div style="font-size: 1.5rem; font-weight: 700;" id="networkLatency">24ms</div>
+          </div>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-secondary);">Mumbai → Singapore</div>
+      </div>
+
+      <div
+        style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm);">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <div
+            style="width: 40px; height: 40px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white;">
+            <i class="fas fa-database"></i>
+          </div>
+          <div>
+            <div style="font-size: 0.875rem; color: var(--text-secondary);">DB Connections</div>
+            <div style="font-size: 1.5rem; font-weight: 700;" id="dbConnections">142/500</div>
+          </div>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-secondary);">Healthy pool</div>
+      </div>
+
+      <div
+        style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm);">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <div
+            style="width: 40px; height: 40px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white;">
+            <i class="fas fa-fire"></i>
+          </div>
+          <div>
+            <div style="font-size: 0.875rem; color: var(--text-secondary);">Requests/min</div>
+            <div style="font-size: 1.5rem; font-weight: 700;" id="requestsPerMin">1,247</div>
+          </div>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-secondary);">Last 60 seconds</div>
+      </div>
+    </div>
+
+    <!-- Incident Timeline -->
+    <div
+      style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 600;">📜 Incident History</h3>
+        <button onclick="exportIncidents()"
+          style="padding: 8px 16px; background: var(--google-blue); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.875rem; font-weight: 500;">
+          <i class="fas fa-download"></i> Export
+        </button>
+      </div>
+      <div style="position: relative; padding-left: 24px;">
+        <div style="position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border);"></div>
+
+        <div style="position: relative; margin-bottom: 20px;">
+          <div
+            style="position: absolute; left: -20px; width: 12px; height: 12px; background: var(--google-blue); border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px var(--google-blue);">
+          </div>
+          <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 4px;">Jan 1, 2026 - 12:00 AM
+          </div>
+          <div style="font-weight: 500;">Scheduled Full Capacity</div>
+          <div style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 4px;">From 1 Jan 2026 everything
+            will be running normal. Thank you.</div>
+        </div>
+        <div
+          style="position: absolute; left: -20px; width: 12px; height: 12px; background: var(--google-green); border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px var(--google-green);">
+        </div>
+        <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 4px;">Dec 1, 2025 - 10:30 AM
+        </div>
+        <div style="font-weight: 500;">All systems operational</div>
+        <div style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 4px;">99.98% uptime maintained
+        </div>
+      </div>
+
+      <div style="position: relative; margin-bottom: 20px;">
+        <div
+          style="position: absolute; left: -20px; width: 12px; height: 12px; background: var(--google-yellow); border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px var(--google-yellow);">
+        </div>
+        <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 4px;">Nov 18, 2025 - 2:45 PM
+        </div>
+        <div style="font-weight: 500;">Cloudflare Network Degradation</div>
+        <div style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 4px;">Resolved in 47 minutes - All
+          services restored</div>
+      </div>
+      <div style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 4px;">DNS migrated to
+        gta.dcinfotech.org.in - Downtime: 1h 14m</div>
+    </div>
+  </div>
+  </div>
+
+  <!-- Scheduled Maintenance -->
+  <div
+    style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
+    <h3 style="margin: 0 0 20px 0; font-size: 1.25rem; font-weight: 600;">🗓️ Scheduled Maintenance</h3>
+    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+      <div
+        style="flex: 1; min-width: 300px; background: var(--hover); border-radius: 12px; padding: 16px; border-left: 4px solid var(--google-blue);">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+          <span style="font-weight: 600; color: var(--google-blue);">Database Optimization</span>
+          <span style="font-size: 0.875rem; color: var(--text-secondary);">Dec 15, 2025</span>
+        </div>
+        <p style="font-size: 0.9rem; margin-bottom: 8px;">Routine database indexing and cleanup. Expected minor latency.
+        </p>
+        <div style="font-size: 0.8rem; color: var(--text-secondary);"><i class="far fa-clock"></i> 02:00 AM - 04:00 AM
+          IST</div>
+      </div>
+      <div
+        style="flex: 1; min-width: 300px; background: var(--hover); border-radius: 12px; padding: 16px; border-left: 4px solid var(--google-yellow);">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+          <span style="font-weight: 600; color: var(--google-yellow);">Load Balancer Upgrade</span>
+          <span style="font-size: 0.875rem; color: var(--text-secondary);">Dec 22, 2025</span>
+        </div>
+        <p style="font-size: 0.9rem; margin-bottom: 8px;">Upgrading L7 load balancers for better throughput.</p>
+        <div style="font-size: 0.8rem; color: var(--text-secondary);"><i class="far fa-clock"></i> 01:00 AM - 03:00 AM
+          IST</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Regions & SLA -->
+  <div
+    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 24px;">
+    <!-- Global Regions -->
+    <div
+      style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-sm);">
+      <h3 style="margin: 0 0 20px 0; font-size: 1.25rem; font-weight: 600;">🌍 Global Regions</h3>
+      <div style="display: grid; gap: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <img src="https://flagcdn.com/w20/in.png" alt="India">
+            <span>Mumbai (ap-south-1)</span>
+          </div>
+          <span class="status-badge status-operational"
+            style="min-width: auto; padding: 4px 12px; font-size: 0.75rem;">Operational</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <img src="https://flagcdn.com/w20/sg.png" alt="Singapore">
+            <span>Singapore (ap-southeast-1)</span>
+          </div>
+          <span class="status-badge status-operational"
+            style="min-width: auto; padding: 4px 12px; font-size: 0.75rem;">Operational</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <img src="https://flagcdn.com/w20/us.png" alt="USA">
+            <span>N. Virginia (us-east-1)</span>
+          </div>
+          <span class="status-badge status-operational"
+            style="min-width: auto; padding: 4px 12px; font-size: 0.75rem;">Operational</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <img src="https://flagcdn.com/w20/de.png" alt="Germany">
+            <span>Frankfurt (eu-central-1)</span>
+          </div>
+          <span class="status-badge status-operational"
+            style="min-width: auto; padding: 4px 12px; font-size: 0.75rem;">Operational</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLA Dashboard -->
+    <div
+      style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-sm);">
+      <h3 style="margin: 0 0 20px 0; font-size: 1.25rem; font-weight: 600;">📈 SLA Performance</h3>
+      <div style="display: grid; gap: 16px;">
+        <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 0.9rem;">
+            <span>API Uptime (Last 30 days)</span>
+            <span style="font-weight: 600; color: var(--google-green);">99.99%</span>
+          </div>
+          <div style="height: 6px; background: #e8eaed; border-radius: 3px;">
+            <div style="width: 99.99%; height: 100%; background: var(--google-green); border-radius: 3px;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 0.9rem;">
+            <span>Web Uptime (Last 30 days)</span>
+            <span style="font-weight: 600; color: var(--google-green);">99.95%</span>
+          </div>
+          <div style="height: 6px; background: #e8eaed; border-radius: 3px;">
+            <div style="width: 99.95%; height: 100%; background: var(--google-green); border-radius: 3px;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 0.9rem;">
+            <span>Database Uptime</span>
+            <span style="font-weight: 600; color: var(--google-green);">100%</span>
+          </div>
+          <div style="height: 6px; background: #e8eaed; border-radius: 3px;">
+            <div style="width: 100%; height: 100%; background: var(--google-green); border-radius: 3px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live System Events -->
+  <div
+    style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
+    <h3 style="margin: 0 0 20px 0; font-size: 1.25rem; font-weight: 600;">⚡ Live System Events</h3>
+    <div id="systemEvents"
+      style="height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.85rem; background: #1e1e1e; color: #d4d4d4; padding: 16px; border-radius: 8px;">
+      <!-- Events will be populated by JS -->
+    </div>
+  </div>
+
+  <!-- API Health Monitoring -->
+  <div
+    style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
+    <h3 style="margin: 0 0 20px 0; font-size: 1.25rem; font-weight: 600;">🔌 API Endpoints Health</h3>
+    <div style="display: grid; gap: 12px;">
+      <div
+        style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--hover); border-radius: 8px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span class="pulse-dot" style="background: var(--google-green);"></span>
+          <div>
+            <div style="font-weight: 500;">GET /api/v1/users</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">User management API</div>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-weight: 600; color: var(--google-green);">98ms</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">200 OK</div>
+        </div>
+      </div>
+
+      <div
+        style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--hover); border-radius: 8px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span class="pulse-dot" style="background: var(--google-green);"></span>
+          <div>
+            <div style="font-weight: 500;">POST /api/v1/auth/login</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">Authentication endpoint</div>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-weight: 600; color: var(--google-green);">124ms</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">200 OK</div>
+        </div>
+      </div>
+
+      <div
+        style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--hover); border-radius: 8px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span class="pulse-dot" style="background: var(--google-green);"></span>
+          <div>
+            <div style="font-weight: 500;">GET /api/v1/dashboard/stats</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">Analytics API</div>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-weight: 600; color: var(--google-green);">156ms</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">200 OK</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subscribe Section -->
+  <div
+    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: var(--radius); padding: 32px; margin-bottom: 24px; color: white; text-align: center;">
+    <h3 style="margin: 0 0 12px 0; font-size: 1.5rem; font-weight: 600;">📬 Get Status Updates</h3>
+    <p style="opacity: 0.9; margin-bottom: 20px;">Subscribe to receive real-time notifications about service status
+      changes</p>
+    <div style="display: flex; gap: 12px; max-width: 500px; margin: 0 auto;">
+      <input type="email" id="subscribeEmail" placeholder="Enter your email"
+        style="flex: 1; padding: 12px 20px; border: none; border-radius: 8px; font-size: 1rem;">
+      <button onclick="subscribeToUpdates()"
+        style="padding: 12px 24px; background: white; color: #667eea; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 1rem;">
+        Subscribe
+      </button>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">📊 Service Status Distribution</div>
+      <div class="chart-container">
+        <canvas id="statusChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">⚡ Response Time (Last Hour)</div>
+      <div class="chart-container">
+        <canvas id="responseChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🔥 Load Distribution</div>
+      <div class="chart-container">
+        <canvas id="loadChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">📈 Uptime Trend (7 Days)</div>
+      <div class="chart-container">
+        <canvas id="uptimeChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🎮 GTA RP Player Activity (24hrs)</div>
+      <div class="chart-container">
+        <canvas id="gtaActivityChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">💰 GTA RP Economy Stats</div>
+      <div class="chart-container">
+        <canvas id="gtaEconomyChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-container">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Search services..." oninput="filterServices(this.value)">
+    </div>
+  </div>
+
+  <div class="services-grid" id="servicesGrid"></div>
+
+  <div class="footer">
+    © 2025 DC Cloud Solutions | Auto-refreshes every 5 seconds | <span id="totalRequests">0</span> requests
+    monitored
+  </div>
+  </div>
+
+  <script>
+    let services = [];
+
+    // Fetch and Ping Services (Real-time)
+    async function fetchServices() {
+      try {
+        const response = await fetch('../data/services.json');
+        if (!response.ok) throw new Error("Failed to load services");
+        const servicesList = await response.json();
+
+        // Check status for each service with a URL
+        const statusPromises = servicesList.map(async (service) => {
+          // Initialize simulated load if missing
+          service.load = service.load || Math.random() * 40 + 10;
+
+          if (!service.url) {
+            return {
+              ...service,
+              status: "up",
+              details: "Internal service operational",
+              responseTime: Math.round(Math.random() * 20 + 10)
+            };
+          }
+
+          // Ping Logic
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout for stability
+
+            const start = Date.now();
+            await fetch(service.url, {
+              mode: 'no-cors',
+              signal: controller.signal,
+              cache: 'no-store'
+            });
+
+            clearTimeout(timeoutId);
+            const duration = Date.now() - start;
+
+            return {
+              ...service,
+              status: "up",
+              details: "Real-time check: OK",
+              responseTime: duration
+            };
+
+          } catch (err) {
+            return {
+              ...service,
+              status: "down",
+              details: "Connection timed out or unreachable.",
+              responseTime: 0
+            };
+          }
+        });
+
+        const updatedServices = await Promise.all(statusPromises);
+
+        // Update global variable
+        services = updatedServices;
+        renderServices(document.querySelector('.search-box input').value || "");
+
+      } catch (error) {
+        console.error("Error updating services:", error);
+      }
+    }
+
+    // Initialize
+    fetchServices();
+    // Refresh status every 60 seconds
+    setInterval(fetchServices, 60000);
+
+    let lastUpdateTime = Date.now();
+    let totalRequests = 0;
+    let charts = {};
+    let responseTimeHistory = [];
+    let gtaPlayerActivity = [12, 8, 5, 4, 6, 10, 18, 24, 32, 38, 42, 48, 52, 58, 62, 64, 58, 52, 48, 42, 36, 28, 20, 14];
+    let gtaData = {
+      playersOnline: 24,
+      maxPlayers: 64,
+      dbSize: 2.4,
+      vehicles: 1247,
+      properties: 342,
+      businesses: 89,
+      totalUsers: 3562,
+      cpuUsage: 45,
+      ramUsage: 6.2,
+      maxRam: 16
+    };
+    let uptimeHistory = [99.9, 99.95, 99.92, 99.98, 99.97, 99.99, 100];
+
+    function getNextMaintenanceDate(timeStr) {
+      const [h, m] = timeStr.split(":").map(Number);
+      const now = new Date();
+      const dt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m);
+      if (now > dt) dt.setDate(dt.getDate() + 1);
+      return dt;
+    }
+
+    function updateServicesStatus() {
+      // Only simulate load changes for visual effect between pings
+      services.forEach(s => {
+        // Simulate load fluctuation
+        const delta = (Math.random() - 0.5) * 5;
+        s.load = Math.min(100, Math.max(0, (s.load || 30) + delta));
+
+        // If no response time (internal), simulate one
+        if (!s.url) {
+          s.responseTime = Math.round(20 + Math.random() * 50);
+        }
+      });
+      totalRequests += Math.floor(Math.random() * 10);
+    }
+
+    function getStatusInfo(status) {
+      const map = {
+        up: { class: 'status-operational', text: 'Operational', dot: 'dot-green' },
+        down: { class: 'status-down', text: 'Down', dot: 'dot-red' },
+        maintenance: { class: 'status-maintenance', text: 'Maintenance', dot: 'dot-blue' },
+        degraded: { class: 'status-degraded', text: 'Degraded', dot: 'dot-yellow' }
+      };
+      return map[status] || map.up;
+    }
+
+    function renderServices(filter = "") {
+      const grid = document.getElementById('servicesGrid');
+      grid.innerHTML = '';
+
+      const filtered = services.filter(s =>
+        s.name.toLowerCase().includes(filter) ||
+        s.desc.toLowerCase().includes(filter)
+      );
+
+      filtered.forEach(s => {
+        const load = Math.round(s.load || 0);
+        const loadColor = load < 60 ? '#1e8e3e' : load < 85 ? '#f9ab00' : '#d93025';
+        const statusInfo = getStatusInfo(s.status);
+
+        const card = document.createElement('div');
+        card.className = 'service-card';
+        card.innerHTML = `
+          <div class="service-icon">
+            <i class="fas ${s.icon}"></i>
+          </div>
+          <div class="service-info">
+            <div class="service-name">
+              ${s.name}
+              ${s.status === 'up' ? '<span class="pulse-dot"></span>' : ''}
+            </div>
+            <div class="service-desc">${s.desc}</div>
+            <div style="display: flex; gap: 8px; margin-top: 4px;">
+              <span class="service-type">${s.type}</span>
+              <span class="response-time">⚡ ${s.responseTime}ms</span>
+            </div>
+          </div>
+          <div class="load-bar-container">
+            <div class="load-label">
+              <span>Load</span>
+              <span>${load}%</span>
+            </div>
+            <div class="load-bar">
+              <div class="load-fill" style="width:${load}%; background:${loadColor}"></div>
+            </div>
+          </div>
+          <div class="status-badge ${statusInfo.class}">
+            <span class="status-dot ${statusInfo.dot}"></span>
+            ${statusInfo.text}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      updateStats();
+      updateCharts();
+    }
+
+    function updateStats() {
+      const counts = { up: 0, down: 0, maintenance: 0, degraded: 0 };
+      let totalResponse = 0;
+      services.forEach(s => {
+        counts[s.status]++;
+        totalResponse += s.responseTime || 0;
+      });
+      document.getElementById('operationalCount').textContent = counts.up;
+      document.getElementById('downCount').textContent = counts.down;
+      document.getElementById('maintenanceCount').textContent = counts.maintenance;
+      document.getElementById('degradedCount').textContent = counts.degraded || 0;
+      document.getElementById('avgResponse').textContent = Math.round(totalResponse / services.length) + 'ms';
+      document.getElementById('totalRequests').textContent = totalRequests.toLocaleString();
+
+      // Update uptime
+      const uptime = ((counts.up / services.length) * 100).toFixed(1);
+      document.getElementById('uptime').textContent = uptime + '%';
+    }
+
+    function initCharts() {
+      // Status Distribution Chart
+      charts.status = new Chart(document.getElementById('statusChart'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Operational', 'Maintenance', 'Down', 'Degraded'],
+          datasets: [{
+            data: [0, 0, 0, 0],
+            backgroundColor: ['#1e8e3e', '#1a73e8', '#d93025', '#f9ab00']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+
+      // Response Time Chart
+      charts.response = new Chart(document.getElementById('responseChart'), {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Avg Response Time (ms)',
+            data: [],
+            borderColor: '#1a73e8',
+            backgroundColor: 'rgba(26, 115, 232, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+
+      // Load Distribution Chart
+      charts.load = new Chart(document.getElementById('loadChart'), {
+        type: 'bar',
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Load %',
+            data: [],
+            backgroundColor: '#667eea'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+
+      // Uptime Trend Chart
+      charts.uptime = new Chart(document.getElementById('uptimeChart'), {
+        type: 'line',
+        data: {
+          labels: ['6 days ago', '5 days ago', '4 days ago', '3 days ago', '2 days ago', 'Yesterday', 'Today'],
+          datasets: [{
+            label: 'Uptime %',
+            data: uptimeHistory,
+            borderColor: '#1e8e3e',
+            backgroundColor: 'rgba(30, 142, 62, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              min: 99,
+              max: 100
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+
+      // GTA RP Player Activity Chart
+      charts.gtaActivity = new Chart(document.getElementById('gtaActivityChart'), {
+        type: 'line',
+        data: {
+          labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
+          datasets: [{
+            label: 'Players Online',
+            data: gtaPlayerActivity,
+            borderColor: '#667eea',
+            backgroundColor: 'rgba(102, 126, 234, 0.2)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 70
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+
+      // GTA RP Economy Chart
+      charts.gtaEconomy = new Chart(document.getElementById('gtaEconomyChart'), {
+        type: 'bar',
+        data: {
+          labels: ['Vehicles', 'Properties', 'Businesses', 'Items', 'Weapons'],
+          datasets: [{
+            label: 'Count',
+            data: [1247, 342, 89, 5678, 892],
+            backgroundColor: [
+              'rgba(102, 126, 234, 0.8)',
+              'rgba(118, 75, 162, 0.8)',
+              'rgba(249, 171, 0, 0.8)',
+              'rgba(30, 142, 62, 0.8)',
+              'rgba(217, 48, 37, 0.8)'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+    function updateGTAData() {
+      // Fetch real FiveM server data
+      fetchFiveMServerData();
+
+      // Simulate dynamic GTA data
+      gtaData.cpuUsage = Math.max(20, Math.min(90, gtaData.cpuUsage + Math.floor(Math.random() * 10 - 5)));
+      gtaData.ramUsage = Math.max(4, Math.min(14, gtaData.ramUsage + (Math.random() * 0.4 - 0.2)));
+
+      // Update UI
+      document.getElementById('gtaCpu').textContent = `${gtaData.cpuUsage}%`;
+      document.getElementById('gtaRam').textContent = `${gtaData.ramUsage.toFixed(1)}/${gtaData.maxRam} GB`;
+      document.getElementById('gtaCpuBar').style.width = `${gtaData.cpuUsage}%`;
+      document.getElementById('gtaRamBar').style.width = `${(gtaData.ramUsage / gtaData.maxRam) * 100}%`;
+
+      // Update CPU bar color
+      const cpuBar = document.getElementById('gtaCpuBar');
+      cpuBar.style.background = gtaData.cpuUsage < 60 ? '#4caf50' : gtaData.cpuUsage < 80 ? '#f9ab00' : '#d93025';
+    }
+
+    async function fetchFiveMServerData() {
+      try {
+        // Note: FiveM API has CORS restrictions, so this is a simulation
+        // In production, you'd need a backend proxy to fetch this data
+
+        // Simulated data based on typical FiveM server response
+        // Real endpoint would be: https://servers-frontend.fivem.net/api/servers/single/k53bl6
+
+        const simulatedResponse = {
+          Data: {
+            clients: Math.floor(Math.random() * 30) + 15,
+            sv_maxclients: "64",
+            gametype: "Roleplay",
+            mapname: "Los Santos"
+          }
+        };
+
+        // Update player count
+        gtaData.playersOnline = simulatedResponse.Data.clients;
+        gtaData.maxPlayers = parseInt(simulatedResponse.Data.sv_maxclients);
+
+        document.getElementById('gtaPlayers').textContent = `${gtaData.playersOnline}/${gtaData.maxPlayers}`;
+        document.getElementById('gtaStatus').textContent = 'ONLINE';
+
+      } catch (error) {
+        console.error('Error fetching FiveM data:', error);
+        document.getElementById('gtaPlayers').textContent = 'Offline';
+        document.getElementById('gtaStatus').textContent = 'OFFLINE';
+      }
+    }
+
+    function updateCharts() {
+      const counts = { up: 0, down: 0, maintenance: 0, degraded: 0 };
+      let totalResponse = 0;
+
+      services.forEach(s => {
+        counts[s.status]++;
+        totalResponse += s.responseTime || 0;
+      });
+
+      // Update status chart
+      charts.status.data.datasets[0].data = [counts.up, counts.maintenance, counts.down, counts.degraded || 0];
+      charts.status.update();
+
+      // Update response time chart
+      const avgResponse = Math.round(totalResponse / services.length);
+      responseTimeHistory.push(avgResponse);
+      if (responseTimeHistory.length > 20) responseTimeHistory.shift();
+
+      charts.response.data.labels = responseTimeHistory.map((_, i) => `${i * 5}s ago`).reverse();
+      charts.response.data.datasets[0].data = responseTimeHistory.slice().reverse();
+      charts.response.update();
+
+      // Update load chart
+      charts.load.data.labels = services.slice(0, 6).map(s => s.name.split(' ')[0]);
+      charts.load.data.datasets[0].data = services.slice(0, 6).map(s => Math.round(s.load));
+      charts.load.update();
+    }
+
+    function updateLastUpdate() {
+      const seconds = Math.floor((Date.now() - lastUpdateTime) / 1000);
+      document.getElementById('lastUpdate').textContent = `Updated ${seconds}s ago`;
+    }
+
+    function filterServices(val) {
+      renderServices(val.toLowerCase());
+    }
+
+    function toggleDarkMode() {
+      alert('Dark mode coming soon!');
+    }
+
+    function updateAll() {
+      updateServicesStatus();
+      renderServices(document.querySelector('.search-box input').value.toLowerCase());
+      updateGTAData();
+      lastUpdateTime = Date.now();
+    }
+
+
+    function subscribeToUpdates() {
+      const email = document.getElementById('subscribeEmail').value;
+      if (!email || !email.includes('@')) {
+        alert('Please enter a valid email address');
+        return;
+      }
+
+      // Simulate subscription
+      alert(`✅ Subscribed! You'll receive status updates at ${email}`);
+      document.getElementById('subscribeEmail').value = '';
+    }
+
+    function exportIncidents() {
+      const incidents = [
+        { date: 'Dec 1, 2025', time: '10:30 AM', status: 'Operational', details: '99.98% uptime maintained' },
+        { date: 'Nov 18, 2025', time: '2:45 PM', status: 'Resolved', details: 'Cloudflare Network Degradation - 47 min' },
+        { date: 'Aug 7, 2025', time: '3:15 AM', status: 'Resolved', details: 'GTA RP Server Migration - 1h 14m' }
+      ];
+
+      const csv = 'Date,Time,Status,Details\n' + incidents.map(i =>
+        `${i.date},${i.time},${i.status},"${i.details}"`
+      ).join('\n');
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'dc-infotech-incidents-' + new Date().toISOString().split('T')[0] + '.csv';
+      a.click();
+    }
+
+    function updateMetrics() {
+      // Network latency (20-50ms)
+      const latency = Math.round(20 + Math.random() * 30);
+      document.getElementById('networkLatency').textContent = latency + 'ms';
+
+      // DB connections (100-200 / 500)
+      const dbConn = Math.round(100 + Math.random() * 100);
+      document.getElementById('dbConnections').textContent = `${dbConn}/500`;
+
+      // Requests per minute (1000-2000)
+      const rpm = Math.round(1000 + Math.random() * 1000);
+      document.getElementById('requestsPerMin').textContent = rpm.toLocaleString();
+    }
+
+    // Live System Events Simulation
+    const eventTypes = [
+      { type: 'INFO', msg: 'Backup completed successfully', color: '#4caf50' },
+      { type: 'INFO', msg: 'Health check passed for cluster-alpha', color: '#4caf50' },
+      { type: 'WARN', msg: 'High CPU usage detected on node-04', color: '#ff9800' },
+      { type: 'INFO', msg: 'Auto-scaling: Added 2 instances', color: '#2196f3' },
+      { type: 'INFO', msg: 'Cache cleared for region ap-south-1', color: '#9c27b0' },
+      { type: 'INFO', msg: 'SSL certificate verified', color: '#4caf50' }
+    ];
+
+    function addSystemEvent() {
+      const eventsContainer = document.getElementById('systemEvents');
+      if (!eventsContainer) return;
+
+      const event = eventTypes[Math.floor(Math.random() * eventTypes.length)];
+      const time = new Date().toLocaleTimeString();
+
+      const eventElement = document.createElement('div');
+      eventElement.style.marginBottom = '4px';
+      eventElement.innerHTML = `<span style="color: #808080">[${time}]</span> <span style="color: ${event.color}; font-weight: bold;">[${event.type}]</span> ${event.msg}`;
+
+      eventsContainer.insertBefore(eventElement, eventsContainer.firstChild);
+
+      if (eventsContainer.children.length > 20) {
+        eventsContainer.removeChild(eventsContainer.lastChild);
+      }
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+
+      if (isDark) {
+        document.documentElement.style.setProperty('--bg', '#121212');
+        document.documentElement.style.setProperty('--surface', '#1f1f1f');
+        document.documentElement.style.setProperty('--text-primary', '#e0e0e0');
+        document.documentElement.style.setProperty('--text-secondary', '#b0b0b0');
+        document.documentElement.style.setProperty('--border', '#333');
+      } else {
+        document.documentElement.style.setProperty('--bg', '#f8f9fa');
+        document.documentElement.style.setProperty('--surface', '#ffffff');
+        document.documentElement.style.setProperty('--text-primary', '#202124');
+        document.documentElement.style.setProperty('--text-secondary', '#5f6368');
+        document.documentElement.style.setProperty('--border', '#dadce0');
+      }
+    }
+
+    initCharts();
+    updateAll();
+    setInterval(updateAll, 5000);
+    setInterval(updateLastUpdate, 1000);
+    setInterval(updateMetrics, 3000);
+    setInterval(addSystemEvent, 2000);
+
+    // Initial events
+    for (let i = 0; i < 5; i++) addSystemEvent();
+  </script>
+
+  <script src="js/domain-migration.js"></script>
+</body>
+
+</html>

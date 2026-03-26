@@ -1,0 +1,1183 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Careers at DC Cloud Solutions | Build What's Next</title>
+  <meta name="description"
+    content="Join DC Cloud Solutions and build the future of cloud and web technology. Explore job openings and our vibrant culture.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Product+Sans:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/owl.carousel.min.css">
+  <link rel="stylesheet" href="css/owl.theme.default.min.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-color: #1a73e8;
+      --primary-dark: #1557b0;
+      --text-dark: #202124;
+      --text-light: #5f6368;
+      --bg-light: #f8f9fa;
+      --google-blue: #4285f4;
+      --google-red: #ea4335;
+      --google-yellow: #fbbc04;
+      --google-green: #34a853;
+      --card-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+      --card-hover-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+    }
+
+    body {
+      font-family: 'Google Sans', 'Outfit', sans-serif;
+      color: var(--text-dark);
+      background-color: #fff;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: 'Product Sans', 'Outfit', sans-serif;
+      letter-spacing: -0.02em;
+    }
+
+    /* Loader */
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      transition: opacity 0.5s ease-out;
+    }
+
+    .loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loader-content {
+      position: relative;
+      width: 100px;
+      top: 0;
+      padding-top: 0;
+    }
+
+    /* Hero Section - Restored Original */
+    /* .banner-part and .subpage-banner styles removed to use style.css defaults */
+
+    /* Search Bar Container - Moved below banner */
+    .search-section {
+      padding: 60px 0 40px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .search-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 30px;
+      color: var(--text-dark);
+    }
+
+    .job-search-container {
+      max-width: 720px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .job-search-box {
+      background: #fff;
+      border-radius: 32px;
+      padding: 6px 6px 6px 24px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(60, 64, 67, 0.16);
+      border: 1px solid #dfe1e5;
+      transition: all 0.2s ease-in-out;
+      height: 64px;
+    }
+
+    .job-search-box:hover,
+    .job-search-box:focus-within {
+      box-shadow: 0 5px 15px rgba(60, 64, 67, 0.2);
+      border-color: transparent;
+    }
+
+    .job-search-box i {
+      color: var(--text-light);
+      font-size: 1.2rem;
+      margin-right: 16px;
+    }
+
+    .job-search-box input {
+      border: none;
+      outline: none;
+      flex-grow: 1;
+      font-size: 1.1rem;
+      color: var(--text-dark);
+      font-family: 'Google Sans', sans-serif;
+    }
+
+    .job-search-box button {
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      padding: 0 40px;
+      height: 52px;
+      border-radius: 26px;
+      font-weight: 500;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: 'Google Sans', sans-serif;
+    }
+
+    .job-search-box button:hover {
+      background: var(--primary-dark);
+      box-shadow: 0 1px 3px rgba(60, 64, 67, 0.3);
+    }
+
+    /* Values Section */
+    .values-section {
+      padding: 100px 0;
+      background: #fff;
+    }
+
+    .value-card {
+      padding: 40px 32px;
+      border-radius: 16px;
+      height: 100%;
+      text-align: left;
+      transition: transform 0.3s ease;
+    }
+
+    .value-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .value-icon-wrapper {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      font-size: 1.75rem;
+    }
+
+    .icon-blue {
+      background: #e8f0fe;
+      color: var(--google-blue);
+    }
+
+    .icon-green {
+      background: #e6f4ea;
+      color: var(--google-green);
+    }
+
+    .icon-yellow {
+      background: #fef7e0;
+      color: #f9ab00;
+    }
+
+    .value-title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: var(--text-dark);
+    }
+
+    .value-text {
+      color: var(--text-light);
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    /* Job Listings */
+    .jobs-section {
+      padding: 100px 0;
+      background: #f8f9fa;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .section-desc {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      margin-bottom: 60px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .job-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #dadce0;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .job-card:hover {
+      border-color: transparent;
+      box-shadow: var(--card-hover-shadow);
+    }
+
+    .job-role {
+      font-size: 1.4rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--text-dark);
+    }
+
+    .job-location {
+      font-size: 0.95rem;
+      color: var(--text-light);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .job-desc {
+      color: var(--text-light);
+      margin-bottom: 32px;
+      line-height: 1.6;
+      flex-grow: 1;
+    }
+
+    .job-tags {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .job-tag {
+      background: #f1f3f4;
+      color: #3c4043;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .btn-apply {
+      width: 100%;
+      padding: 12px;
+      border-radius: 24px;
+      background: #fff;
+      color: var(--primary-color);
+      border: 1px solid #dadce0;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-apply:hover {
+      background: #f8f9fa;
+      border-color: var(--primary-color);
+      color: var(--primary-dark);
+    }
+
+    /* Life @ DC Slider */
+    .life-section {
+      padding: 120px 0;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .life-slider-container {
+      margin-top: 60px;
+    }
+
+    .life-card {
+      border-radius: 24px;
+      overflow: hidden;
+      height: 400px;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .life-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .life-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .life-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .slider-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 30px 20px 20px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+      color: #fff;
+      font-weight: 500;
+      font-size: 1.1rem;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s ease;
+    }
+
+    .life-card:hover .slider-caption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Modal */
+    .modal-content {
+      border-radius: 24px;
+      border: none;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+      border-bottom: 1px solid #f1f3f4;
+      padding: 24px 32px;
+    }
+
+    .modal-body {
+      padding: 32px;
+    }
+
+    .form-control {
+      border-radius: 8px;
+      padding: 12px 16px;
+      border: 1px solid #dadce0;
+      background: #fff;
+      font-size: 1rem;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+    }
+
+    .form-label {
+      font-weight: 500;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      color: var(--text-dark);
+    }
+
+    /* Success Message Animation */
+    .success-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .icon-circle {
+      width: 80px;
+      height: 80px;
+      background: #e6f4ea;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #1e8e3e;
+      font-size: 40px;
+      animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes scaleIn {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Partner Section Animations */
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    @keyframes floatSlow {
+
+      0%,
+      100% {
+        transform: translateY(0px) scale(1);
+      }
+
+      50% {
+        transform: translateY(-15px) scale(1.02);
+      }
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+
+      50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+      }
+    }
+
+    /* Stat Card Hover Effects */
+    .stat-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      background: rgba(255, 255, 255, 0.25) !important;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    /* CTA Button Hover */
+    .btn-light:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .btn-light:hover i {
+      transform: translateX(5px);
+    }
+
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+
+      .job-search-box {
+        padding: 4px;
+      }
+
+      .job-search-box button {
+        padding: 0 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Loader -->
+  <div class="loader">
+    <div class="loader-content">
+      <img src="images/dcintro.gif" alt="Loader" style="width: 100%;">
+    </div>
+  </div>
+
+  <!-- Header Placeholder -->
+  <div id="header-placeholder"></div>
+
+  <!-- Hero Section -->
+  <div class="banner-part subpage-banner">
+    <div class="container">
+      <div class="banner-div-content d-grid align-content-center" data-aos="fade-up">
+        <h1 class="text-center">Careers</h1>
+        <ul class="list-unstyled d-flex justify-content-center">
+          <li> Home </li>
+          <li> <a href="careers.html"> Careers</a> </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Section -->
+  <section class="search-section">
+    <div class="container">
+      <div data-aos="fade-up">
+        <h5 class="text-primary fw-bold mb-2">Career</h5>
+        <h2 class="search-title">Search Your Job Of Multiple Positions</h2>
+
+        <div class="job-search-container">
+          <div class="job-search-box">
+            <input type="text" id="jobSearchInput" placeholder="Search for jobs...">
+            <button id="searchBtn">
+              <span class="btn-text">Search</span>
+              <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Google Cloud Partner Section -->
+  <section class="partner-section py-5 position-relative overflow-hidden"
+    style="min-height: 600px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <!-- Animated Cloud GIF Background -->
+    <div class="position-absolute w-100 h-100 top-0 start-0" style="opacity: 0.15; z-index: 1;">
+      <img src="https://dcinfotech.org.in/cloud/cloud.gif" alt="Cloud Animation" class="w-100 h-100"
+        style="object-fit: cover;">
+    </div>
+
+    <!-- Floating Gradient Orbs -->
+    <div class="position-absolute rounded-circle"
+      style="width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%); top: -100px; right: -100px; z-index: 1; animation: float 6s ease-in-out infinite;">
+    </div>
+    <div class="position-absolute rounded-circle"
+      style="width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%); bottom: -50px; left: -50px; z-index: 1; animation: float 8s ease-in-out infinite reverse;">
+    </div>
+
+    <div class="container position-relative" style="z-index: 2;">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1000">
+          <div class="text-white">
+            <!-- Badge -->
+            <div class="d-inline-block mb-3 px-3 py-2 rounded-pill"
+              style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+              <i class="fas fa-cloud me-2"></i>
+              <span class="fw-semibold" style="font-size: 0.9rem; letter-spacing: 1px;">OUR PARTNERSHIP</span>
+            </div>
+
+            <h2 class="display-4 fw-bold mb-4" style="line-height: 1.2; text-shadow: 0 2px 20px rgba(0,0,0,0.2);">
+              Work with a <span
+                style="background: linear-gradient(120deg, #fff 0%, #e0e7ff 100%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Google
+                Cloud Partner</span>
+            </h2>
+
+            <p class="lead mb-5" style="font-size: 1.1rem; line-height: 1.8; color: rgba(255,255,255,0.9);">
+              Join a team that's officially recognized by Google Cloud. We're proud to be a Google Cloud Partner,
+              delivering cutting-edge cloud solutions and training programs.
+            </p>
+
+            <!-- Animated Stats Cards -->
+            <div class="row g-3 mb-5">
+              <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-card p-4 rounded-4 text-center h-100"
+                  style="background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 8px 32px rgba(0,0,0,0.1); transition: all 0.3s ease;">
+                  <div class="stat-icon mb-3">
+                    <i class="fas fa-project-diagram" style="font-size: 2rem; color: #fff;"></i>
+                  </div>
+                  <h3 class="fw-bold mb-1" style="font-size: 2.5rem;">
+                    <span class="counter" data-target="500">0</span><span>+</span>
+                  </h3>
+                  <p class="mb-0" style="color: rgba(255,255,255,0.8); font-size: 0.95rem; font-weight: 500;">Cloud
+                    Projects</p>
+                </div>
+              </div>
+
+              <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="stat-card p-4 rounded-4 text-center h-100"
+                  style="background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 8px 32px rgba(0,0,0,0.1); transition: all 0.3s ease;">
+                  <div class="stat-icon mb-3">
+                    <i class="fas fa-certificate" style="font-size: 2rem; color: #fff;"></i>
+                  </div>
+                  <h3 class="fw-bold mb-1" style="font-size: 2.5rem;">
+                    <span class="counter" data-target="50">0</span><span>+</span>
+                  </h3>
+                  <p class="mb-0" style="color: rgba(255,255,255,0.8); font-size: 0.95rem; font-weight: 500;">Certified
+                    Professionals</p>
+                </div>
+              </div>
+
+              <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="stat-card p-4 rounded-4 text-center h-100"
+                  style="background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 8px 32px rgba(0,0,0,0.1); transition: all 0.3s ease;">
+                  <div class="stat-icon mb-3">
+                    <i class="fas fa-smile-beam" style="font-size: 2rem; color: #fff;"></i>
+                  </div>
+                  <h3 class="fw-bold mb-1" style="font-size: 2.5rem;">
+                    <span class="counter" data-target="100">0</span><span>%</span>
+                  </h3>
+                  <p class="mb-0" style="color: rgba(255,255,255,0.8); font-size: 0.95rem; font-weight: 500;">Client
+                    Satisfaction</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- CTA Button -->
+            <a href="#open-roles"
+              onclick="event.preventDefault(); document.getElementById('open-roles').scrollIntoView({behavior: 'smooth', block: 'start'});"
+              class="btn btn-light btn-lg rounded-pill px-5 py-3 fw-bold d-inline-flex align-items-center gap-2"
+              style="box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: all 0.3s ease; border: none; cursor: pointer;"
+              data-aos="fade-up" data-aos-delay="400">
+              <span>Explore the Roles</span>
+              <i class="fas fa-arrow-down" style="transition: transform 0.3s ease;"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200" data-aos-duration="1000">
+          <div class="text-center position-relative">
+            <!-- Floating Cloud GIF -->
+            <div class="cloud-container position-relative" style="animation: floatSlow 8s ease-in-out infinite;">
+              <img src="https://dcinfotech.org.in/cloud/cloud.gif" alt="Google Cloud" class="img-fluid"
+                style="max-width: 500px; filter: drop-shadow(0 20px 60px rgba(0,0,0,0.3));">
+            </div>
+
+            <!-- Decorative Elements -->
+            <div class="position-absolute"
+              style="top: 10%; right: 10%; width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; animation: pulse 3s ease-in-out infinite;">
+            </div>
+            <div class="position-absolute"
+              style="bottom: 15%; left: 5%; width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 50%; animation: pulse 4s ease-in-out infinite;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Values Section -->
+  <section class="values-section">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+          <div class="value-card">
+            <div class="value-icon-wrapper icon-blue">
+              <i class="fas fa-rocket"></i>
+            </div>
+            <h3 class="value-title">Impact at Scale</h3>
+            <p class="value-text">Work on projects that matter. From cloud infrastructure to AI, your code will touch
+              thousands of users.</p>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="value-card">
+            <div class="value-icon-wrapper icon-green">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3 class="value-title">Inclusive Culture</h3>
+            <p class="value-text">Be part of a team where everyone belongs. We celebrate diversity and foster a
+              collaborative environment.</p>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="value-card">
+            <div class="value-icon-wrapper icon-yellow">
+              <i class="fas fa-lightbulb"></i>
+            </div>
+            <h3 class="value-title">Continuous Growth</h3>
+            <p class="value-text">Never stop learning. With mentorship programs and learning resources, we invest in
+              your future.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Job Listings -->
+  <section class="jobs-section" id="open-roles">
+    <div class="container">
+      <div data-aos="fade-up">
+        <h2 class="section-title">Open Roles</h2>
+        <p class="section-desc">Find your next challenge.</p>
+      </div>
+
+      <div class="row g-4">
+        <!-- Job 1 -->
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+          <div class="job-card">
+            <div class="position-absolute top-0 end-0 m-3">
+              <span class="badge bg-danger px-3 py-2 rounded-pill">CLOSED</span>
+            </div>
+            <h3 class="job-role">Software Engineer Intern</h3>
+            <div class="job-location"><i class="fas fa-map-marker-alt"></i> Remote, India</div>
+            <p class="job-desc">Build innovative software solutions, including learning and exam portals, with hands-on
+              project experience.</p>
+            <div class="job-tags">
+              <span class="job-tag">Engineering</span>
+              <span class="job-tag">Internship</span>
+            </div>
+            <button class="btn-apply mt-auto" disabled style="opacity: 0.6; cursor: not-allowed;">Position
+              Closed</button>
+          </div>
+        </div>
+
+        <!-- Job 2 -->
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="job-card">
+            <div class="position-absolute top-0 end-0 m-3">
+              <span class="badge bg-danger px-3 py-2 rounded-pill">CLOSED</span>
+            </div>
+            <h3 class="job-role">Cloud Engineer</h3>
+            <div class="job-location"><i class="fas fa-map-marker-alt"></i> Mumbai, India</div>
+            <p class="job-desc">Design and deploy scalable cloud-based solutions using Google Cloud Platform (GCP) for
+              enterprise clients.</p>
+            <div class="job-tags">
+              <span class="job-tag">Cloud</span>
+              <span class="job-tag">Full Time</span>
+            </div>
+            <button class="btn-apply mt-auto" disabled style="opacity: 0.6; cursor: not-allowed;">Position
+              Closed</button>
+          </div>
+        </div>
+
+        <!-- Job 3 -->
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="job-card">
+            <div class="position-absolute top-0 end-0 m-3">
+              <span class="badge bg-danger px-3 py-2 rounded-pill">CLOSED</span>
+            </div>
+            <h3 class="job-role">Web Developer</h3>
+            <div class="job-location"><i class="fas fa-map-marker-alt"></i> Mumbai, India</div>
+            <p class="job-desc">Create stunning, responsive websites and web applications using modern frameworks like
+              React and Next.js.</p>
+            <div class="job-tags">
+              <span class="job-tag">Design</span>
+              <span class="job-tag">Full Time</span>
+            </div>
+            <button class="btn-apply mt-auto" disabled style="opacity: 0.6; cursor: not-allowed;">Position
+              Closed</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Life @ DC Slider -->
+  <section class="life-section">
+    <div class="container">
+      <div data-aos="fade-up">
+        <h2 class="section-title">Life at DC Cloud Solutions</h2>
+        <p class="section-desc">See what it's like to be part of our team.</p>
+      </div>
+
+      <div class="life-slider-container" data-aos="fade-up" data-aos-delay="100">
+        <div class="owl-carousel owl-theme life-slider" id="lifeSlider">
+          <!-- Content will be injected via JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Apply Modal -->
+  <div class="modal fade" id="applyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Apply for Position</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="applyForm">
+            <div class="mb-3">
+              <label class="form-label">Job Role</label>
+              <input type="text" class="form-control bg-light" id="modalJobRole" readonly>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control" placeholder="e.g. John Doe" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-control" placeholder="e.g. john@example.com" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Resume / CV</label>
+              <div class="position-relative">
+                <input type="file" class="form-control" id="resumeUpload" accept=".pdf,.doc,.docx" required>
+                <div id="uploadSpinner" class="position-absolute top-50 end-0 translate-middle-y me-3 d-none">
+                  <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+                <div id="uploadSuccess" class="position-absolute top-50 end-0 translate-middle-y me-3 d-none">
+                  <i class="fas fa-check-circle text-success"></i>
+                </div>
+              </div>
+              <div class="form-text text-muted">PDF or DOCX (Max 5MB)</div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-pill mt-2 position-relative">
+              <span class="btn-text">Submit Application</span>
+              <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            </button>
+          </form>
+
+          <div id="successMessage" class="text-center d-none py-5">
+            <div class="success-icon mb-4">
+              <div class="icon-circle">
+                <i class="fas fa-check"></i>
+              </div>
+            </div>
+            <h3 class="fw-bold mb-3">Application Received!</h3>
+            <p class="text-muted mb-4 px-4">Thank you for your interest in DC Cloud Solutions. We have received your details
+              and our team will review your application shortly.</p>
+            <button type="button" class="btn btn-outline-primary rounded-pill px-5 py-2 fw-bold"
+              data-bs-dismiss="modal">Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- menu mobile -->
+  <div class="offcanvas offcanvas-start menu-mobile" tabindex="-1" id="offcanvasmenu"
+    aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasExampleLabel">
+        <img src="images/logo.png" alt="logo" style="width: 100px;">
+      </h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+
+      <ul class="navbar-nav ms-auto mb-2 mt-lg-0 mb-lg-0 align-items-lg-center">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="about.html">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pricing.html">Pricing</a>
+        </li>
+        <li class="nav-item">
+          <a class='nav-link' href='blog.html'>Blog</a>
+        </li>
+        <li class="nav-item">
+          <a class='nav-link' href='careers.html'>Career</a>
+        </li>
+        <li class="nav-item">
+          <a class='nav-link' href='contact.html'>Contact</a>
+        </li>
+        <li class="nav-item">
+          <a class="signiup" href="live-chat">
+            Get It Support
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <script>
+    // Initialize AOS
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 50
+    });
+
+    // Animated Counter Function
+    function animateCounter(element) {
+      const target = parseInt(element.getAttribute('data-target'));
+      const duration = 2000; // 2 seconds
+      const increment = target / (duration / 16); // 60fps
+      let current = 0;
+
+      const updateCounter = () => {
+        current += increment;
+        if (current < target) {
+          element.textContent = Math.floor(current);
+          requestAnimationFrame(updateCounter);
+        } else {
+          element.textContent = target;
+        }
+      };
+
+      updateCounter();
+    }
+
+    // Intersection Observer for Counter Animation
+    const observerOptions = {
+      threshold: 0.5,
+      rootMargin: '0px'
+    };
+
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+          entry.target.classList.add('counted');
+          animateCounter(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // Observe all counter elements
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.counter').forEach(counter => {
+        counterObserver.observe(counter);
+      });
+    });
+
+    // Life @ DC Slider Data
+    const lifeAtDCData = [
+      {
+        img: "https://i.ibb.co/Z4f8xKr/Whats-App-Image-2025-11-16-at-10-41-42-AM-2.jpg",
+        caption: "Our modern workspace fosters creativity and collaboration."
+      },
+      {
+        img: "https://i.ibb.co/93p9tbHk/Whats-App-Image-2025-11-16-at-10-41-42-AM-1.jpg", // Fixed URL space
+        caption: "Strong teamwork and partnerships drive our success."
+      },
+      {
+        img: "https://i.ibb.co/Rkz1rRBD/Whats-App-Image-2025-11-16-at-10-41-42-AM-3.jpg",
+        caption: "Leading innovation with advanced cloud engineering."
+      },
+      {
+        img: "https://i.ibb.co/XkypMPwZ/Whats-App-Image-2025-11-16-at-10-41-42-AM.jpg",
+        caption: "Always here to support and assist our clients."
+      }
+    ];
+
+    // Initialize Owl Carousel with Dynamic Data
+    $(document).ready(function () {
+      const sliderContainer = $("#lifeSlider");
+
+      // Generate HTML
+      lifeAtDCData.forEach(item => {
+        const slideHtml = `
+          <div class="item">
+            <div class="life-card">
+              <img src="${item.img}" alt="Life at DC Cloud Solutions">
+              <div class="slider-caption p-3 text-center fw-bold">${item.caption}</div>
+            </div>
+          </div>
+        `;
+        sliderContainer.append(slideHtml);
+      });
+
+      // Initialize Carousel
+      sliderContainer.owlCarousel({
+        loop: true,
+        margin: 24,
+        nav: false,
+        dots: true,
+        autoplay: true,
+        autoplayTimeout: 3000,
+        responsive: {
+          0: { items: 1 },
+          768: { items: 2 },
+          1000: { items: 3 }
+        }
+      });
+
+      // Job Search Logic
+      const searchInput = document.getElementById('jobSearchInput');
+      const searchBtn = document.getElementById('searchBtn');
+      const jobCards = document.querySelectorAll('.col-lg-4');
+
+      function filterJobs() {
+        const btnText = searchBtn.querySelector('.btn-text');
+        const spinner = searchBtn.querySelector('.spinner-border');
+
+        // Show loading state
+        searchBtn.disabled = true;
+        btnText.classList.add('d-none');
+        spinner.classList.remove('d-none');
+
+        // Simulate search delay for better UX
+        setTimeout(() => {
+          const query = searchInput.value.toLowerCase();
+          let visibleCount = 0;
+
+          jobCards.forEach(col => {
+            const card = col.querySelector('.job-card');
+            const text = card.innerText.toLowerCase();
+            if (text.includes(query)) {
+              col.style.display = 'block';
+              visibleCount++;
+            } else {
+              col.style.display = 'none';
+            }
+          });
+
+          // Hide loading state
+          searchBtn.disabled = false;
+          btnText.classList.remove('d-none');
+          spinner.classList.add('d-none');
+
+          // Show result count (optional)
+          console.log(`Found ${visibleCount} matching positions`);
+        }, 500); // 500ms delay for spinner visibility
+      }
+
+      searchBtn.addEventListener('click', filterJobs);
+      searchInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+          filterJobs();
+        }
+      });
+    });
+
+    // Header/Footer Loader
+    // Header/Footer Loader
+    async function loadComponent(id, url) {
+      try {
+        const response = await fetch(url);
+        if (response.ok) {
+          document.getElementById(id).innerHTML = await response.text();
+          if (id === 'header-placeholder') {
+            setActiveNavLink();
+          }
+        }
+      } catch (e) { console.error('Error loading ' + url, e); }
+    }
+
+    function setActiveNavLink() {
+      let currentPath = window.location.pathname;
+      if (currentPath.endsWith('/')) currentPath = currentPath.slice(0, -1);
+      let page = currentPath.split('/').pop() || '/';
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        let href = link.getAttribute('href');
+        if (
+          href === page ||
+          href === currentPath ||
+          (href === '/' && (page === '' || page === 'index.html'))
+        ) {
+          link.classList.add('active');
+        }
+        if (href && (href.replace(/^\//, '') + '.html') === page) {
+          link.classList.add('active');
+        }
+      });
+    }
+
+    loadComponent('header-placeholder', 'template/header.html');
+    loadComponent('footer-placeholder', 'template/footer.html');
+
+    // Loader Fadeout
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        const loader = document.querySelector('.loader');
+        if (loader) loader.classList.add('hidden');
+      }, 800);
+    });
+    // Fallback
+    setTimeout(function () {
+      const loader = document.querySelector('.loader');
+      if (loader && !loader.classList.contains('hidden')) loader.classList.add('hidden');
+    }, 4000);
+
+    // Modal Logic
+    const applyModal = document.getElementById('applyModal');
+    if (applyModal) {
+      applyModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const jobRole = button.getAttribute('data-job-role');
+        const modalJobRoleInput = applyModal.querySelector('#modalJobRole');
+        modalJobRoleInput.value = jobRole;
+      });
+
+      // Reset Modal on Close
+      applyModal.addEventListener('hidden.bs.modal', function () {
+        document.getElementById('applyForm').classList.remove('d-none');
+        document.getElementById('successMessage').classList.add('d-none');
+        document.getElementById('applyForm').reset();
+
+        // Reset Upload UI
+        document.getElementById('uploadSpinner').classList.add('d-none');
+        document.getElementById('uploadSuccess').classList.add('d-none');
+      });
+    }
+
+    // File Upload Simulation
+    const fileInput = document.getElementById('resumeUpload');
+    const uploadSpinner = document.getElementById('uploadSpinner');
+    const uploadSuccess = document.getElementById('uploadSuccess');
+
+    if (fileInput) {
+      fileInput.addEventListener('change', function () {
+        if (this.files.length > 0) {
+          uploadSpinner.classList.remove('d-none');
+          uploadSuccess.classList.add('d-none');
+
+          // Simulate upload delay
+          setTimeout(() => {
+            uploadSpinner.classList.add('d-none');
+            uploadSuccess.classList.remove('d-none');
+          }, 1500);
+        } else {
+          uploadSpinner.classList.add('d-none');
+          uploadSuccess.classList.add('d-none');
+        }
+      });
+    }
+
+    // Form Submit
+    const form = document.getElementById('applyForm');
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const btn = this.querySelector('button[type="submit"]');
+        const btnText = btn.querySelector('.btn-text');
+        const spinner = btn.querySelector('.spinner-border');
+
+        // Loading State
+        btn.disabled = true;
+        btnText.classList.add('d-none');
+        spinner.classList.remove('d-none');
+
+        // Simulate API Call
+        setTimeout(() => {
+          this.classList.add('d-none');
+          document.getElementById('successMessage').classList.remove('d-none');
+
+          // Reset Form (Optional)
+          this.reset();
+          btn.disabled = false;
+          btnText.classList.remove('d-none');
+          spinner.classList.add('d-none');
+        }, 1500);
+      });
+    }
+  </script>
+</body>
+
+</html>

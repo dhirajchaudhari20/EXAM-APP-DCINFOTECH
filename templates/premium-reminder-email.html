@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Reminder</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .wrapper {
+            width: 100%;
+            table-layout: fixed;
+            background-color: #f8fafc;
+            padding-bottom: 40px;
+        }
+        .main {
+            background-color: #ffffff;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 600px;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-top: 40px;
+        }
+        .header {
+            background: linear-gradient(135deg, #0044cc 0%, #0033aa 100%);
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+        .content {
+            padding: 40px 30px;
+            line-height: 1.6;
+        }
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .session-card {
+            background-color: #f1f5f9;
+            border-left: 4px solid #0044cc;
+            padding: 24px;
+            margin: 24px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .session-info {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        .info-label {
+            font-weight: 700;
+            width: 100px;
+            color: #64748b;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+        .info-value {
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .btn {
+            background-color: #0044cc;
+            color: #ffffff !important;
+            padding: 14px 28px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+        .footer {
+            padding: 30px;
+            background-color: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+        .signature-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .signature-logo {
+            width: 80px;
+            padding-right: 20px;
+        }
+        .signature-details {
+            border-left: 2px solid #e2e8f0;
+            padding-left: 20px;
+        }
+        .company-name {
+            font-weight: 700;
+            color: #0044cc;
+            margin-bottom: 4px;
+        }
+        .contact-info {
+            font-size: 13px;
+            color: #64748b;
+        }
+        .badges-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .badge {
+            width: 64px;
+            height: 64px;
+            margin: 0 5px;
+        }
+        .disclaimer {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 30px;
+            line-height: 1.4;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+        @media screen and (max-width: 600px) {
+            .main {
+                width: 95% !important;
+                margin-top: 20px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <table class="main">
+            <tr>
+                <td class="header">
+                    <h1>Cloud Training Session Reminder</h1>
+                </td>
+            </tr>
+            <tr>
+                <td class="content">
+                    <div class="greeting">Hi {{to_name}},</div>
+                    <p>This is a reminder for your upcoming Google Cloud training session. We're excited to have you join us!</p>
+                    
+                    <div class="session-card">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td style="padding-bottom: 12px;">
+                                    <span class="info-label">📚 Session</span><br>
+                                    <span class="info-value">{{session_title}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-bottom: 12px;">
+                                    <span class="info-label">📅 Date</span><br>
+                                    <span class="info-value">{{session_date}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-bottom: 12px;">
+                                    <span class="info-label">⏰ Time</span><br>
+                                    <span class="info-value">{{session_time}}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <p>Don't forget to join **5 minutes early** to test your audio and video settings for the best experience.</p>
+
+                    <div class="btn-container">
+                        <a href="{{meeting_link}}" class="btn">🚀 Join Meeting Now</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="footer">
+                    <table class="signature-table">
+                        <tr>
+                            <td class="signature-logo">
+                                <img src="https://ci3.googleusercontent.com/mail-sig/AIorK4yEiQcJEad449PSV98mZXcxDdkfj2axaIRN3qUJAJw-N7iCzt4bzq9Y6QhmMSRHyiqfMGc9TTYK0ENZ" width="80" height="80">
+                            </td>
+                            <td class="signature-details">
+                                <div class="company-name">DC Infotech Cloud Training Team</div>
+                                <div class="contact-info">
+                                    DC INFOTECH PVT LTD<br>
+                                    📞 +91 92261 25654<br>
+                                    📧 <a href="mailto:support@dcinfotech.org.in" style="color: #0044cc; text-decoration: none;">support@dcinfotech.org.in</a>
+                                </div>
+                                <div style="margin-top: 10px;">
+                                    <img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXfZde4s2nUBOk8fW7rSn2PpltnCMftU4a4lLcwB-9RFqzDmh93X0A0NU3Ni-dd9RwpmP4JBoDZMEmSznGh0wdCS6Xq7WHnUvr9V30f9cj_bteKEWoW6F1Ic-FO0XGr7CoeL8R91kGtJojj-JQiN1vcgj91SZg?key=7kMX7FBPoCXbvevhBYP0-A" width="180">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="badges-container">
+                        <img class="badge" src="https://ci3.googleusercontent.com/meips/ADKq_NaTbQ2qrwVv17QYtVWeYm5xy8pCWCi7_1YQzBeK13Dboutrooyv0HEnr4ay7EYjsBLNdioJEiKfcj-LzzM8-hG8wR2EuE78aCHhPEQlNoiuSU2TMyz8einm3ud5Mt9KFWf3-lhGU8hTI5uUFVG8mRyJMA=s0-d-e1-ft#https://images.credly.com/size/680x680/images/05e71e7e-92a1-4821-8530-4176b2e3c4b4/image.png" alt="Certification">
+                        <img class="badge" src="https://lh7-rt.googleusercontent.com/slidesz/AGV_vUcjqP0vfgE6erjcKvWRxuC2c8R5PjTDdBZRtAjkSFTJLDn4Z1lZNne-td-TeLhmpxhWkXhEN0IYAZkTinOY9cJpRAe8WIoI0Bz_wfc1Vq0tGdc1fKwcAuWMgM8V-hl2zsJeKyS3AFwLSC14cuXEN3Vl22HQh-WRj9op69CyMSojm4GdLF3ULU-TRkiSjxSMwAiFWo4=s2048?key=rPGLTY042aXXg-H-SA87Pg" alt="Badge">
+                        <img class="badge" src="https://ci3.googleusercontent.com/meips/ADKq_NaYzBQRfTqMwiSv1VTTEn_NtiAuf6gHzgZM2_I5reyM9-q9XmyY_O5Uf6c6o1Rez50RUqxnXAF6FkF-X2xfXDvDPPlImXCUKRfIfdvBDEDnkxuH8YczJaebU_rysTLHbI2nWqTRCpU68tE8ScUbbbA79Q=s0-d-e1-ft#https://images.credly.com/size/680x680/images/08096465-cbfc-4c3e-93e5-93c5aa61f23e/image.png" alt="Cloud Engineer">
+                    </div>
+
+                    <div class="disclaimer">
+                        <strong>Disclaimer:</strong> All official communication from DC InfoTech Pvt Ltd will be sent only through email addresses ending in @dcinfotech.org.in. Do not respond to unauthorized messages. Think before you print. Save paper, save trees.
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,211 @@
+:root {
+    --admin-accent: #0b5ed7;
+    --admin-accent-hover: #0a4ebd;
+    --admin-bg: #f4f7fb;
+    --admin-card: #ffffff;
+    --admin-text: #2c3e50;
+    --admin-muted: #64748b;
+    --admin-border: #e2e8f0;
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 80px;
+    --header-height: 60px;
+    font-family: 'Poppins', 'Inter', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--admin-bg);
+    color: var(--admin-text);
+    min-height: 100vh;
+    display: block; /* Changed from flex to block to handle layout more reliably with fixed sidebar */
+    overflow-x: hidden;
+}
+
+/* Sidebar Styles */
+.admin-sidebar {
+    width: var(--sidebar-width);
+    background: #1e293b;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.admin-sidebar.collapsed {
+    width: var(--sidebar-collapsed-width);
+}
+
+.admin-sidebar.collapsed .admin-sidebar-header {
+    font-size: 0.8rem;
+    padding: 15px 5px;
+}
+
+.admin-sidebar.collapsed .admin-nav li a {
+    padding: 12px 0;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+.admin-sidebar.collapsed .admin-nav li a span,
+.admin-sidebar.collapsed .nav-text {
+    display: none;
+}
+
+.admin-sidebar.collapsed .admin-nav li a i,
+.admin-sidebar.collapsed .admin-nav li a .nav-icon {
+    margin-right: 0;
+    font-size: 1.2rem;
+}
+
+.admin-sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    background: #1e293b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sidebar-toggle {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.sidebar-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.admin-nav {
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+}
+
+.admin-nav li {
+    margin-bottom: 4px;
+}
+
+.admin-nav a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+}
+
+.admin-nav a:hover,
+.admin-nav a.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-left: 3px solid var(--admin-accent);
+}
+
+/* Main Content Area */
+.admin-main {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+    min-height: 100vh;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.admin-main.collapsed {
+    margin-left: var(--sidebar-collapsed-width);
+    width: calc(100% - var(--sidebar-collapsed-width));
+}
+
+/* Header Navbar */
+.admin-header {
+    height: var(--header-height);
+    background: var(--admin-card);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.admin-header-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    flex: 1;
+}
+
+/* Universal Page Content Container */
+.admin-content {
+    padding: 24px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+
+    .admin-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .admin-main {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+/* Unified Table Card Styles */
+.admin-table-card {
+    background: var(--admin-card);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
+    overflow-x: auto;
+}
+
+/* Buttons */
+.admin-btn {
+    background: var(--admin-accent);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.admin-btn:hover {
+    background: var(--admin-accent-hover);
+}

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DC Cloud Solutions Launchpad Registration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- External CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&family=Poppins:wght@500;600;700&display=swap">
+    <link rel="stylesheet" href="../css/all.min.css">
+    <link rel="stylesheet" href="../css/owl.carousel.min.css">
+    <link rel="stylesheet" href="../css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="../css/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function () {
+            emailjs.init("XN0Gtd5LwEE_0wZUe");
+        })();
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: block;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        /* Wrapper for the form to maintain original centering */
+        .form-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            /* Adjust as needed */
+            padding: 40px 0;
+        }
+
+
+
+        .form-container {
+            max-width: 720px;
+            margin: 40px auto;
+            padding: 40px;
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 180px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .description {
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        form label {
+            font-weight: 600;
+            display: block;
+            margin: 15px 0 5px;
+        }
+
+        form input,
+        form select {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        form input:focus,
+        form select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
+
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            margin-top: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .submit-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            margin-right: 10px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e1e1;
+        }
+
+        .highlight {
+            color: #007bff;
+            font-weight: 600;
+        }
+
+        .fee-note {
+            font-size: 14px;
+            color: #888;
+            background: #f1f1f1;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+    <script>
+        // Function to load the header content
+        async function loadHeader() {
+            try {
+                const response = await fetch('../template/header.html');
+                if (response.ok) {
+                    const headerContent = await response.text();
+                    document.getElementById('header-placeholder').innerHTML = headerContent;
+                } else {
+                    console.error("Failed to load header:", response.statusText);
+                }
+            } catch (error) {
+                console.error("Error loading header:", error);
+            }
+        }
+        loadHeader();
+    </script>
+
+    <div class="banner-part subpage-banner">
+        <div class="container">
+            <div class="banner-div-content d-grid align-content-center">
+                <h1 class="text-center" data-aos="fade-left">Launchpad Registration</h1>
+                <ul class="list-unstyled d-flex justify-content-center" data-aos="fade-right">
+                    <li> Home </li>
+                    <li> <a href="#">Launchpad Registration</a> </li>
+                    <br>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-wrapper">
+        <div class="form-container">
+            <div class="logo">
+                <img src="https://i.ibb.co/TMhfnqHY/Untitled-design.png" alt="Launchpad Header">
+            </div>
+            <h1>DC Cloud Solutions Launchpad Registration</h1>
+            <div class="description">
+                🚀 <strong>LAUNCHNEXT</strong> is DC Cloud Solutions’s signature initiative for <span
+                    class="highlight">final-year
+                    students and working professionals</span> looking to level up in Cloud Engineering with Google Cloud
+                technologies.
+                <br><br>
+                Get trained, build projects, enhance soft skills, and contribute to India’s growing tech ecosystem 🌐
+            </div>
+
+
+
+            <form id="launchForm" novalidate>
+                <label for="fullname">Full Name *</label>
+                <input type="text" id="fullname" required>
+
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" required>
+
+                <label for="mobile">Mobile Number *</label>
+                <input type="tel" id="mobile" required>
+
+                <label for="college">College Name *</label>
+                <input type="text" id="college" required>
+
+                <label for="location">Current Location *</label>
+                <input type="text" id="location" required>
+
+                <label for="department">Department *</label>
+                <input type="text" id="department" required>
+
+                <label for="graduation">Graduation Year *</label>
+                <select id="graduation" required>
+                    <option value="" selected disabled>Choose...</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                </select>
+
+                <label for="certificationTrack">Certification Track *</label>
+                <select id="certificationTrack" required>
+                    <option value="" selected disabled>Choose...</option>
+                    <option value="Associate Cloud Engineer (ACE)">Associate Cloud Engineer (ACE)</option>
+                    <option value="Professional Cloud Architect (PCA)">Professional Cloud Architect (PCA)</option>
+                    <option value="Professional Data Engineer (PDE)">Professional Data Engineer (PDE)</option>
+                    <option value="Professional Cloud DevOps Engineer (PCD)">Professional Cloud DevOps Engineer (PCD)
+                    </option>
+                    <option value="Professional Cloud Security Engineer (PCSE)">Professional Cloud Security Engineer
+                        (PCSE)
+                    </option>
+                    <option value="Professional Cloud Network Engineer (PCNE)">Professional Cloud Network Engineer
+                        (PCNE)</option>
+                    <option value="Professional Machine Learning Engineer (PMLE)">Professional Machine Learning Engineer
+                        (PMLE)
+                    </option>
+                </select>
+
+                <label for="training">Willing to take the trainings? *</label>
+                <select id="training" required>
+                    <option value="" selected disabled>Choose...</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="availability">Available for full-time internship? *</label>
+                <select id="availability" required>
+                    <option value="" selected disabled>Choose...</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="interest">Applying on own or college requirement? *</label>
+                <select id="interest" required>
+                    <option value="" selected disabled>Choose...</option>
+                    <option value="Own Interest">Own Interest</option>
+                    <option value="College Requirement">College Requirement</option>
+                </select>
+
+                <label for="feeAck">
+                    <input type="checkbox" id="feeAck" required>
+                    I understand that this application is for the Launchpad Internship Program.
+                </label>
+
+                <button class="submit-btn" type="button" id="submitBtn">Start My Internship Journey</button>
+            </form>
+
+            <div class="footer">
+                © 2025 DC Cloud Solutions | <a
+                    href="mailto:careers@dcinfotech.org.in">careers@dcinfotech.org.in</a><br>
+                Empowering the next generation of cloud professionals 🚀<br>
+                <span style="font-size:14px; color:#555;">
+                    📩 For more queries, reach out to
+                    <a href="mailto:support@dcinfotech.org.in" style="color:#007bff;">support@dcinfotech.org.in</a>
+                </span>
+            </div>
+        </div>
+    </div> <!-- End of form-wrapper -->
+
+
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+    <script>
+        // Function to load the footer content
+        async function loadFooter() {
+            try {
+                const response = await fetch('../template/footer.html');
+                if (response.ok) {
+                    const footerContent = await response.text();
+                    document.getElementById('footer-placeholder').innerHTML = footerContent;
+                } else {
+                    console.error("Failed to load footer:", response.statusText);
+                }
+            } catch (error) {
+                console.error("Error loading footer:", error);
+            }
+        }
+        loadFooter();
+    </script>
+
+    <!-- External JS -->
+    <script src="../js/bootstrap.bundle.min.js"></script>
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/owl.carousel.min.js"></script>
+    <script src="../js/custom.js"></script>
+
+    <script>
+        (function () {
+            const form = document.getElementById("launchForm");
+            const submitBtn = document.getElementById("submitBtn");
+            const feeAck = document.getElementById("feeAck");
+
+            submitBtn.addEventListener("click", function () {
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+                if (!feeAck.checked) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Acknowledgement Required',
+                        text: 'Please tick the acknowledgement checkbox before submitting.',
+                        confirmButtonColor: '#3085d6'
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    title: "Confirm Submission",
+                    text: "Are you sure you want to submit your application?",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, Submit",
+                    cancelButtonText: "Cancel"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.requestSubmit();
+                    }
+                });
+            });
+
+            form.addEventListener("submit", async function (e) {
+                e.preventDefault();
+
+                submitBtn.disabled = true;
+                const originalLabel = submitBtn.textContent;
+                submitBtn.innerHTML = `<div class="spinner"></div>Submitting Application...`;
+
+                // Prepare data object
+                const data = {
+                    "Timestamp": new Date().toLocaleString(),
+                    "Full Name": document.getElementById("fullname").value,
+                    "Email Address": document.getElementById("email").value,
+                    "Mobile Number": document.getElementById("mobile").value,
+                    "College Name": document.getElementById("college").value,
+                    "Current Location": document.getElementById("location").value,
+                    "Department": document.getElementById("department").value,
+                    "Graduation Year": document.getElementById("graduation").value,
+                    "certification": document.getElementById("certificationTrack").value,
+                    "Certification Support": document.getElementById("training").value,
+                    "Internship Availability": document.getElementById("availability").value,
+                    "Application Reason": document.getElementById("interest").value,
+                    "paid or not paid": "Not Required",
+                    "payment_id": "Direct",
+                    "order_id": "Direct"
+                };
+
+                try {
+                    // Step 1: Submit Data to SheetDB
+                    const sheetRes = await fetch("https://sheetdb.io/api/v1/4oo6pst28wa3f", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ data: [data] })
+                    });
+
+                    if (sheetRes.ok) {
+                        // Step 2: Send Email
+                        try {
+                            emailjs.init("XN0Gtd5LwEE_0wZUe");
+                            const emailParams = {
+                                to_name: data["Full Name"],
+                                to_email: data["Email Address"],
+                                course_name: data["certification"],
+                                transaction_id: "N/A"
+                            };
+                            await emailjs.send("service_2l1j8ph", "template_0w8x4ho", emailParams);
+                        } catch (emailError) {
+                            console.error("Failed to send email:", emailError);
+                        }
+
+                        form.reset();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Registration Successful!',
+                            text: `Thank you for registering. Check your email for confirmation.`,
+                            confirmButtonColor: '#007bff'
+                        });
+                    } else {
+                        throw new Error("Form submission to SheetDB failed");
+                    }
+                } catch (error) {
+                    console.error('Submission error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Submission Error',
+                        text: 'Unexpected error occurred. Please try again or contact support.',
+                        confirmButtonColor: '#d33'
+                    });
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalLabel;
+                }
+            });
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Primary Meta Tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Us | DC Cloud Solutions – IT, Cloud & Networking Experts</title>
+  <meta name="description"
+    content="Get in touch with DC Cloud Solutions in Palghar & Mumbai for cloud consulting, web development, cybersecurity, network infrastructure, and managed IT services." />
+  <meta name="keywords"
+    content="DC Cloud Solutions contact, cloud consulting Palghar, IT support Mumbai, network infrastructure services, cybersecurity experts, Google Cloud partner contact" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://www.dcinfotech.org.in/contact" />
+  <meta name="description"
+    content="Contact DC Cloud Solutions for software development, cloud migration, SEO, AI/ML solutions, and more. Based in Palghar, serving pan-India." />
+  <link rel="canonical" href="https://www.dcinfotech.org.in/contact" />
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content="Contact DC Cloud Solutions | Cloud & IT Solutions" />
+  <meta property="og:description"
+    content="Reach out to DC Cloud Solutions for expert Google Cloud training, web & app development, cybersecurity audits, and IT infrastructure services." />
+  <meta property="og:image" content="https://www.dcinfotech.org.in/assets/images/contact-banner.jpg" />
+  <meta property="og:url" content="https://www.dcinfotech.org.in/contact" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Contact DC Cloud Solutions | Cloud & IT Solutions" />
+  <meta name="twitter:description"
+    content="Have questions? Contact DC Cloud Solutions for cloud migration, network setup, web development, and cybersecurity services." />
+  <meta name="twitter:image" content="https://www.dcinfotech.org.in/assets/images/contact-banner.jpg" />
+
+  <!-- Preconnect & Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <!-- Stylesheets -->
+  <link href="/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/css/style.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+
+  <!-- JavaScript Dependencies (if needed) -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
+
+  <!-- JSON-LD Structured Data for ContactPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "url": "https://www.dcinfotech.org.in/contact",
+    "name": "Contact DC Cloud Solutions",
+    "description": "Contact DC Cloud Solutions for cloud consulting, web development, network infrastructure, and cybersecurity services.",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+91-9322304676",
+      "contactType": "customer service",
+      "areaServed": "IN",
+      "availableLanguage": ["English", "Hindi", "Marathi"]
+    }
+  }
+  </script>
+  <style>
+    /* Loader CSS */
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      transition: opacity 0.5s ease-out;
+    }
+
+    .loader-content {
+      position: relative;
+      top: -10%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loader-loader {
+      width: 120px;
+      height: auto;
+    }
+
+    @media only screen and (max-width: 600px) {
+      .loader-loader {
+        width: 100px;
+      }
+    }
+
+    .loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Contact Page Custom CSS */
+    :root {
+      --primary-color: #1a73e8;
+      --primary-dark: #1557b0;
+      --primary-light: #e8f0fe;
+      --text-dark: #202124;
+      --text-muted: #5f6368;
+      --gradient-bg: linear-gradient(135deg, #f8f9fa 0%, #e8f0fe 100%);
+    }
+
+    body {
+      color: var(--text-dark);
+    }
+
+    .ls-2 {
+      letter-spacing: 2px;
+    }
+
+    .section-header h6 {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    /* Contact Cards */
+    .contact-card {
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      background: #fff;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .contact-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--primary-light) 0%, #fff 100%);
+      opacity: 0;
+      z-index: -1;
+      transition: opacity 0.4s ease;
+    }
+
+    .contact-card:hover::before {
+      opacity: 1;
+    }
+
+    .contact-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(26, 115, 232, 0.15) !important;
+      border-color: transparent;
+    }
+
+    .icon-box {
+      width: 64px;
+      height: 64px;
+      min-width: 64px;
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+      transition: all 0.4s ease;
+      font-size: 1.5rem;
+    }
+
+    .contact-card:hover .icon-box {
+      background-color: var(--primary-color);
+      color: white;
+      transform: scale(1.1) rotate(-5deg);
+      box-shadow: 0 8px 16px rgba(26, 115, 232, 0.3);
+    }
+
+    /* Form Styling */
+    .contact-form-wrapper {
+      background: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-form-wrapper::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .form-floating>.form-control {
+      border: 2px solid #f1f3f4;
+      background-color: #f8f9fa;
+      border-radius: 12px;
+      height: calc(3.5rem + 2px);
+      line-height: 1.25;
+    }
+
+    .form-floating>textarea.form-control {
+      height: 150px;
+    }
+
+    .form-floating>.form-control:focus {
+      border-color: var(--primary-color);
+      background-color: #fff;
+      box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.15);
+    }
+
+    .form-floating>.form-control:focus~label,
+    .form-floating>.form-control:not(:placeholder-shown)~label {
+      color: var(--primary-color);
+      opacity: 1;
+      font-weight: 600;
+      transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    }
+
+    .form-floating>label {
+      padding: 1rem 1rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+      border: none;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .btn-primary::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
+      opacity: 0;
+      z-index: -1;
+      transition: opacity 0.3s ease;
+    }
+
+    .btn-primary:hover::before {
+      opacity: 1;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(26, 115, 232, 0.4);
+    }
+
+    /* Accordion */
+    .accordion-item {
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      background: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .accordion-item:hover {
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .accordion-button {
+      font-weight: 600;
+      padding: 1.25rem;
+      background-color: #fff;
+    }
+
+    .accordion-button:not(.collapsed) {
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+      box-shadow: none;
+    }
+
+    .accordion-button::after {
+      background-size: 1.25rem;
+      transition: transform 0.3s ease;
+    }
+
+    .accordion-button:focus {
+      box-shadow: none;
+      border-color: rgba(26, 115, 232, 0.5);
+    }
+
+    /* Map Preview */
+    .map-preview {
+      border: 4px solid #fff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .map-preview:hover {
+      transform: translateY(-5px);
+    }
+
+    /* Why Choose Us List */
+    .feature-list li {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .feature-list li i {
+      color: #34a853;
+      /* Google Green */
+      margin-right: 12px;
+      background: #e6f4ea;
+      padding: 6px;
+      border-radius: 50%;
+      font-size: 0.8rem;
+    }
+
+    /* Feature Cards (New Section) */
+    .feature-card {
+      transition: all 0.3s ease;
+      background: #fff;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+      border-color: transparent !important;
+    }
+
+    .feature-card .icon-box {
+      width: 70px;
+      height: 70px;
+      font-size: 1.75rem;
+      background: var(--primary-light);
+      color: var(--primary-color);
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover .icon-box {
+      background: var(--primary-color);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    /* Form Background Shape */
+    .form-bg-shape {
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, var(--primary-light), rgba(255, 255, 255, 0));
+      border-radius: 50%;
+      z-index: 1;
+      filter: blur(40px);
+    }
+
+    .hover-lift {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175) !important;
+    }
+
+    .z-index-2 {
+      position: relative;
+      z-index: 2;
+    }
+
+    .feature-card:hover .icon-box {
+      background: var(--primary-color);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background-color: #f0f4f8;
+      padding: 100px 0;
+      min-height: 400px;
+    }
+
+    .hero-title {
+      color: #2c3e50;
+      letter-spacing: -1px;
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 1;
+    }
+
+    .shape-1 {
+      top: -10%;
+      left: -10%;
+      width: 500px;
+      height: 500px;
+      background: rgba(13, 110, 253, 0.1);
+    }
+
+    .shape-2 {
+      bottom: -10%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: rgba(25, 135, 84, 0.1);
+    }
+
+    .bg-primary-subtle {
+      background-color: rgba(13, 110, 253, 0.1);
+    }
+
+    .bg-success-subtle {
+      background-color: rgba(25, 135, 84, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Loader -->
+  <div class="loader">
+    <div class="loader-content">
+      <img src="images/dcintro.gif" alt="Loader" class="loader-loader" />
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener("load", function () {
+      setTimeout(function () {
+        const loader = document.querySelector(".loader");
+        if (loader) loader.classList.add("hidden");
+      }, 1000);
+    });
+  </script>
+  <!-- comon header  -->
+  <div id="header-placeholder"></div>
+  <script>
+    async function loadHeader() {
+      try {
+        const response = await fetch('template/header.html');
+        if (response.ok) {
+          const headerContent = await response.text();
+          document.getElementById('header-placeholder').innerHTML = headerContent;
+          setActiveNavLink(); // <-- Make sure this runs AFTER header is loaded
+        } else {
+          console.error("Failed to load header:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error loading header:", error);
+      }
+    }
+    function setActiveNavLink() {
+      let currentPath = window.location.pathname;
+      // Remove trailing slash if present
+      if (currentPath.endsWith('/')) currentPath = currentPath.slice(0, -1);
+      // Get last part after slash, or '/' for home
+      let page = currentPath.split('/').pop() || '/';
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        let href = link.getAttribute('href');
+        // Match for both /about and about.html
+        if (
+          href === page ||
+          href === currentPath ||
+          (href === '/' && (page === '' || page === 'index.html'))
+        ) {
+          link.classList.add('active');
+        }
+        // Also match if href is like '/about' and page is 'about.html'
+        if (
+          (href.replace(/^\//, '') + '.html') === page
+        ) {
+          link.classList.add('active');
+        }
+      });
+    }
+    loadHeader();
+  </script>
+
+  <!-- comon header ends  -->
+
+  <!-- Banner -->
+  <div class="banner-part mobile-comon-animation subpage-banner">
+    <div class="container">
+      <div class="banner-div-content d-grid align-content-center " data-aos="fade-up">
+        <h1 class="text-center">Contact Us</h1>
+        <ul class="list-unstyled d-flex justify-content-center">
+          <li> Home </li>
+          <li> <a href='/contact'>Contact Us</a> </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Banner -->
+  <style>
+    .premium-glass-banner {
+      background: rgba(13, 110, 253, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+      color: white;
+      padding: 16px 20px;
+      text-align: center;
+      font-weight: 500;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      position: relative;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      overflow: hidden;
+    }
+
+    .premium-glass-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transform: skewX(-20deg);
+      animation: shine 6s infinite;
+    }
+
+    @keyframes shine {
+      0% {
+        left: -50%;
+      }
+
+      20% {
+        left: 150%;
+      }
+
+      100% {
+        left: 150%;
+      }
+    }
+
+    .banner-icon {
+      font-size: 1.2em;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-3px);
+      }
+    }
+
+    .premium-glass-banner a {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .premium-glass-banner a:hover {
+      background: white;
+      color: #0d6efd;
+    }
+  </style>
+  <div id="holiday-banner" class="premium-glass-banner">
+    <span class="banner-icon">🔔</span>
+    <span>
+      <strong>Holiday Notice:</strong> DC Cloud Solutions will be closed for <strong>Christmas & New Year's Eve</strong>.
+      Operations continue as scheduled.
+    </span>
+    <a href="mailto:support@dcinfotech.org.in">Contact Support</a>
+  </div>
+  <script>
+    (function () {
+      try {
+        var today = new Date();
+        var cutoff = new Date('2026-01-01T00:00:00');
+        if (today > cutoff) {
+          var banner = document.getElementById('holiday-banner');
+          if (banner) banner.style.display = 'none';
+        }
+      } catch (e) { console.error('Banner check failed', e); }
+    })();
+  </script>
+
+  <!-- Main Contact Section -->
+  <section class="contact-section py-5 position-relative"
+    style="background-image: url('images/map-pattern.png'); background-size: contain; background-repeat: no-repeat; background-position: center;">
+    <div class="container position-relative z-index-2">
+      <div class="row g-5">
+        <!-- Contact Info & Map Column (Left) -->
+        <div class="col-lg-5" data-aos="fade-right">
+          <div class="mb-5">
+            <h6 class="text-primary fw-bold text-uppercase ls-2 mb-2">Let's Talk</h6>
+            <h2 class="fw-bold display-6 mb-4">Speak With Expert Team.</h2>
+
+            <div class="contact-cards">
+              <!-- Phone -->
+              <div class="d-flex align-items-center mb-4">
+                <div
+                  class="icon-box rounded-circle d-flex align-items-center justify-content-center me-3 bg-primary text-white"
+                  style="width: 50px; height: 50px; min-width: 50px;">
+                  <i class="fas fa-phone-alt"></i>
+                </div>
+                <div>
+                  <h5 class="fw-bold mb-0"><a href="tel:+919226125654" class="text-decoration-none text-dark">+91 92261
+                      25654</a></h5>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="d-flex align-items-center mb-4">
+                <div
+                  class="icon-box rounded-circle d-flex align-items-center justify-content-center me-3 bg-primary text-white"
+                  style="width: 50px; height: 50px; min-width: 50px;">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-0">Email:</h6>
+                  <p class="mb-0"><a href="mailto:support@dcinfotech.org.in"
+                      class="text-decoration-none text-dark">support@dcinfotech.org.in</a></p>
+                </div>
+              </div>
+
+              <!-- Address -->
+              <div class="d-flex align-items-center mb-4">
+                <div
+                  class="icon-box rounded-circle d-flex align-items-center justify-content-center me-3 bg-primary text-white"
+                  style="width: 50px; height: 50px; min-width: 50px;">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-0">India Office:</h6>
+                  <p class="mb-0 text-muted">Kuldeep Nagar, Palghar, Maharashtra 401404
+                  </p>
+                </div>
+              </div>
+
+              <!-- USA Address -->
+              <div class="d-flex align-items-center mb-4">
+                <div
+                  class="icon-box rounded-circle d-flex align-items-center justify-content-center me-3 bg-primary text-white"
+                  style="width: 50px; height: 50px; min-width: 50px;">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-0">USA Office:</h6>
+                  <p class="mb-0 text-muted">
+                    DC Cloud Solutions<br>
+                    555 California Street, Suite 4925,<br>
+                    San Francisco, CA 94104, USA
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Map Card -->
+          <div class="map-card rounded-4 overflow-hidden shadow-lg">
+            <div class="bg-primary text-white p-3 text-center fw-bold text-uppercase ls-2">
+              Find Us Here
+            </div>
+            <div class="position-relative" style="height: 300px;">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3770.989998958045!2d72.7997!3d19.2485!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be71d164df90183%3A0x2599c0b9c558e3b5!2sDC%20Infotech!5e0!3m2!1sen!2sin!4v1692337600123!5m2!1sen!2sin"
+                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+              </iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form Column (Right) -->
+        <div class="col-lg-7" data-aos="fade-left">
+          <div class="contact-form-wrapper p-4 p-lg-5 rounded-4 shadow-sm bg-white border h-100">
+            <h6 class="text-uppercase text-muted fw-bold ls-2 mb-2">Get In Touch</h6>
+            <h3 class="fw-bold mb-4">Fill The Form Below</h3>
+            <form id="contactForm">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required>
+                    <label for="name">Your Name</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" required>
+                    <label for="email">Your Email</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone Number" required>
+                    <label for="phone">Phone Number</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" required>
+                    <label for="subject">Subject</label>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-floating">
+                    <textarea class="form-control" placeholder="Leave a message here" id="message" name="message"
+                      required></textarea>
+                    <label for="message">Message</label>
+                  </div>
+                </div>
+                <div class="col-12 mt-4">
+                  <button type="submit" id="submitBtn"
+                    class="btn btn-primary w-100 py-3 rounded-pill fw-bold fs-5 shadow-sm hover-lift">
+                    <span>Send Message</span>
+                    <i class="fas fa-paper-plane ms-2"></i>
+                  </button>
+                  <div id="spinner" class="text-center mt-3" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us Section -->
+  <section class="features-section py-5 bg-white">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+          <div class="feature-card p-4 rounded-4 h-100 text-center border border-light shadow-sm hover-lift">
+            <div class="icon-box mx-auto rounded-circle d-flex align-items-center justify-content-center mb-3">
+              <i class="fas fa-cloud fa-lg"></i>
+            </div>
+            <h5 class="fw-bold mb-2">Expert Cloud Consulting</h5>
+            <p class="text-muted small mb-0">Certified Google Cloud & AWS professionals ready to scale your business.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+          <div class="feature-card p-4 rounded-4 h-100 text-center border border-light shadow-sm hover-lift">
+            <div class="icon-box mx-auto rounded-circle d-flex align-items-center justify-content-center mb-3">
+              <i class="fas fa-headset fa-lg"></i>
+            </div>
+            <h5 class="fw-bold mb-2">24/7 IT Support</h5>
+            <p class="text-muted small mb-0">Reliable managed services in Mumbai & Palghar to keep you running.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+          <div class="feature-card p-4 rounded-4 h-100 text-center border border-light shadow-sm hover-lift">
+            <div class="icon-box mx-auto rounded-circle d-flex align-items-center justify-content-center mb-3">
+              <i class="fas fa-code fa-lg"></i>
+            </div>
+            <h5 class="fw-bold mb-2">Custom Web Solutions</h5>
+            <p class="text-muted small mb-0">Tailored software & app development to meet your unique needs.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+          <div class="feature-card p-4 rounded-4 h-100 text-center border border-light shadow-sm hover-lift">
+            <div class="icon-box mx-auto rounded-circle d-flex align-items-center justify-content-center mb-3">
+              <i class="fas fa-shield-alt fa-lg"></i>
+            </div>
+            <h5 class="fw-bold mb-2">Cybersecurity Assurance</h5>
+            <p class="text-muted small mb-0">Comprehensive audits & threat protection for your peace of mind.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Locations Section -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="text-center mb-5" data-aos="fade-up">
+        <h6 class="text-primary fw-bold text-uppercase ls-2 mb-2">Our Presence</h6>
+        <h2 class="fw-bold display-5">Visit Our Offices</h2>
+      </div>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="card border-0 shadow-sm rounded-4 p-4 h-100 text-center hover-lift">
+            <div
+              class="icon-box mx-auto rounded-circle d-flex align-items-center justify-content-center mb-3 bg-primary-subtle text-primary">
+              <i class="fas fa-building fa-2x"></i>
+            </div>
+            <h4 class="fw-bold mb-2">Headquarters</h4>
+            <p class="text-muted mb-3">Palghar, Maharashtra</p>
+            <p class="small text-muted mb-0">The hub of our operations and innovation center.</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="card border-0 shadow-sm rounded-4 p-4 h-100 text-center hover-lift">
+            <div
+              class="icon-box mx-auto rounded-circle d-flex align-items-center justify-content-center mb-3 bg-primary-subtle text-primary">
+              <i class="fas fa-globe fa-2x"></i>
+            </div>
+            <h4 class="fw-bold mb-2">USA Office</h4>
+            <p class="text-muted mb-3">San Francisco, CA</p>
+            <p class="small text-muted mb-0">Global presence for international operations.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section py-5 bg-light position-relative">
+    <div class="container">
+      <div class="text-center mb-5" data-aos="fade-up">
+        <h6 class="text-primary fw-bold text-uppercase ls-2 mb-2">Common Questions</h6>
+        <h2 class="fw-bold display-5">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="accordion custom-accordion" id="faqAccordion">
+            <!-- FAQ Item 1 -->
+            <div class="accordion-item border-0 mb-3 shadow-sm rounded-4 overflow-hidden" data-aos="fade-up"
+              data-aos-delay="100">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                  What services do you offer?
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted">
+                  We offer a comprehensive range of IT solutions including Web Development, Mobile App Development,
+                  Cloud Consulting (GCP/AWS), Cybersecurity Audits, and Managed IT Services.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="accordion-item border-0 mb-3 shadow-sm rounded-4 overflow-hidden" data-aos="fade-up"
+              data-aos-delay="200">
+              <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  How can I contact support?
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted">
+                  You can reach our support team via the contact form above, email us at support@dcinfotech.org.in, or
+                  call our helpline. We also offer live chat support during business hours.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="accordion-item border-0 mb-3 shadow-sm rounded-4 overflow-hidden" data-aos="fade-up"
+              data-aos-delay="300">
+              <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  Do you provide customized software solutions?
+                </button>
+              </h2>
+              <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted">
+                  Yes! We specialize in building bespoke software solutions tailored to your specific business
+                  requirements, ensuring scalability and efficiency.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="accordion-item border-0 mb-3 shadow-sm rounded-4 overflow-hidden" data-aos="fade-up"
+              data-aos-delay="400">
+              <h2 class="accordion-header" id="headingFour">
+                <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                  Do you offer Google Cloud training?
+                </button>
+              </h2>
+              <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
+                data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted">
+                  Absolutely. We are an authorized training partner providing comprehensive Google Cloud certification
+                  training and internship programs for students and professionals.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- AOS Animation Library -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      duration: 800,
+      once: true,
+    });
+  </script>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+    // Function to load the footer content
+    async function loadFooter() {
+      try {
+        const response = await fetch("template/footer.html");
+        if (response.ok) {
+          const footerContent = await response.text();
+          document.getElementById("footer-placeholder").innerHTML =
+            footerContent;
+        } else {
+          console.error("Failed to load footer:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error loading footer:", error);
+      }
+    }
+
+    loadFooter();
+  </script>
+
+  <div class="modal fade cv-up" id="jobModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Apply For Job</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="cv-upload-div">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Full Name" />
+            </div>
+            <div class="form-group">
+              <input type="email" class="form-control" placeholder="Email Address" />
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Phone Number" />
+            </div>
+            <div class="form-group">
+              <select class="form-select" aria-label="Default select example">
+                <option selected>Job Categorie</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <select class="form-select" aria-label="Default select example">
+                <option selected>Experience</option>
+                <option value="1">Fresher</option>
+                <option value="1">1 Year</option>
+                <option value="2">2 Years</option>
+                <option value="3">3 Years</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="formFile" class="form-label">Upload Your CV</label>
+              <input class="form-control" type="file" id="formFile" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary job-ap">
+            Apply Job
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Include SweetAlert2 CSS and JS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Quick Modal -->
+  <div class="modal fade quick-contact" id="quickModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Get IT Support</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="quick-form-div">
+            <div class="form-group">
+              <input type="text" id="fullName" class="form-control" placeholder="Full Name" />
+            </div>
+            <div class="form-group">
+              <input type="email" id="email" class="form-control" placeholder="Email" />
+            </div>
+            <div class="form-group">
+              <input type="text" id="subject" class="form-control" placeholder="Subject" />
+            </div>
+            <div class="form-group">
+              <textarea id="message" class="form-control" placeholder="Message"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn subimt-comment" onclick="submitForm()">
+            Send Message
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/notiflix@3.2.6/dist/notiflix-aio-3.2.6.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    (function () {
+      // Initialize EmailJS with the public key found in live-chat.html
+      emailjs.init("xz0gGBhxNySrTp4T9");
+    })();
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById("contactForm");
+      const spinner = document.getElementById("spinner");
+      const submitBtn = document.getElementById("submitBtn");
+
+      if (form) {
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          spinner.style.display = "inline-block";
+          submitBtn.disabled = true;
+
+          const formData = {
+            name: form.name.value,
+            email: form.email.value,
+            phone: form.phone.value,
+            subject: form.subject.value,
+            message: form.message.value,
+          };
+
+          try {
+            // Save to SheetDB (using the URL found in live-chat.html)
+            const sheetResponse = await fetch("https://sheetdb.io/api/v1/f4pje8yjhtycr", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ data: [formData] }),
+            });
+
+            if (!sheetResponse.ok) console.error("Failed to save to SheetDB");
+
+            // Send auto-reply to user via EmailJS
+            const emailParams = {
+              to_email: 'siddhiakre@megahack.in', // Admin email or specific target
+              email: formData.email,
+              to_name: formData.name,
+              user_subject: formData.subject,
+              user_message: formData.message
+            };
+
+            await emailjs.send("service_ta1yt86", "template_7s01eb5", emailParams);
+
+            Notiflix.Report.success(
+              "Message Sent!",
+              "Thank you! A confirmation email has been sent to your email address. Our team will contact you within 24–48 hours.",
+              "OK"
+            );
+
+            form.reset();
+
+          } catch (error) {
+            console.error(error);
+            Notiflix.Report.failure(
+              "Error",
+              "Something went wrong. Please try again later.",
+              "OK"
+            );
+          } finally {
+            spinner.style.display = "none";
+            submitBtn.disabled = false;
+          }
+        });
+      }
+    });
+  </script>
+  <!-- menu mobile -->
+  <div class="offcanvas offcanvas-start menu-mobile" tabindex="-1" id="offcanvasmenu"
+    aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasExampleLabel">
+        <img src="images/logo.png" alt="logo" style="width: 100px" />
+      </h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <ul class="navbar-nav ms-auto mb-2 mt-lg-0 mb-lg-0 align-items-lg-center">
+        <li class="nav-item">
+          <a class='nav-link active' href='/'>Home</a>
+        </li>
+
+        <li class="nav-item">
+          <a class='nav-link' href='/about'>About</a>
+        </li>
+
+        <!--  
+      <li class="nav-item">
+        <a class="nav-link" href="projects.html"> Projects</a>
+      </li> -->
+        <li class="nav-item">
+          <a class='nav-link' href='/pricing'>Pricing</a>
+        </li>
+        <li class="nav-item">
+          <a class='nav-link' href='/blog'>Blog</a>
+        </li>
+        <li class="nav-item">
+          <a class='nav-link' href='/career'>Career</a>
+        </li>
+
+        <li class="nav-item">
+          <a class='nav-link active' href='/contact'>Contact</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="signiup" data-bs-toggle="modal" data-bs-target="#quickModal">
+            Get It Support
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- loader js -->
+
+
+  <script src="js/bootstrap.bundle.min.js"></script>
+
+  <script src="js/jquery.min.js"></script>
+  <script src="../../../cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+  <!-- Owl Carousel -->
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/mixitup.min.js"></script>
+  <script>
+    var mixer = mixitup(".gallery");
+  </script>
+  <script src="js/custom.js"></script>
+
+  <script src="../../../unpkg.com/aos%403.0.0-beta.6/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      offset: 100,
+      easing: "ease",
+      delay: 0,
+      once: true,
+      duration: 800,
+    });
+  </script>
+
+
+  <script async src="https://widget.squid.cloud/widget.umd.js"></script>
+</body>
+
+</html>

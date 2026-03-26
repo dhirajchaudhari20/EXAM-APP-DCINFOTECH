@@ -1,0 +1,369 @@
+
+
+
+https://chatgpt.com/share/69aba98e-4eec-8009-a730-f34653496d28
+
+
+
+
+
+
+SPCC Practical Exam
+1. To implement the Intermediate code generation phase of the compiler
+Code:
+#include <stdio.h>
+#include <string.h>
+#define MAX_TEMP_VARS 100
+int temp_counter = 0;
+char temp_vars[MAX_TEMP_VARS][10];
+// Function to generate temporary variable names
+const char* generate_temp() {
+temp_counter++;
+sprintf(temp_vars[temp_counter], "t%d", temp_counter);
+return temp_vars[temp_counter];
+}
+// Function to generate the intermediate code for an expression like "a = b + c * d"
+void generate_icode(const char* expression) {
+char left[10], right_expr[10], operator[2], operand1[10], operand2[10];
+char temp1[10], temp2[10];
+// Simple parsing assuming the format "a = b + c * d"
+if (sscanf(expression, "%s = %s %s %s %s", left, operand1, operator, operand2,
+right_expr) == 5) {
+// Generate temporary variables
+const char* temp_var1 = generate_temp(); // For c * d
+const char* temp_var2 = generate_temp(); // For b + (c * d)
+// Print intermediate code
+printf("%s = %s * %s\n", temp_var1, operand2, right_expr); // c * d -> t1
+printf("%s = %s + %s\n", temp_var2, operand1, temp_var1); // b + t1 -> t2
+printf("%s = %s\n", left, temp_var2); // a = t2
+} else {
+printf("Invalid expression format.\n");
+}
+}
+int main() {
+// Example expression: a = b + c * d
+const char* expression = "a = b + c * d";
+// Generate intermediate code for the expression
+generate_icode(expression);
+return 0;
+}
+Output:
+t1 = c * *
+t2 = b + t1
+a = t2
+2. To implement the code generation phase of the compiler.
+Code:
+#include <stdio.h>
+#include <string.h>
+#define MAX_TEMP_VARS 100
+int temp_counter = 0;
+// Function to generate assembly code for a given intermediate code
+void generate_code(const char* left, const char* operator, const char* right1, const
+char* right2) {
+if (operator != NULL) {
+// Arithmetic operations (e.g., add, multiply)
+if (strcmp(operator, "+") == 0) {
+printf("ADD R0, %s, %s\n", right1, right2); // R0 = right1 + right2
+} else if (strcmp(operator, "*") == 0) {
+printf("MUL R0, %s, %s\n", right1, right2); // R0 = right1 * right2
+}
+// Move result to the destination variable
+printf("MOV %s, R0\n", left); // Store result in left variable
+} else {
+// Direct assignment for simple variables
+printf("MOV %s, %s\n", left, right1); // MOV result in left
+}
+}
+// Function to simulate the code generation for an intermediate expression
+void generate_assembly() {
+// Simulating the intermediate code
+// Intermediate code:
+// t1 = a + b
+// t2 = t1 * c
+// result = t2
+// Step 1: t1 = a + b
+generate_code("t1", "+", "a", "b");
+// Step 2: t2 = t1 * c
+generate_code("t2", "*", "t1", "c");
+// Step 3: result = t2
+generate_code("result", NULL, "t2", NULL); // Simple move, no operator
+}
+int main() {
+// Generate assembly code for a simple expression
+generate_assembly();
+return 0;
+}
+Output:
+ADD R0, a, b
+MOV t1, R0
+MUL R0, t1, c
+MOV t2, R0
+MOV result, t2
+3. To Implement FIRST
+Code:
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+char array[10][20], firstSet[10][10];
+int n;
+void findFirst(char, int);
+void addToSet(char[], char);
+// Function to add a character to the set (avoiding duplicates)
+void addToSet(char set[], char ch) {
+ int i;
+ for (i = 0; set[i] != '\0'; i++) {
+ if (set[i] == ch) return; // Avoid duplicates
+ }
+ set[i] = ch;
+ set[i + 1] = '\0';
+}
+// Recursive function to find First set of a non-terminal
+void findFirst(char ch, int ruleIndex) {
+ int i = 2, j;
+ char temp;
+ // If First set already computed, return
+ if (firstSet[ruleIndex][0] != '\0') return;
+ while (array[ruleIndex][i] != '\0') {
+ temp = array[ruleIndex][i];
+ // If terminal, add directly and move to next alternative
+ if (!isupper(temp) && temp != '/') {
+ addToSet(firstSet[ruleIndex], temp);
+ while (array[ruleIndex][i] != '/' && array[ruleIndex][i] != '\0') i++;
+ if (array[ruleIndex][i] == '/') i++; // Skip '/'
+ continue;
+ }
+ // If non-terminal, find its First set
+ for (j = 0; j < n; j++) {
+ if (array[j][0] == temp) {
+ findFirst(temp, j);
+ // Add First(temp) to First(current), except epsilon
+ int k = 0;
+ while (firstSet[j][k] != '\0') {
+ if (firstSet[j][k] != '@') {
+ addToSet(firstSet[ruleIndex], firstSet[j][k]);
+ } else {
+ addToSet(firstSet[ruleIndex], '@');
+ }
+ k++;
+ }
+ break;
+ }
+ }
+ i++; // Move to next symbol in production
+ }
+}
+int main() {
+ int i;
+ printf("Enter the number of productions: ");
+ scanf("%d", &n);
+ printf("Enter the productions:\n");
+ for (i = 0; i < n; i++) {
+ scanf("%s", array[i]);
+ }
+ // Initialize First sets
+ for (i = 0; i < n; i++) {
+ firstSet[i][0] = '\0';
+ }
+ // Compute First sets
+ for (i = 0; i < n; i++) {
+ findFirst(array[i][0], i);
+ }
+ // Display First sets
+ printf("\nFirst Sets:\n");
+ for (i = 0; i < n; i++) {
+ printf("First(%c) = { ", array[i][0]);
+ for (int j = 0; firstSet[i][j] != '\0'; j++) {
+ printf("%c", firstSet[i][j]);
+ if (firstSet[i][j + 1] != '\0') printf(", ");
+ }
+ printf(" }\n");
+ }
+ return 0;
+}
+Output:
+Enter the number of productions: 3
+Enter the productions:
+S=AB/a/b
+A=c/d/@
+B=e/f/@
+First Sets:
+First(S) = { c, d, @, e, f, a, b }
+First(A) = { c, d, @ }
+First(B) = { e, f, @ }
+4. To Implement FOLLOW
+Code:
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+char productions[10][20];
+char firstSet[10][10], followSet[10][10];
+int n;
+void addToSet(char set[], char ch) {
+ for (int i = 0; set[i] != '\0'; i++) {
+ if (set[i] == ch) return; // Avoid duplicates
+ }
+ int len = strlen(set);
+ set[len] = ch;
+ set[len + 1] = '\0';
+}
+int getIndex(char ch) {
+ for (int i = 0; i < n; i++) {
+ if (productions[i][0] == ch) return i;
+ }
+ return -1;
+}
+void findFirst(char ch, int index) {
+ if (firstSet[index][0] != '\0') return;
+ for (int i = 2; productions[index][i] != '\0'; ) {
+ char sym = productions[index][i];
+ if (sym == '/') { i++; continue; }
+ if (!isupper(sym)) {
+ addToSet(firstSet[index], sym);
+ while (productions[index][i] != '/' && productions[index][i] != '\0') i++;
+ } else {
+ int symIndex = getIndex(sym);
+ findFirst(sym, symIndex);
+ for (int k = 0; firstSet[symIndex][k] != '\0'; k++) {
+ addToSet(firstSet[index], firstSet[symIndex][k]);
+ }
+ while (productions[index][i] != '/' && productions[index][i] != '\0') i++;
+ }
+ if (productions[index][i] == '/') i++;
+ }
+}
+void findFollow(char ch) {
+ int i, j, k;
+ int chIndex = getIndex(ch);
+ if (ch == productions[0][0]) {
+ addToSet(followSet[chIndex], '$');
+ }
+ for (i = 0; i < n; i++) {
+ char *prod = productions[i];
+ for (j = 2; prod[j] != '\0'; j++) {
+ if (prod[j] == ch) {
+ if (prod[j + 1] != '\0' && prod[j + 1] != '/') {
+ char next = prod[j + 1];
+ if (!isupper(next)) {
+ addToSet(followSet[chIndex], next);
+ } else {
+ int nextIndex = getIndex(next);
+ for (k = 0; firstSet[nextIndex][k] != '\0'; k++) {
+ if (firstSet[nextIndex][k] != '@') {
+ addToSet(followSet[chIndex], firstSet[nextIndex][k]);
+ } else {
+ int lhsIndex = getIndex(prod[0]);
+ findFollow(prod[0]);
+ for (int m = 0; followSet[lhsIndex][m] != '\0'; m++) {
+ addToSet(followSet[chIndex], followSet[lhsIndex][m]);
+ }
+ }
+ }
+ }
+ } else {
+ if (ch != prod[0]) {
+ int lhsIndex = getIndex(prod[0]);
+ findFollow(prod[0]);
+ for (k = 0; followSet[lhsIndex][k] != '\0'; k++) {
+ addToSet(followSet[chIndex], followSet[lhsIndex][k]);
+ }
+ }
+ }
+ }
+ }
+ }
+}
+int main() {
+ int i, j;
+ printf("Enter number of productions: ");
+ scanf("%d", &n);
+ printf("Enter productions (e.g. S=AB, A=a/@):\n");
+ for (i = 0; i < n; i++) {
+ scanf("%s", productions[i]);
+ firstSet[i][0] = '\0';
+ followSet[i][0] = '\0';
+ }
+ // FIRST computation
+ for (i = 0; i < n; i++) {
+ findFirst(productions[i][0], i);
+ }
+ // FOLLOW computation
+ for (i = 0; i < n; i++) {
+ findFollow(productions[i][0]);
+ }
+ // Print FOLLOW sets
+ printf("\nFOLLOW Sets:\n");
+ for (i = 0; i < n; i++) {
+ printf("FOLLOW(%c) = { ", productions[i][0]);
+ for (j = 0; followSet[i][j] != '\0'; j++) {
+ printf("%c", followSet[i][j]);
+ if (followSet[i][j + 1] != '\0') printf(", ");
+ }
+ printf(" }\n");
+ }
+ return 0;
+}
+Output:
+Enter number of productions: 3
+Enter productions (e.g. S=AB, A=a/@):
+S=AB/a/b
+A=c/d/@
+B=e/f/@
+FOLLOW Sets:
+FOLLOW(S) = { $ }
+FOLLOW(A) = { e, f, $ }
+FOLLOW(B) = { $ }
+5. To Implement Loader
+Loader.c
+#include <stdio.h>
+#include <stdlib.h>
+void load_and_execute(const char *filename)
+{
+ FILE *file;
+ long file_size;
+ char *buffer;
+ // Open the executable (binary) file
+ file = fopen(filename, "rb");
+ if (file == NULL) {
+ perror("Failed to open file");
+ exit(1);
+ }
+ // Find the size of the file
+ fseek(file, 0, SEEK_END);
+ file_size = ftell(file);
+ fseek(file, 0, SEEK_SET);
+ // Allocate memory to store the content of the file
+ buffer = (char *)malloc(file_size);
+ if (buffer == NULL) {
+ perror("Failed to allocate memory");
+ fclose(file);
+ exit(1);
+ }
+ // Read the file content into memory (buffer)
+ fread(buffer, 1, file_size, file);
+ fclose(file);
+ // Simulate execution: print out the content
+ printf("Loader: Executing file \"%s\"...\n", filename);
+ printf("Loaded content (binary data):\n");
+ for (long i = 0; i < file_size; i++) {
+ printf("%02x ", (unsigned char)buffer[i]);
+ }
+ printf("\n");
+ free(buffer); // Free allocated memory
+}
+int main() {
+ const char *filename = "example_program.bin"; // Simulated executable file
+ // Call the load_and_execute function to load the file
+ load_and_execute(filename);
+ return 0;
+}
+● Open terminal
+● Navigate to the folder where Loader.c is saved
+● Run the command
+echo -n -e 'Hello, World\n\n' > example_program.bin
+● Compile Loader.c
+gcc -o Loader Loader.c
+./Loader
+Output:
+Loader: Executing file "example_program.bin"...
+Loaded content (binary data):
+48 65 6c 6c 6f 2c 20 57 6f 72 6c 64 0a 0a

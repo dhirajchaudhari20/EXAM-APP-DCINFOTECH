@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    :root {
+      --blue: #1e73e8;
+      --primary-text: #202124;
+      --secondary-text: #5f6368;
+      --card: #fff;
+      --bg: #f1f6fb;
+      --border-color: #e0e0e0;
+      --radius: 8px;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    body {
+      font-family: 'Roboto', 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--primary-text);
+      margin: 0;
+      padding: 0;
+    }
+    .profile-page-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      gap: 24px;
+    }
+    .cp-page-section {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+    .cp-page-section__header {
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .cp-page-section__title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary-text);
+      margin: 0;
+    }
+    .info-section ul {
+      padding-left: 20px;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: var(--secondary-text);
+    }
+    .info-section li {
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .info-section li b {
+      color: #333;
+    }
+    .info-section .highlight {
+      color: #d93025;
+      font-weight: bold;
+    }
+    .info-section a {
+      color: var(--blue);
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .info-section a:hover {
+      text-decoration: underline;
+    }
+    .cp-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .mat-form-field {
+      display: flex;
+      flex-direction: column;
+    }
+    .mat-form-field label {
+      font-size: 0.8rem;
+      color: var(--secondary-text);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .mat-form-field input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      color: var(--primary-text);
+      background-color: #f8f9fa;
+    }
+    .mat-form-field input:disabled {
+      background-color: #e9ecef;
+      cursor: not-allowed;
+      color: #6c757d;
+    }
+    .cp-form__actions {
+      grid-column: 1 / -1;
+      text-align: right;
+      margin-top: 16px;
+    }
+    .mdc-button {
+      background-color: var(--blue);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .mdc-button:hover {
+      background-color: #1a63d4;
+    }
+    .locked-section {
+      text-align: center;
+      padding: 2rem;
+      background-color: #f8f9fa;
+      border-radius: var(--radius);
+    }
+    .password-field {
+      position: relative;
+    }
+    .password-field .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--secondary-text);
+    }
+  </style>
+</head>
+<body>
+
+<div class="profile-page-container">
+  <section class="cp-page-section info-section">
+    <p><strong>Review and update your personal information.</strong></p>
+    <ul>
+      <li><b>Official identification is verified at the time of your exam and must match the information in your profile.</b></li>
+      <li><b>Legal first name and last name are limited to 45 characters each.</b></li>
+      <li><b>To update your legal name or date of birth, please contact <a href="mailto:support@dcinfotech.org.in">DC Cloud Solutions Certification Support</a>.</b></li>
+      <li><b>For password resets, please contact our support team for assistance.</b></li>
+      <li><span class="highlight">To update your work/professional email, please go to Profile &gt; Professional Affiliation.</span></li>
+    </ul>
+    <p><a href="dashboard.html"><strong>RETURN TO DASHBOARD</strong></a></p>
+  </section>
+
+  <section class="cp-page-section">
+    <header class="cp-page-section__header">
+      <h2 class="cp-page-section__title">Personal Information</h2>
+    </header>
+    <form class="cp-form">
+      <div class="mat-form-field">
+        <label for="legalFirstName">Legal First Name</label>
+        <input id="legalFirstName" disabled>
+      </div>
+      <div class="mat-form-field">
+        <label for="legalLastName">Legal Last Name</label>
+        <input id="legalLastName" disabled>
+      </div>
+      <div class="mat-form-field">
+        <label for="preferredNameFirst">Preferred First Name</label>
+        <input id="preferredNameFirst" type="text">
+      </div>
+      <div class="mat-form-field">
+        <label for="preferredNameLast">Preferred Last Name</label>
+        <input id="preferredNameLast" type="text">
+      </div>
+      <div class="mat-form-field">
+        <label for="emailAddr">Email Address</label>
+        <input id="emailAddr" type="email">
+      </div>
+      <div class="mat-form-field">
+        <label for="dateOfBirth">Date of Birth</label>
+        <input id="dateOfBirth" type="date">
+      </div>
+      <div class="cp-form__actions">
+        <button type="submit" class="mdc-button">Update Information</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="cp-page-section">
+    <header class="cp-page-section__header">
+      <h2 class="cp-page-section__title">Change My Password</h2>
+    </header>
+    <div class="locked-section">
+      <p>For security reasons, password changes must be handled by our support team.</p>
+      <p>Please <a href="mailto:support@dcinfotech.org.in">contact support</a> to request a password reset.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+  function initializeProfile() {
+    const userString = localStorage.getItem('cm_user');
+    if (!userString) {
+      console.warn("No user found in localStorage for profile page.");
+      return;
+    }
+
+    try {
+      const user = JSON.parse(userString);
+
+      // --- Field References ---
+      const legalFirstName = document.getElementById('legalFirstName');
+      const legalLastName = document.getElementById('legalLastName');
+      const preferredNameFirst = document.getElementById('preferredNameFirst');
+      const preferredNameLast = document.getElementById('preferredNameLast');
+      const emailAddr = document.getElementById('emailAddr');
+      const dateOfBirth = document.getElementById('dateOfBirth');
+      const form = document.querySelector('.cp-form');
+
+      // --- Populate Form ---
+      if (user.name) {
+        const nameParts = user.name.split(' ');
+        legalFirstName.value = nameParts[0] || '';
+        legalLastName.value = nameParts.slice(1).join(' ') || '';
+      }
+      if (user.email) {
+        emailAddr.value = user.email;
+      }
+
+      // In a real app, preferred name and DOB would also come from the user object.
+      // For now, they can be edited and saved.
+    } catch (e) {
+      console.error("Error parsing user data on profile page:", e);
+    }
+  }
+
+  // Run the script
+  initializeProfile();
+</script>
+
+  <script>
+    // Password visibility toggle
+    document.querySelectorAll('.toggle-password').forEach(toggle => {
+      toggle.addEventListener('click', function() {
+        const input = this.previousElementSibling;
+        const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+        input.setAttribute('type', type);
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+      });
+    });
+
+  </script>
+
+  <div class="squid-chat-widget-container">
+    <script type="text/javascript">
+      var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+      (function () {
+        var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+        s1.async = true;
+        s1.src = 'https://embed.tawk.to/673b87e22480f5b4f59ffc23/1id08lk55';
+        s1.charset = 'UTF-8';
+        s1.setAttribute('crossorigin', '*');
+        s0.parentNode.insertBefore(s1, s0);
+      })();
+    </script>
+  </div>
+
+</body>
+</html> 

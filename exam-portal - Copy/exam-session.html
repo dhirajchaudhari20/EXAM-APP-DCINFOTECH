@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Proctored Exam - Exam Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Google+Sans:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root {
+--blue-600: #1a73e8;
+--blue-700: #185abc;
+--grey-100: #f8f9fa;
+--grey-200: #e9ecef;
+--grey-500: #adb5bd;
+--grey-700: #495057;
+--grey-800: #343a40;
+--red-500: #ea4335;
+--green-500: #34a853;
+--yellow-500: #fbbc05;
+--shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+--radius-lg: 12px;
+}
+body {
+font-family: 'Roboto', 'Segoe UI', sans-serif;
+background-color: var(--grey-100);
+color: var(--grey-800);
+margin: 0;
+display: flex;
+flex-direction: column;
+min-height: 100vh;
+}
+/* --- Footer Styling --- */
+.app-footer {
+    padding: 1rem 2rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--grey-700);
+    background-color: var(--grey-100);
+    margin-top: auto; /* Push footer to the bottom */
+}
+/* --- Pre-Exam Screens --- */
+.pre-exam-screen {
+display: none; /* Hidden by default */
+flex-direction: column;
+align-items: center;
+justify-content: center;
+flex-grow: 1;
+padding: 2rem;
+}
+.pre-exam-container {
+background: #fff;
+border-radius: var(--radius-lg);
+box-shadow: var(--shadow-md);
+padding: 2.5rem;
+width: 100%;
+max-width: 800px;
+border-top: 4px solid var(--blue-600);
+}
+.pre-exam-container h1 {
+font-family: 'Google Sans', sans-serif;
+color: var(--grey-800);
+margin-top: 0;
+margin-bottom: 1rem;
+font-size: 1.75rem;
+}
+.pre-exam-container p {
+color: var(--grey-700);
+line-height: 1.6;
+}
+.tos-content {
+border: 1px solid var(--grey-200);
+border-radius: 8px;
+padding: 1rem;
+max-height: 300px;
+overflow-y: auto;
+background-color: var(--grey-100);
+margin-bottom: 1.5rem;
+}
+.tos-content h3 {
+margin-top: 0;
+font-size: 1.1rem;
+color: var(--grey-800);
+}
+.agreement-check {
+display: flex;
+align-items: center;
+padding: 0.75rem;
+background-color: #f8f9fa;
+border-radius: 8px;
+margin-bottom: 1rem;
+}
+.agreement-check input {
+margin-right: 1rem;
+width: 18px;
+height: 18px;
+}
+.pre-exam-actions {
+display: flex;
+justify-content: flex-end;
+gap: 1rem;
+margin-top: 2rem;
+border-top: 1px solid var(--grey-200);
+padding-top: 1.5rem;
+}
+/* Photo Examples Screen */
+.photo-examples-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 1.5rem;
+margin-top: 1.5rem;
+}
+.example-card {
+border: 1px solid var(--grey-200);
+border-radius: 8px;
+text-align: center;
+padding: 1rem;
+}
+.example-card img {
+width: 100%;
+height: 150px;
+object-fit: cover;
+border-radius: 4px;
+margin-bottom: 0.5rem;
+background-color: var(--grey-200);
+}
+.example-card p {
+font-size: 0.9rem;
+color: var(--grey-700);
+margin: 0;
+}
+/* Biometric Capture Screen */
+#videoFeed {
+width: 100%;
+max-width: 500px;
+height: auto;
+border-radius: 8px;
+border: 2px solid var(--grey-200);
+background-color: #000;
+margin: 1rem auto;
+display: block;
+}
+/* --- Prepare for Launch Screen --- */
+.stepper {
+display: flex;
+align-items: center;
+justify-content: center;
+margin-bottom: 2rem;
+gap: 0.5rem;
+}
+.step {
+display: flex;
+flex-direction: column;
+align-items: center;
+color: var(--grey-500);
+}
+.step-number {
+width: 32px;
+height: 32px;
+border-radius: 50%;
+border: 2px solid var(--grey-500);
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+margin-bottom: 0.25rem;
+}
+.step.active .step-number {
+background-color: var(--blue-600);
+border-color: var(--blue-600);
+color: #fff;
+}
+.step.active .step-label {
+color: var(--blue-600);
+font-weight: 700;
+}
+.step-label {
+font-size: 0.8rem;
+}
+.step-line {
+flex-grow: 1;
+height: 2px;
+background-color: var(--grey-200);
+max-width: 100px;
+}
+.video-container {
+position: relative;
+padding-bottom: 56.25%; /* 16:9 aspect ratio */
+height: 0;
+overflow: hidden;
+max-width: 100%;
+background: #000;
+border-radius: 8px;
+margin: 1.5rem 0;
+}
+.video-container iframe {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+}
+.checklist-section {
+margin-top: 1.5rem;
+}
+/* --- Final Review Screen --- */
+.review-summary {
+display: flex;
+justify-content: center;
+gap: 1.5rem;
+margin: 1.5rem 0;
+padding: 1rem;
+background-color: var(--grey-100);
+border-radius: 8px;
+font-weight: 500;
+}
+.review-summary span {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+.review-summary .status-indicator {
+width: 12px;
+height: 12px;
+border-radius: 50%;
+}
+.review-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 1rem;
+max-height: 40vh;
+overflow-y: auto;
+padding: 1rem;
+border: 1px solid var(--grey-200);
+border-radius: 8px;
+}
+.review-item {
+padding: 0.75rem;
+border-radius: 4px;
+cursor: pointer;
+display: flex;
+justify-content: space-between;
+align-items: center;
+transition: background-color 0.2s;
+}
+.review-item:hover {
+background-color: var(--grey-100);
+}
+.review-item .status-text {
+font-weight: 700;
+font-size: 0.9rem;
+}
+.review-item .status-answered { color: var(--green-500); }
+.review-item .status-unanswered { color: var(--red-500); }
+.review-item .status-marked { color: var(--yellow-500); }
+.exam-layout {
+display: flex;
+flex-grow: 1;
+overflow: hidden;
+}
+.exam-main {
+flex-grow: 1;
+display: flex;
+flex-direction: column;
+padding: 1.5rem 2rem;
+overflow-y: auto;
+}
+.exam-nav {
+width: 280px;
+flex-shrink: 0;
+background: #fff;
+border-left: 1px solid var(--grey-200);
+padding: 1.5rem;
+overflow-y: auto;
+display: flex;
+flex-direction: column;
+}
+.exam-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+background: #fff;
+padding: 1rem 2rem;
+border-bottom: 1px solid var(--grey-200);
+box-shadow: var(--shadow-md);
+position: sticky;
+top: 0;
+z-index: 10;
+}
+.exam-header h1 {
+font-family: 'Google Sans', sans-serif;
+font-size: 1.5rem;
+color: var(--grey-800);
+margin: 0;
+}
+.timer {
+font-size: 1.25rem;
+font-weight: 700;
+color: var(--red-500);
+background-color: #fce8e6;
+padding: 0.5rem 1rem;
+border-radius: 8px;
+}
+.question-area {
+flex-grow: 1;
+}
+.question-block { display: none; }
+.question-block.active { display: block; animation: fadeIn 0.5s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.question-block h3 {
+font-size: 1.25rem;
+margin-bottom: 1.5rem;
+line-height: 1.5;
+}
+.options-list {
+list-style: none;
+padding: 0;
+display: flex;
+flex-direction: column;
+gap: 1rem;
+}
+.options-list li label {
+display: block;
+padding: 1rem 1.5rem;
+border: 1px solid var(--grey-200);
+border-radius: 8px;
+cursor: pointer;
+transition: all 0.2s ease-in-out;
+}
+.options-list li input[type="radio"] { display: none; }
+.options-list li input[type="radio"]:checked + label {
+border-color: var(--blue-600);
+box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+background-color: #f4f8ff;
+font-weight: 500;
+}
+.options-list li label:hover {
+border-color: var(--grey-500);
+}
+.navigation-buttons {
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-top: 1px solid var(--grey-200);
+padding-top: 1.5rem;
+margin-top: 2rem;
+}
+.btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+background-color: var(--blue-600);
+color: #fff;
+padding: 0.75rem 1.5rem;
+border-radius: 8px;
+text-decoration: none;
+font-weight: 500;
+border: none;
+cursor: pointer;
+transition: background-color 0.2s;
+}
+.btn:hover:not(:disabled) { background-color: var(--blue-700); }
+.btn:disabled {
+background-color: var(--grey-200);
+cursor: not-allowed;
+color: var(--grey-700);
+}
+.btn-secondary {
+background: none;
+border: 1px solid var(--grey-500);
+color: var(--grey-800);
+}
+.btn-secondary:hover:not(:disabled) { background-color: var(--grey-200); }
+.btn-submit { background-color: var(--green-500); }
+.btn-submit:hover { background-color: #2e8a45; }
+/* Question Navigator */
+.question-nav-header {
+font-family: 'Google Sans', sans-serif;
+font-size: 1.2rem;
+margin-bottom: 1rem;
+padding-bottom: 0.5rem;
+border-bottom: 1px solid var(--grey-200);
+}
+.question-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+gap: 0.5rem;
+}
+.q-nav-item {
+width: 40px;
+height: 40px;
+display: flex;
+align-items: center;
+justify-content: center;
+border: 1px solid var(--grey-200);
+border-radius: 50%;
+cursor: pointer;
+font-weight: 500;
+transition: all 0.2s ease;
+}
+.q-nav-item:hover { background-color: var(--grey-100); }
+.q-nav-item.current {
+border-color: var(--blue-600);
+background-color: var(--blue-600);
+color: #fff;
+font-weight: 700;
+}
+.q-nav-item.answered {
+background-color: #e6f4ea;
+border-color: var(--green-500);
+color: #1e8e3e;
+}
+.q-nav-item.marked {
+background-color: #feefc3;
+border-color: var(--yellow-500);
+color: #795508;
+position: relative;
+}
+.q-nav-item.marked::after {
+content: '';
+position: absolute;
+top: 4px;
+right: 4px;
+width: 8px;
+height: 8px;
+background: var(--yellow-500);
+border-radius: 50%;
+}
+/* Accessibility Improvements */
+.options-list li label:focus-within {
+outline: 2px solid var(--blue-600);
+}
+.q-nav-item:focus {
+outline: 2px solid var(--blue-600);
+outline-offset: 2px;
+}
+.review-item:focus {
+outline: 2px solid var(--blue-600);
+outline-offset: 2px;
+}
+/* Responsive Design Enhancements */
+@media (max-width: 768px) {
+.exam-layout {
+flex-direction: column;
+}
+.exam-nav {
+width: 100%;
+order: 2;
+}
+.question-grid {
+grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+}
+.q-nav-item {
+width: 30px;
+height: 30px;
+font-size: 0.8rem;
+}
+}
+/* Proctoring Panel Styles */
+.proctoring-panel {
+margin-top: 2rem;
+padding: 1rem;
+background-color: var(--grey-100);
+border-radius: 8px;
+border: 1px solid var(--grey-200);
+}
+.proctoring-header {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+font-weight: 500;
+margin-bottom: 0.5rem;
+color: var(--grey-700);
+}
+#proctoring-video {
+width: 100%;
+height: 150px;
+object-fit: cover;
+border-radius: 4px;
+background-color: #000;
+}
+.warnings-display {
+margin-top: 0.5rem;
+font-size: 0.9rem;
+color: var(--yellow-500);
+font-weight: 500;
+}
+.proctor-log {
+margin-top: 0.5rem;
+font-size: 0.8rem;
+color: var(--grey-700);
+background-color: #f8f9fa;
+padding: 0.5rem;
+border-radius: 4px;
+max-height: 100px;
+overflow-y: auto;
+font-family: monospace;
+}
+/* Spinner for buttons */
+.spinner {
+display: inline-block;
+width: 1.2em;
+height: 1.2em;
+border: 2px solid rgba(255,255,255,0.3);
+border-radius: 50%;
+border-top-color: #fff;
+animation: spin 1s ease-in-out infinite;
+margin-right: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* New System Check Styles - FIXED CSS */
+.check-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background-color: var(--grey-100);
+  border: 1px solid var(--grey-200);
+}
+.check-status span {
+  font-weight: 500;
+}
+.check-status .status-icon {
+  width: 24px;
+  height: 24px;
+}
+.status-pass { color: var(--green-500); }
+.status-fail { color: var(--red-500); }
+.status-pending { color: var(--blue-600); }
+</style>
+</head>
+<body>
+<!-- Screen 1: Terms of Service -->
+<div id="tosScreen" class="pre-exam-screen" style="display: flex;">
+<div class="pre-exam-container">
+<h1>DC Cloud Solutions - Google Cloud Partner Exam Portal Policies</h1>
+<p>By checking the boxes below, you agree to each term as described. To take this exam in an online environment, you must agree to all of the following terms and conditions.</p>
+</div>
+<div class="tos-content">
+<h3>DC Cloud Solutions's Privacy Policy and Terms of Use</h3>
+<p>By accessing this website and ticking the box you indicate your acceptance of DC Cloud Solutions's Privacy Policy and Terms of Use to support your experience. You also understand, acknowledge, and agree that the testing program sponsor has its own, possibly different, privacy policy.</p>
+</div>
+<div class="agreement-check">
+<input type="checkbox" id="agreePrivacy" class="tos-checkbox">
+<label for="agreePrivacy">I agree</label>
+</div>
+<div class="tos-content">
+<h3>Exam Data Processing</h3>
+<p>By providing your personal information, as described in our Privacy Policy, you acknowledge and agree to the video and audio recording of your entire testing session... you and your computer will be monitored during your entire testing session in real-time so that your face, voice, desk, and workspace will be captured and possibly recorded... DC Cloud Solutions may use artificial intelligence (AI) technologies to assist in monitoring and flagging potential exam violations...</p>
+</div>
+<div class="agreement-check">
+<input type="checkbox" id="agreeDataProcessing" class="tos-checkbox">
+<label for="agreeDataProcessing">I agree</label>
+</div>
+<div class="tos-content">
+<h3>Limited License</h3>
+<p>You acknowledge that DC Cloud Solutions is granting you a limited license to access and make personal use of this Online Proctored Application only for the duration of your testing session. Further you acknowledge that this application may not be reproduced, duplicated, copied, take a picture of, downloaded, or otherwise exploited...</p>
+</div>
+<div class="agreement-check">
+<input type="checkbox" id="agreeLicense" class="tos-checkbox">
+<label for="agreeLicense">I agree</label>
+</div>
+<div class="tos-content">
+<h3>Third Party Prohibition</h3>
+<p>By accessing this website you signify that you understand, acknowledge and agree that if any third party is detected as being present in your physical location, whether visible or not... the test will be terminated and you will not receive any score.</p>
+</div>
+<div class="agreement-check">
+<input type="checkbox" id="agreeThirdParty" class="tos-checkbox">
+<label for="agreeThirdParty">I agree</label>
+</div>
+<div class="tos-content">
+<h3>Facial Comparison and Keystroke Analysis Policy</h3>
+<p>You understand and agree that DC Cloud Solutions may use facial comparison technology or keystroke analysis to verify your identity during the testing process. The facial comparison technology will compare your facial image to the one on your identification and to facial images captured during the testing process...</p>
+</div>
+<div class="agreement-check">
+<input type="checkbox" id="agreeFacial" class="tos-checkbox">
+<label for="agreeFacial">I agree</label>
+</div>
+<div class="pre-exam-actions">
+<button id="selectAllBtn" class="btn btn-secondary">Select All</button>
+<button id="doNotAgreeBtn" class="btn btn-secondary">I do not agree</button>
+<button id="proceedToExamplesBtn" class="btn" disabled>Proceed</button>
+</div>
+</div>
+</div>
+<!-- Screen 2: Photo Examples -->
+<div id="photoExamplesScreen" class="pre-exam-screen">
+<div class="pre-exam-container">
+<h1>Take the perfect Biometric Photo</h1>
+<p>Please review the examples below before you proceed. Your face should be clearly visible, centered, and well-lit.</p>
+<div class="photo-examples-grid">
+<div class="example-card">
+<img src="images/First-biometric-instruction.svg" alt="Underexposed photo example">
+<p><b>Avoid underexposure.</b> Your face should be visible and free of shadows.</p>
+</div>
+<div class="example-card">
+<img src="images/Second-biometric-instruction.svg" alt="Background distraction example">
+<p><b>Avoid background distractions.</b> The background should be plain and uniform.</p>
+</div>
+<div class="example-card">
+<img src="images/Third-biometric-instruction.svg" alt="Bad angle example">
+<p><b>Use a good angle.</b> Your entire face should be visible and centered.</p>
+</div>
+<div class="example-card">
+<img src="images/Fourt-biometric-instruction.svg" alt="Glasses example">
+<p><b>Remove glasses.</b> If you wear glasses, they must be removed for your photo.</p>
+</div>
+</div>
+<div class="pre-exam-actions">
+<button id="exitExamBtn1" class="btn btn-secondary">Exit Exam</button>
+<button id="proceedToCaptureBtn" class="btn">Continue</button>
+</div>
+</div>
+</div>
+<!-- Screen 3: Biometric Capture -->
+<div id="biometricCaptureScreen" class="pre-exam-screen">
+<div class="pre-exam-container">
+<h1 id="captureInstructionTitle">Step 1: Capture Your ID</h1>
+<p id="captureInstructionText">Please hold your government-issued ID clearly in front of the camera. Ensure it is readable.</p>
+<video id="videoFeed" autoplay playsinline></video>
+<canvas id="captureCanvas" style="display:none;"></canvas>
+<div class="pre-exam-actions">
+<button id="exitExamBtn2" class="btn btn-secondary">Exit Exam</button>
+<button id="captureBtn" class="btn">
+<i data-lucide="camera" style="margin-right: 8px;"></i> Capture
+</button>
+</div>
+</div>
+</div>
+
+<!-- Screen 4: System Checks (New Mandatory Screen) -->
+<div id="systemCheckScreen" class="pre-exam-screen">
+<div class="pre-exam-container">
+<h1 id="systemCheckTitle">Mandatory System Checks</h1>
+<p>Before launching, we must ensure your microphone and network are ready for proctoring.</p>
+
+<div class="check-status">
+<span>Microphone/Audio Check</span>
+<span id="audioCheckStatus" class="status-pending"><i data-lucide="loader-circle" class="status-icon spinner"></i> Pending</span>
+</div>
+
+<div class="check-status">
+<span>Network Speed Check </span>
+<span id="networkCheckStatus" class="status-pending"><i data-lucide="loader-circle" class="status-icon spinner"></i> Pending</span>
+</div>
+
+<div class="pre-exam-actions">
+<button id="exitExamBtn4" class="btn btn-secondary">Exit Exam</button>
+<button id="startSystemChecksBtn" class="btn">Start Checks</button>
+<button id="proceedToLaunchBtn" class="btn" disabled>Proceed to Launch</button>
+</div>
+</div>
+</div>
+ <script type="text/javascript">
+        var Tawk_API = Tawk_API || {},
+          Tawk_LoadStart = new Date();
+        (function () {
+          var s1 = document.createElement("script"),
+            s0 = document.getElementsByTagName("script")[0];
+          s1.async = true;
+          s1.src = "https://embed.tawk.to/673b87e22480f5b4f59ffc23/1id08lk55";
+          s1.charset = "UTF-8";
+          s1.setAttribute("crossorigin", "*");
+          s0.parentNode.insertBefore(s1, s0);
+        })();
+      </script>
+<!-- Screen 5 (was 4): Prepare for Launch -->
+<div id="prepareLaunchScreen" class="pre-exam-screen">
+<div class="pre-exam-container">
+<div class="stepper">
+<div class="step"><div class="step-number">2</div><div class="step-label">Biometrics</div></div>
+<div class="step-line"></div>
+<div class="step active"><div class="step-number">3</div><div class="step-label">System Check</div></div>
+<div class="step-line"></div>
+<div class="step"><div class="step-number">4</div><div class="step-label">Exam Pre-Check</div></div>
+</div>
+<h1>Prepare For Launch!</h1>
+<p>So you are getting ready to launch an exam? Good for you! Please watch the short video on this page, then review the steps below to ensure an uninterrupted, successful testing experience.</p>
+<div class="video-container">
+  <iframe 
+    src="https://www.youtube.com/embed/4MF2asicV9c" 
+    title="YouTube video player"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen>
+  </iframe>
+</div>
+
+<div class="checklist-section">
+<div class="agreement-check">
+<input type="checkbox" id="agreeDevice" class="launch-checkbox">
+<label for="agreeDevice"><b>Prepare Your Device:</b> Make sure your computer is plugged in or fully charged. Close programs (e.g., GoToMeeting, Zoom, and Skype).</label>
+</div>
+<div class="agreement-check">
+<input type="checkbox" id="agreeEnv" class="launch-checkbox">
+<label for="agreeEnv"><b>Prepare Your Environment:</b> Remove hats, headphones, and jacket hoods. Remove watches and bracelets. Ensure your testing area is well-lit.</label>
+</div>
+</div>
+<div class="pre-exam-actions">
+<button id="exitExamBtn3" class="btn btn-secondary">Exit Exam</button>
+<button id="launchExamBtn" class="btn" disabled>Launch Exam</button>
+</div>
+</div>
+</div>
+<!-- Screen 6 (was 5): Final Review -->
+<div id="reviewScreen" class="pre-exam-screen">
+<div class="pre-exam-container">
+<h1>Exam Review</h1>
+<p>Review the status of your answers before final submission. Click on a question to jump back to it.</p>
+
+<div class="review-summary">
+<span><div class="status-indicator" style="background: var(--green-500);"></div> Answered: <strong id="summaryAnswered">0</strong></span>
+<span><div class="status-indicator" style="background: var(--red-500);"></div> Not Answered: <strong id="summaryUnanswered">0</strong></span>
+<span><div class="status-indicator" style="background: var(--yellow-500);"></div> Marked for Review: <strong id="summaryMarked">0</strong></span>
+</div>
+<div id="reviewGrid" class="review-grid">
+<!-- Review items will be injected here -->
+</div>
+<div class="pre-exam-actions">
+<button id="returnToExamBtn" class="btn btn-secondary">
+<i data-lucide="arrow-left" style="margin-right: 8px;"></i> Return to Exam
+</button>
+<button id="finalSubmitBtn" class="btn btn-submit">
+<i data-lucide="check-circle" style="margin-right: 8px;"></i> Submit Final Exam
+</button>
+</div>
+</div>
+</div>
+<!-- Screen 7 (was 6): The Exam -->
+<div id="examScreen" style="display: none; flex-direction: column; flex-grow: 1;">
+<header class="exam-header">
+<h1 id="examTitle">Loading Exam...</h1>
+<div style="display: flex; align-items: center; gap: 1rem;">
+<button id="pauseBtn" class="btn btn-secondary" title="Pause Exam"><i data-lucide="pause"></i> Pause <span id="pauseCountDisplay"></span></button>
+<div id="timer" class="timer">01:30:00</div>
+</div>
+</header>
+<div class="exam-layout">
+<main class="exam-main">
+<div id="questionArea" class="question-area">
+<!-- Questions will be injected here -->
+</div>
+<footer class="navigation-buttons">
+<div>
+<button id="prevBtn" class="btn btn-secondary" disabled>Previous</button>
+<button id="markReviewBtn" class="btn btn-secondary" style="margin-left: 8px;">Mark for Review</button>
+</div>
+<button id="nextBtn" class="btn">Next</button>
+<button id="reviewExamBtn" class="btn btn-submit" style="display: none;">Review Exam</button>
+</footer>
+</main>
+<aside class="exam-nav">
+<h2 class="question-nav-header">Question Navigator</h2>
+<div id="questionNav" class="question-grid">
+<!-- Navigator items will be injected here -->
+</div>
+<div class="proctoring-panel">
+<div class="proctoring-header">
+<i data-lucide="video"></i>
+<span>Live Proctoring Session</span>
+</div>
+<video id="proctoring-video" muted playsinline></video>
+<div id="warnings-display" class="warnings-display">Warnings: <strong>0 / 3</strong></div>
+<div id="proctor-log" class="proctor-log">
+<!-- Live analysis feed will appear here -->
+</div>
+</div>
+</aside>
+</div>
+</div>
+<!-- Pause Overlay -->
+<div id="pauseOverlay" style="display: none; position: fixed; inset: 0; background-color: rgba(32,33,36,0.9); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; color: white; backdrop-filter: blur(5px);">
+<i data-lucide="pause-circle" style="width: 80px; height: 80px; margin-bottom: 2rem;"></i>
+<h1 style="font-family: 'Google Sans', sans-serif;">Exam Paused</h1>
+<p>Your exam timer and proctoring have been stopped. Click Resume to continue.</p>
+<button id="resumeBtn" class="btn" style="margin-top: 2rem; font-size: 1.2rem; padding: 1rem 2rem;">Resume Exam</button>
+</div>
+
+<!-- Footer for Copyright and Design -->
+<footer class="app-footer">
+  © 2025 All rights reserved. Designed and Developed by DC Cloud Solutions
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

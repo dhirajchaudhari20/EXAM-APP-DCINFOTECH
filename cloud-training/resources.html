@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources - Cloud Training</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .resource-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-medium);
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .resource-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .resource-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .resource-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .resource-desc {
+            font-size: 0.9rem;
+            color: var(--text-medium);
+            margin-bottom: 12px;
+        }
+
+        .resource-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .bookmark-btn {
+            float: right;
+            background: none;
+            border: none;
+            color: var(--text-medium);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .bookmark-btn.bookmarked {
+            color: #f59e0b;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="page-transition-loader" class="page-loader">
+        <div class="loader-content">
+            <div class="spinner-circle"></div>
+            <div class="loader-text">Loading...</div>
+        </div>
+    </div>
+
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="video/video.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
+    <div id="dashboardContainer" class="saas-container">
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h2 class="page-title">📚 Learning Resources</h2>
+                    <span class="current-date" id="currentTime"></span>
+                </div>
+                <div class="topbar-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search resources...">
+                    </div>
+                    <button id="darkModeToggle" class="icon-btn">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-scrollable">
+                <div class="content-wrapper">
+
+                    <div class="resource-tabs">
+                        <button class="tab active" onclick="filterResources('all')">All Resources</button>
+                        <button class="tab" onclick="filterResources('docs')">Documentation</button>
+                        <button class="tab" onclick="filterResources('videos')">Videos</button>
+                        <button class="tab" onclick="filterResources('labs')">Practice Labs</button>
+                        <button class="tab" onclick="filterResources('cheatsheets')">Cheat Sheets</button>
+                        <button class="tab" onclick="filterResources('bookmarks')">Bookmarked</button>
+                    </div>
+
+                    <div class="resource-grid" id="resourceGrid">
+                        <!-- Documentation -->
+                        <div class="resource-card" data-category="docs">
+                            <button class="bookmark-btn" onclick="toggleBookmark(this)"><i
+                                    class="far fa-bookmark"></i></button>
+                            <div class="resource-icon" style="background: #e0e7ff; color: #4f46e5;">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="resource-title">Google Cloud Documentation</div>
+                            <div class="resource-desc">Official GCP documentation with detailed guides and API
+                                references</div>
+                            <a href="https://cloud.google.com/docs" target="_blank" class="resource-link">
+                                Visit Resource <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+
+                        <div class="resource-card" data-category="docs">
+                            <button class="bookmark-btn" onclick="toggleBookmark(this)"><i
+                                    class="far fa-bookmark"></i></button>
+                            <div class="resource-icon" style="background: #dbeafe; color: #2563eb;">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="resource-title">ACE Exam Guide</div>
+                            <div class="resource-desc">Official Associate Cloud Engineer exam guide and objectives</div>
+                            <a href="https://cloud.google.com/certification/cloud-engineer" target="_blank"
+                                class="resource-link">
+                                Visit Resource <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+
+                        <!-- Videos -->
+                        <div class="resource-card" data-category="videos">
+                            <button class="bookmark-btn" onclick="toggleBookmark(this)"><i
+                                    class="far fa-bookmark"></i></button>
+                            <div class="resource-icon" style="background: #fef3c7; color: #f59e0b;">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <div class="resource-title">Google Cloud YouTube Channel</div>
+                            <div class="resource-desc">Official video tutorials, demos, and best practices</div>
+                            <a href="https://www.youtube.com/@GoogleCloudTech" target="_blank" class="resource-link">
+                                Visit Resource <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+
+                        <div class="resource-card" data-category="videos">
+                            <button class="bookmark-btn" onclick="toggleBookmark(this)"><i
+                                    class="far fa-bookmark"></i></button>
+                            <div class="resource-icon" style="background: #dcfce7; color: #16a34a;">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                            <div class="resource-title">GCP Essentials Series</div>
+                            <div class="resource-desc">Comprehensive video series covering all GCP fundamentals</div>
+                            <a href="https://www.youtube.com/playlist?list=PLIivdWyY5sqKh1gDR0WpP9iIOY00IE0xL"
+                                target="_blank" class="resource-link">
+                                Visit Resource <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+
+                        <!-- Labs -->
+                        <div class="resource-card" data-category="labs">
+                            <button class="bookmark-btn" onclick="toggleBookmark(this)"><i
+                                    class="far fa-bookmark"></i></button>
+                            <div class="resource-icon" style="background: #ffe4e6; color: #e11d48;">
+                                <i class="fas fa-flask"></i>
+                            </div>
+                            <div class="resource-title">Qwiklabs</div>
+                            <div class="resource-desc">Hands-on labs to practice GCP skills in a real environment</div>
+                            <a href="https://www.cloudskillsboost.google/catalog" target="_blank" class="resource-link">
+                                Visit Resource <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+
+                        <div class="resource-card" data-category="labs">
+                            <button class="bookmark-btn" onclick="toggleBookmark(this)"><i
+                                    class="far fa-bookmark"></i></button>
+                            <div class="resource-icon" style="background: #f3e8ff; color: #9333ea;">
+                                <i class="fas fa-laptop-code"></i>
+                            </div>
+                            <div class="resource-title">Google Cloud Skills Boost</div>
+                            <div class="resource-desc">Learn through interactive labs and earn skill badges</div>
+                            <a href="https://www.cloudskillsboost.google/" target="_blank" class="resource-link">
+                                Visit Resource <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+
+                        <!-- Cheat Sheets -->
+                        <div class="resource-card" data-category="cheatsheets">
+                            <button class="bookmark-btn" onclick="toggleBookmark(this)"><i
+                                    class="far fa-bookmark"></i></button>
+                            <div class="resource-icon" style="background: #fce7f3; color: #ec4899;">
+                                <i class="fas fa-file-code"></i>
+                            </div>
+                            <div class="resource-title">gcloud Command Cheat Sheet</div>
+                            <div class="resource-desc">Quick reference for commonly used gcloud commands</div>
+                            <a href="https://cloud.google.com/sdk/gcloud/reference/cheat-sheet" target="_blank"
+                                class="resource-link">
+                                Visit Resource <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+
+                        <div class="resource-card" data-category="cheatsheets">
+                            <button class="bookmark-btn" onclick="toggleBookmark(this)"><i
+                                    class="far fa-bookmark"></i></button>
+                            <div class="resource-icon" style="background: #ecfeff; color: #0891b2;">
+                                <i class="fas fa-list-check"></i>
+                            </div>
+                            <div class="resource-title">GCP Products Cheat Sheet</div>
+                            <div class="resource-desc">Visual guide to all GCP products and when to use them</div>
+                            <a href="https://googlecloudcheatsheet.withgoogle.com/" target="_blank"
+                                class="resource-link">
+                                Visit Resource <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/sidebar.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/session.js"></script>
+    <script src="js/fix-layout.js"></script>
+    <script src="js/interactions.js"></script>
+    <script src="js/profile-photo.js"></script>
+
+    <script>
+        function filterResources(category) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const cards = document.querySelectorAll('.resource-card');
+            cards.forEach(card => {
+                if (category === 'all') {
+                    card.style.display = 'block';
+                } else if (category === 'bookmarks') {
+                    const isBookmarked = card.querySelector('.bookmark-btn').classList.contains('bookmarked');
+                    card.style.display = isBookmarked ? 'block' : 'none';
+                } else {
+                    card.style.display = card.dataset.category === category ? 'block' : 'none';
+                }
+            });
+        }
+
+        function toggleBookmark(btn) {
+            btn.classList.toggle('bookmarked');
+            const icon = btn.querySelector('i');
+            icon.classList.toggle('far');
+            icon.classList.toggle('fas');
+
+            // Save to localStorage
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarkedResources') || '[]');
+            const card = btn.closest('.resource-card');
+            const title = card.querySelector('.resource-title').textContent;
+
+            if (btn.classList.contains('bookmarked')) {
+                bookmarks.push(title);
+                Notiflix.Notify.success('Resource bookmarked!');
+            } else {
+                const index = bookmarks.indexOf(title);
+                if (index > -1) bookmarks.splice(index, 1);
+            }
+
+            localStorage.setItem('bookmarkedResources', JSON.stringify(bookmarks));
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function (e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.resource-card').forEach(card => {
+                const title = card.querySelector('.resource-title').textContent.toLowerCase();
+                const desc = card.querySelector('.resource-desc').textContent.toLowerCase();
+                card.style.display = (title.includes(searchTerm) || desc.includes(searchTerm)) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+
+</html>

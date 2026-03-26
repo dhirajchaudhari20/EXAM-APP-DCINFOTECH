@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Cloud Event Schedule</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Google Cloud Event Schedule</h1>
+  </header>
+
+  <div class="container">
+    <h2>Today's Events</h2>
+    <div id="event-schedule">
+      <!-- Event details will be populated by JavaScript -->
+    </div>
+
+    <div class="countdown">
+      <p>Next Event Countdown:</p>
+      <p id="timer">Loading...</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Google Cloud Academy</p>
+  </footer>
+<style>body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+  }
+  
+  header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .container {
+    padding: 20px;
+  }
+  
+  h2 {
+    text-align: center;
+    color: #4CAF50;
+  }
+  
+  .event {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .event h3 {
+    margin-top: 0;
+    color: #333;
+  }
+  
+  .timer {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ff5722;
+    text-align: center;
+  }
+  
+  .event-details {
+    margin-top: 10px;
+  }
+  
+  .event-details a {
+    color: #4CAF50;
+    text-decoration: none;
+  }
+  
+  .event-details a:hover {
+    text-decoration: underline;
+  }
+  
+  .countdown {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: #ff5722;
+  }
+  
+  footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .event.ended {
+    opacity: 0.6;
+    text-decoration: line-through;
+  }</style>
+  <script>// Event Schedule Data (combining all schedules)
+    const allSchedules = [
+      {
+        day: "Mon, March 3, 2025",
+        time: "9:00 AM - 1:00 PM GMT+5:30",
+        description: "Google Cloud Fundamentals: Core Infrastructure",
+        link: "https://www.youtube.com/playlist?list=PLoW9FRX7ypD63XAvW0xd6LtKSHtfQLJJ7",
+        recording: "https://youtu.be/Vf_BvK13P9c"
+      },
+      {
+        day: "Tue, March 25, 2025",
+        time: "7:30 PM - 11:30 PM GMT+5:30",
+        description: "Academy - Professional Machine Learning Engineer workshop Module 1",
+        link: "",
+        recording: ""
+      },
+      {
+        day: "Wed, March 26, 2025",
+        time: "7:30 PM - 11:30 PM GMT+5:30",
+        description: "Academy - Professional Machine Learning Engineer workshop Module 2",
+        link: "",
+        recording: ""
+      },
+      {
+        day: "Thu, March 27, 2025",
+        time: "9:00 AM - 5:00 PM GMT+5:30",
+        description: "Academy - Cloud Digital Leader Workshop",
+        link: "https://meet.google.com/example",
+        recording: ""
+      },
+      {
+        day: "Mon, March 31, 2025",
+        time: "7:30 PM - 11:30 PM GMT+5:30",
+        description: "Academy - Professional Machine Learning Engineer workshop Module 3",
+        link: "",
+        recording: ""
+      },
+      {
+        day: "Tue, April 1, 2025",
+        time: "7:30 PM - 11:30 PM GMT+5:30",
+        description: "Academy - Professional Machine Learning Engineer workshop Module 4",
+        link: "",
+        recording: ""
+      },
+      {
+        day: "Thu, April 3, 2025",
+        time: "7:30 PM - 11:30 PM GMT+5:30",
+        description: "Academy - Associate Cloud Engineer workshop Module 1",
+        link: "https://meet.google.com/example",
+        recording: ""
+      },
+      {
+        day: "Wed, April 2, 2025",
+        time: "12:30 PM - 4:30 PM GMT+5:30",
+        description: "Academy - Professional Cloud Architect workshop Module 1",
+        link: "",
+        recording: ""
+      },
+      {
+        day: "Fri, April 11, 2025",
+        time: "2:00 PM - 4:00 PM GMT+5:30",
+        description: "Exam Readiness Workshop Associate Cloud Engineer",
+        link: "https://meet.google.com/ckb-anew-prr",
+        recording: "https://youtu.be/2mwT6h7pVRw"
+      }
+    ];
+    
+    // Function to display today's events
+    function displayTodayEvents() {
+      const eventContainer = document.getElementById('event-schedule');
+      eventContainer.innerHTML = '';
+    
+      const now = new Date();
+      let hasTodayEvents = false;
+    
+      allSchedules.forEach(event => {
+        const eventDateTime = new Date(`${event.day} ${event.time.split(' - ')[0]}`);
+        const eventEndTime = new Date(`${event.day} ${event.time.split(' - ')[1]}`);
+    
+        if (eventDateTime.toDateString() === now.toDateString()) {
+          hasTodayEvents = true;
+    
+          const eventDiv = document.createElement('div');
+          eventDiv.classList.add('event');
+    
+          if (eventEndTime < now) {
+            eventDiv.classList.add('ended');
+          }
+    
+          eventDiv.innerHTML = `
+            <h3>${event.description}</h3>
+            <p><strong>Day:</strong> ${event.day}</p>
+            <p><strong>Time:</strong> ${event.time} (GMT+5:30)</p>
+            <div class="event-details">
+              <a href="${event.link}" target="_blank">Join Event</a> |
+              <a href="${event.recording}" target="_blank">Watch Recording</a>
+            </div>
+          `;
+    
+          eventContainer.appendChild(eventDiv);
+        }
+      });
+    
+      if (!hasTodayEvents) {
+        eventContainer.innerHTML = '<p>No events scheduled for today.</p>';
+      }
+    }
+    
+    // Timer function for the next event
+    function startCountdown() {
+      const now = new Date();
+      let nextEvent = null;
+    
+      allSchedules.forEach(event => {
+        const eventDateTime = new Date(`${event.day} ${event.time.split(' - ')[0]}`);
+    
+        if (eventDateTime > now && (!nextEvent || eventDateTime < nextEvent)) {
+          nextEvent = eventDateTime;
+        }
+      });
+    
+      if (nextEvent) {
+        const timerInterval = setInterval(function () {
+          const remainingTime = nextEvent - new Date();
+          if (remainingTime <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById('timer').innerText = 'The event is live!';
+          } else {
+            const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
+            const seconds = Math.floor((remainingTime / 1000) % 60);
+            document.getElementById('timer').innerText = `${hours}h ${minutes}m ${seconds}s`;
+          }
+        }, 1000);
+      } else {
+        document.getElementById('timer').innerText = 'No upcoming events.';
+      }
+    }
+    
+    // Initialize functions
+    displayTodayEvents();
+    startCountdown();</script>
+  <script src="script.js"></script>
+</body>
+</html>

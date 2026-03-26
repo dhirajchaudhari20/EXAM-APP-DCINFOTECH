@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cloud Voucher Issue Submission</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root {
+      --primary: #004aad;
+      --bg: #f0f4ff;
+      --white: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.1);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 600px;
+      background: var(--white);
+      padding: 35px 30px;
+      border-radius: var(--radius);
+      box-shadow: 0 15px 30px var(--shadow);
+      transition: transform 0.3s ease;
+    }
+
+    .form-container:hover {
+      transform: scale(1.01);
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .timer-box {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    .info-note {
+      background: #eaf4ff;
+      color: #004aad;
+      border-left: 4px solid #004aad;
+      padding: 12px 18px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      font-size: 15px;
+    }
+
+    label {
+      display: block;
+      margin-top: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: var(--radius);
+      font-size: 15px;
+      transition: border-color 0.2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(0, 74, 173, 0.1);
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    button {
+      margin-top: 25px;
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background: #003890;
+      transform: scale(1.01);
+    }
+
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    .spinner {
+      display: none;
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #666;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<div class="form-container">
+  <h2>Cloud Voucher Issue Submission</h2>
+  
+
+<script src="https://sheetdb.io/s/f/ngtci0zpbqnle.js"></script>
+  <div class="info-note">
+    <strong>Final Extension:</strong> Please fill out this form before <strong>6:00 PM, 30rd June 2025 (Monday)</strong>.<br>
+    Submissions after this time <b>will not</b> be accepted under any circumstance.<br>
+    <b>Note:</b> This is the last opportunity to report your voucher issue if it was missed.
+  </div>
+<div class="info-note"> <strong>Voucher Processing Notice:</strong> All voucher submissions are currently being reviewed. Kindly allow <strong>7–14 working days</strong> for processing.<br><br> We appreciate your patience everyone who submitted the form on time will be responded to. Thank you for your understanding. </div>
+ 
+ <!-- Start of Tawk.to Script -->
+ <script type="text/javascript">
+  var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+  (function () {
+      var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+      s1.async = true;
+      s1.src = 'https://embed.tawk.to/673b87e22480f5b4f59ffc23/1id08lk55';
+      s1.charset = 'UTF-8';
+      s1.setAttribute('crossorigin', '*');
+      s0.parentNode.insertBefore(s1, s0);
+  })();
+</script>
+<footer>
+  © 2025 Designed and Developed by DC Cloud Solutions
+</footer>
+
+<script>
+    function pad(n) {
+      return n < 10 ? '0' + n : n;
+    }
+
+    function updateTimer() {
+      const now = new Date();
+      // New Deadline: 23rd June 2025, 6:00 PM IST
+      const deadline = new Date('2025-06-30T18:00:00+05:30');
+      const timerEl = document.getElementById('timer');
+      const btnEl = document.getElementById('submitBtn');
+      const boxEl = document.getElementById('timerBox');
+
+      if (!timerEl || !btnEl || !boxEl) return;
+
+      if (now >= deadline) {
+        timerEl.textContent = "00:00:00";
+        btnEl.disabled = true;
+        btnEl.innerText = "Form Closed";
+        boxEl.style.color = "#888";
+      } else {
+        const diff = deadline - now;
+        const h = Math.floor(diff / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        timerEl.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+        setTimeout(updateTimer, 1000);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimer();
+      document.getElementById('date').value = new Date().toISOString().slice(0, 10);
+
+      const form = document.getElementById('voucherForm');
+      const btn = document.getElementById('submitBtn');
+      const spinner = document.getElementById('spinner');
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const now = new Date();
+        const deadline = new Date('2025-06-23T18:00:00+05:30');
+        if (now >= deadline) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Form Closed',
+            text: 'The final deadline has passed. No more submissions are allowed.',
+          });
+          return;
+        }
+
+        btn.disabled = true;
+        spinner.style.display = 'inline-block';
+
+        setTimeout(function () {
+          spinner.style.display = 'none';
+          btn.disabled = false;
+          Swal.fire({
+            icon: 'success',
+            title: 'Submitted!',
+            text: 'Your voucher issue request has been submitted.',
+          });
+          form.reset();
+          document.getElementById('date').value = new Date().toISOString().slice(0, 10);
+        }, 1200);
+      });
+    });
+</script>

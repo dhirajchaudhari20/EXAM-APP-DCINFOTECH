@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Intern Issue Reporting Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
+      padding: 30px;
+    }
+    .form-container {
+      background: #ffffff;
+      padding: 25px;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+    .form-container h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .form-group textarea {
+      resize: vertical;
+      height: 100px;
+    }
+    .form-group button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .form-group button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid white;
+      border-top: 2px solid #007bff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    .success-message {
+      text-align: center;
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Report an Issue</h2>
+    <form id="issueForm">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="issue">Describe the Issue</label>
+        <textarea id="issue" name="issue" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <button type="submit" id="submitBtn">
+          Submit Issue
+        </button>
+      </div>
+    </form>
+
+    <div class="success-message" id="successMessage" style="display:none;">
+      Your issue has been submitted successfully.
+    </div>
+  </div>
+
+<script>
+  const form = document.getElementById("issueForm");
+  const submitBtn = document.getElementById("submitBtn");
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const issue = document.getElementById("issue").value;
+
+    // Show loader
+    submitBtn.disabled = true;
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = `<span class="spinner"></span> Submitting...`;
+
+    try {
+      const response = await fetch("https://sheetdb.io/api/v1/ymasvexsb10ky", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          data: [
+            {
+              name: name,
+              email: email,
+              issue: issue
+            }
+          ]
+        })
+      });
+
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+
+      if (response.ok) {
+        document.getElementById("successMessage").style.display = "block";
+        form.reset();
+        alert("Thanks for sharing your issue. Please check back again in 2 hours. The issue will be fixed. Allow us 15–20 minutes to review.");
+      } else {
+        alert("There was a problem submitting the form. Please try again.");
+      }
+    } catch (error) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+      alert("There was a network error. Please try again.");
+    }
+  });
+</script>
+
+</body>
+</html>

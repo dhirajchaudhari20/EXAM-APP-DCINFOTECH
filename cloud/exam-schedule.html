@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Certmetrics Account Submission - DC Cloud Solutions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9fbff;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+      color: #333;
+    }
+    h2 {
+      text-align: center;
+      color: #0b5ed7;
+    }
+    .info {
+      background-color: #e9f3ff;
+      padding: 1rem;
+      border-left: 5px solid #0b5ed7;
+      margin-bottom: 1rem;
+    }
+    form {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 0.5rem 0 0.25rem;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    input:read-only {
+      background-color: #f3f3f3;
+    }
+    button {
+      background-color: #0b5ed7;
+      color: white;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 6px;
+      width: 100%;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button.loading {
+      background-color: #6c9df2;
+      cursor: wait;
+    }
+    .success {
+      text-align: center;
+      margin-top: 1rem;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Final Step: Submit Certmetrics Details</h2>
+  <div class="info">
+    👉 Create your Certmetrics account using your <b>personal email</b>:<br>
+    <a href="https://cp.certmetrics.com/google/en/login" target="_blank">https://cp.certmetrics.com/google/en/login</a><br><br>
+    ⚠️ In the <b>Professional Affiliation</b> section of your Certmetrics profile, add your official <b>@dcinfotech.me</b> email.
+  </div>
+
+  <form id="voucherForm">
+    <label for="name">Full Name:</label>
+    <input type="text" id="name" required />
+
+    <label for="dcEmail">Personal Email (used to register Certmetrics):</label>
+    <input type="email" id="dcEmail" required />
+
+    <label for="tempPass">Temporary Password:</label>
+    <input type="text" id="tempPass" required />
+
+    <label for="examDate">Preferred Exam Date:</label>
+    <input type="date" id="examDate" required />
+
+    <label for="examTime">Preferred Exam Time:</label>
+    <input type="time" id="examTime" required />
+
+    <label for="examMode">Mode:</label>
+    <select id="examMode" required>
+      <option value="">Select Mode</option>
+      <option value="Online">Online</option>
+      <option value="Onsite">Onsite</option>
+    </select>
+  <p class="note">
+      For Online Mode, please refer to this link:<br>
+      <a href="https://rsvp.withgoogle.com/events/partner-learning/exam_essentials" target="_blank">
+        https://rsvp.withgoogle.com/events/partner-learning/exam_essentials
+      </a>
+    </p>
+    <label for="location">Preferred Location (if Onsite):</label>
+    <input type="text" id="location" placeholder="City or Test Center Name" />
+
+    <label for="examNameSelect">Exam Name:</label>
+    <select id="examNameSelect">
+      <option value="Associate Cloud Engineer">Associate Cloud Engineer</option>
+      <option value="Professional Cloud Architect">Professional Cloud Architect</option>
+      <option value="Professional Data Engineer">Professional Data Engineer</option>
+      <option value="Professional Cloud Developer">Professional Cloud Developer</option>
+      <option value="Professional Cloud DevOps Engineer">Professional Cloud DevOps Engineer</option>
+      <option value="Professional Cloud Security Engineer">Professional Cloud Security Engineer</option>
+      <option value="Professional Cloud Network Engineer">Professional Cloud Network Engineer</option>
+      <option value="Professional Machine Learning Engineer">Professional Machine Learning Engineer</option>
+      <option value="Professional Database Engineer">Professional Database Engineer</option>
+      <option value="Professional Workspace Administrator">Professional Workspace Administrator</option>
+      <option value="Cloud Digital Leader">Cloud Digital Leader</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label for="backupDate1">Backup Exam Date 1:</label>
+    <input type="date" id="backupDate1" />
+
+    <label for="backupTime1">Backup Time 1:</label>
+    <input type="time" id="backupTime1" />
+
+    <label for="backupDate2">Backup Exam Date 2:</label>
+    <input type="date" id="backupDate2" />
+
+    <label for="backupTime2">Backup Time 2:</label>
+    <input type="time" id="backupTime2" />
+
+    <button type="submit" id="submitBtn">Submit</button>
+    <div class="success" id="successMsg" style="display: none;">
+      ✔ Thank you! Your details have been submitted.<br>
+      You will receive an email once your exam is scheduled.
+    </div>
+  </form>
+
+  <script>
+    const form = document.getElementById("voucherForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const successMsg = document.getElementById("successMsg");
+
+    const SHEETDB_API = "https://sheetdb.io/api/v1/t4p2vclkp1avh";
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      submitBtn.classList.add("loading");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
+
+      const payload = {
+        data: [{
+          "Full Name": document.getElementById("name").value.trim(),
+          "Email": document.getElementById("dcEmail").value.trim(),
+          "Temporary Password": document.getElementById("tempPass").value.trim(),
+          "Exam Date": document.getElementById("examDate").value,
+          "Exam Time": document.getElementById("examTime").value,
+          "Exam Name": document.getElementById("examNameSelect").value,
+          "Mode": document.getElementById("examMode").value,
+          "Preferred Location": document.getElementById("location").value.trim(),
+          "Backup Date 1": document.getElementById("backupDate1").value,
+          "Backup Time 1": document.getElementById("backupTime1").value,
+          "Backup Date 2": document.getElementById("backupDate2").value,
+          "Backup Time 2": document.getElementById("backupTime2").value
+        }]
+      };
+
+      fetch(SHEETDB_API, {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => res.json())
+      .then(response => {
+        if (response.created) {
+          successMsg.style.display = "block";
+          form.reset();
+          successMsg.scrollIntoView({ behavior: "smooth" });
+        } else {
+          alert("Submission failed. Please try again.");
+        }
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        alert("Something went wrong while submitting the form.");
+      })
+      .finally(() => {
+        submitBtn.classList.remove("loading");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit";
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"name": "dcinfotech-office",
+			"path": ".."
+		},
+		{
+			"name": "judging-panel",
+			"path": "../../../gdg-sjcem/judging-panel"
+		}
+	],
+	"settings": {
+		"liveServer.settings.port": 5504,
+		"liveServer.settings.ignoreFiles": [
+			".vscode/**",
+			"**/*.scss",
+			"**/*.ts"
+		],
+		"liveServer.settings.file": "index.html"
+	}
+}

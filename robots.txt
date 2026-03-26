@@ -1,0 +1,13 @@
+# Block scraper bots
+User-agent: HTTrack
+Disallow: /
+
+User-agent: WebCopier
+Disallow: /
+
+# Allow all good bots (Google, Bing, etc.)
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.dcinfotech.org.in/sitemap.xml

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrollment Confirmed - DC InfoTech</title>
+    <style>
+        /* Base Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100% !important;
+            height: 100% !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f1f5f9;
+            color: #334155;
+        }
+
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        img {
+            border: 0;
+            display: block;
+        }
+
+        /* Layout */
+        .wrapper {
+            width: 100%;
+            table-layout: fixed;
+            background-color: #f1f5f9;
+            padding: 40px 0;
+        }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0044cc 0%, #002288 100%);
+            padding: 40px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .brand-name {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .header-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #e0e7ff;
+        }
+
+        /* Content Area */
+        .main-content {
+            padding: 40px;
+        }
+
+        .greeting {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 0 16px 0;
+            color: #0f172a;
+        }
+
+        .message {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #475569;
+            margin-bottom: 24px;
+        }
+
+        .highlight-text {
+            color: #0044cc;
+            font-weight: 700;
+        }
+
+        /* Status Section */
+        .card {
+            background-color: #f8fafc;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-row {
+            margin-bottom: 12px;
+            display: table;
+            width: 100%;
+        }
+
+        .card-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .card-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: table-cell;
+            width: 140px;
+            vertical-align: middle;
+        }
+
+        .card-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        /* Steps */
+        .section-header {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .step {
+            margin-bottom: 20px;
+        }
+
+        .step-num {
+            color: #0044cc;
+            font-weight: 800;
+            margin-right: 8px;
+        }
+
+        .step-body {
+            font-size: 15px;
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        /* Credentials Section */
+        .credentials {
+            background-color: #f1f5f9;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .credentials-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+        }
+
+        .badge-grid {
+            text-align: center;
+        }
+
+        .badge-img {
+            display: inline-block;
+            margin: 8px;
+            border-radius: 12px;
+            background: #fff;
+            padding: 4px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Signature Table */
+        .signature-table {
+            margin-top: 40px;
+            padding-top: 32px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .sig-avatar {
+            border-radius: 12px;
+            margin-right: 20px;
+        }
+
+        .sig-details {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #334155;
+        }
+
+        .sig-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .sig-meta {
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .sig-link {
+            color: #0044cc;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 40px;
+            background-color: #f8fafc;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .paper-tip {
+            color: #10b981;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                border-radius: 0;
+            }
+
+            .main-content,
+            .header,
+            .footer {
+                padding: 32px 20px;
+            }
+
+            .card-label {
+                display: block;
+                width: 100%;
+                margin-bottom: 4px;
+            }
+
+            .card-value {
+                display: block;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <center>
+            <table role="presentation" class="container" cellpadding="0" cellspacing="0" border="0">
+                <!-- Top Brand GIF -->
+                <tr>
+                    <td style="padding: 32px; text-align: center; background-color: #ffffff;">
+                        <img src="../../images/dcintro.gif" alt="DC InfoTech" style="width: 140px; margin: 0 auto;">
+                    </td>
+                </tr>
+
+                <!-- Header -->
+                <tr>
+                    <td class="header">
+                        <h1 class="brand-name">Enrollment Confirmed</h1>
+                        <div class="header-subtitle">DC INFOTECH PVT LTD • EMPOWERING TALENT</div>
+                    </td>
+                </tr>
+
+                <!-- Main Content -->
+                <tr>
+                    <td class="main-content">
+                        <h2 class="greeting">Hi {{to_name}},</h2>
+                        <p class="message">
+                            Congratulations! Your enrollment in the <span class="highlight-text">{{course_name}}</span>
+                            program with
+                            <strong>DC InfoTech Pvt. Ltd.</strong> has been successfully confirmed. We are excited to
+                            have you onboard!
+                        </p>
+
+                        <!-- Payment Card -->
+                        <div class="card">
+                            <div class="card-row">
+                                <span class="card-label">Payment Status</span>
+                                <span class="card-value"><span class="badge-success">✓ RECEIVED</span></span>
+                            </div>
+                            <div style="height: 12px;"></div>
+                            <div class="card-row">
+                                <span class="card-label">Transaction ID</span>
+                                <span class="card-value"
+                                    style="font-family: monospace; color: #0044cc;">{{transaction_id}}</span>
+                            </div>
+                        </div>
+
+                        <!-- Next Steps -->
+                        <h3 class="section-header">What happens next?</h3>
+                        <p class="message" style="margin-bottom: 24px;">
+                            Our team is currently processing your student profile. You will receive a detailed
+                            <strong>Onboarding Email</strong> within the next <strong>15–20 hours</strong>, which will
+                            include:
+                        </p>
+
+                        <div class="step">
+                            <table cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td valign="top" style="padding-top: 4px;"><span class="step-num">01</span></td>
+                                    <td><span class="step-body"><strong>Program Blueprint:</strong> Complete timeline,
+                                            curriculum breakdown, and key milestones.</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="step">
+                            <table cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td valign="top" style="padding-top: 4px;"><span class="step-num">02</span></td>
+                                    <td><span class="step-body"><strong>E-Learning Access:</strong> Your secure
+                                            credentials for our learning management system and resources.</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="step">
+                            <table cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td valign="top" style="padding-top: 4px;"><span class="step-num">03</span></td>
+                                    <td><span class="step-body"><strong>Internship Portal:</strong> Workflow details,
+                                            project assignments, and industry tools access.</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="step">
+                            <table cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td valign="top" style="padding-top: 4px;"><span class="step-num">04</span></td>
+                                    <td><span class="step-body"><strong>Mentor Support:</strong> Communication channels
+                                            to connect with your dedicated technical mentors.</span></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <p class="message" style="margin-top: 32px;">
+                            If you have any questions in the meantime, simply reply to this email and our support team
+                            will assist you. We look forward to supporting you throughout your learning and internship
+                            journey.
+                        </p>
+
+                        <!-- Professional Signature -->
+                        <table class="signature-table" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td valign="top">
+                                    <img src="https://ci3.googleusercontent.com/mail-sig/AIorK4yEiQcJEad449PSV98mZXcxDdkfj2axaIRN3qUJAJw-N7iCzt4bzq9Y6QhmMSRHyiqfMGc9TTYK0ENZ"
+                                        width="96" height="96" class="sig-avatar">
+                                </td>
+                                <td valign="middle" class="sig-details">
+                                    <div class="sig-name">DC InfoTech Team</div>
+                                    <div class="sig-meta">Support & Operations Team</div>
+                                    <div class="sig-meta"><strong>DC INFOTECH PVT LTD</strong></div>
+                                    <div><a href="mailto:support@dcinfotech.org.in"
+                                            class="sig-link">support@dcinfotech.org.in</a></div>
+                                    <div style="margin-top: 12px;">
+                                        <img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXfZde4s2nUBOk8fW7rSn2PpltnCMftU4a4lLcwB-9RFqzDmh93X0A0NU3Ni-dd9RwpmP4JBoDZMEmSznGh0wdCS6Xq7WHnUvr9V30f9cj_bteKEWoW6F1Ic-FO0XGr7CoeL8R91kGtJojj-JQiN1vcgj91SZg?key=7kMX7FBPoCXbvevhBYP0-A"
+                                            width="238" height="32" style="display: block;">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <!-- Credentials Row -->
+                <tr>
+                    <td class="credentials">
+                        <div class="credentials-title">Our Certified Excellence</div>
+                        <div class="badge-grid">
+                            <img class="badge-img"
+                                src="https://ci3.googleusercontent.com/meips/ADKq_NaTbQ2qrwVv17QYtVWeYm5xy8pCWCi7_1YQzBeK13Dboutrooyv0HEnr4ay7EYjsBLNdioJEiKfcj-LzzM8-hG8wR2EuE78aCHhPEQlNoiuSU2TMyz8einm3ud5Mt9KFWf3-lhGU8hTI5uUFVG8mRyJMA=s0-d-e1-ft#https://images.credly.com/size/680x680/images/05e71e7e-92a1-4821-8530-4176b2e3c4b4/image.png"
+                                width="80" height="80" alt="PMLE">
+                            <img class="badge-img"
+                                src="https://lh7-rt.googleusercontent.com/slidesz/AGV_vUcjqP0vfgE6erjcKvWRxuC2c8R5PjTDdBZRtAjkSFTJLDn4Z1lZNne-td-TeLhmpxhWkXhEN0IYAZkTinOY9cJpRAe8WIoI0Bz_wfc1Vq0tGdc1fKwcAuWMgM8V-hl2zsJeKyS3AFwLSC14cuXEN3Vl22HQh-WRj9op69CyMSojm4GdLF3ULU-TRkiSjxSMwAiFWo4=s2048?key=rPGLTY042aXXg-H-SA87Pg"
+                                width="80" height="80" alt="Cloud">
+                            <img class="badge-img"
+                                src="https://ci3.googleusercontent.com/meips/ADKq_NaYzBQRfTqMwiSv1VTTEn_NtiAuf6gHzgZM2_I5reyM9-q9XmyY_O5Uf6c6o1Rez50RUqxnXAF6FkF-X2xfXDvDPPlImXCUKRfIfdvBDEDnkxuH8YczJaebU_rysTLHbI2nWqTRCpU68tE8ScUbbbA79Q=s0-d-e1-ft#https://images.credly.com/size/680x680/images/08096465-cbfc-4c3e-93e5-93c5aa61f23e/image.png"
+                                width="80" height="80" alt="ACE">
+                            <img class="badge-img"
+                                src="https://lh4.googleusercontent.com/XBQ37WlNoizz_rK6a1QhS34xs8slSvviRihkCXnIhfKOwV0Payu0OCIDBBWAeKQEMef-KVONOZNfyipDKZStFV_O0lGfzTfUhdQNJk3ixJO6-QviM4-FNbxbtoOc9ouAVGWyUEMDzg6RM38Z63a_l21wjyQUBnr1UAS3hbZaJdgsFY_3K8ugHUSIHPZKajk"
+                                width="80" height="80" alt="Google Cloud">
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                    <td class="footer">
+                        <div class="footer-text">
+                            <strong>Official Verification:</strong> All official communication from DC InfoTech Pvt Ltd
+                            is sent only via our verified domain <strong>@dcinfotech.org.in</strong>. Be cautious of
+                            unauthorized entities.
+                        </div>
+                        <div class="footer-text" style="opacity: 0.6; font-style: italic;">
+                            This message is intended for the named recipient and contains privileged information. If
+                            you've received this error, please notify us and delete immediately.
+                        </div>
+                        <div class="paper-tip">
+                            🌱 Think before you print. Save paper, save trees.
+                        </div>
+
+                        <!-- Bottom Brand GIF -->
+                        <div style="margin-top: 32px;">
+                            <img src="../../images/dcintro.gif" alt="DC InfoTech"
+                                style="width: 80px; margin: 0 auto; opacity: 0.6;">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </center>
+    </div>
+</body>
+
+</html>

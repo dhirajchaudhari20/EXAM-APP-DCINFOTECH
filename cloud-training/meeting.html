@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Class - Cloud Training Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Meeting Specific Styles */
+        body {
+            background-color: #202124;
+            color: white;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .meeting-container {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-grid {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .video-wrapper {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #3c4043;
+            max-width: 100%;
+            max-height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .participant-name {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Sidebar for AI & Chat */
+        .sidebar {
+            width: 360px;
+            background: #fff;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #ddd;
+            transition: transform 0.3s ease;
+            transform: translateX(100%);
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 10;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        body.dark-mode .sidebar {
+            background: #202124;
+            color: white;
+            border-left: 1px solid #3c4043;
+        }
+
+        .sidebar-header {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        body.dark-mode .sidebar-header {
+            border-bottom: 1px solid #3c4043;
+        }
+
+        .ai-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .ai-note {
+            background: #f1f3f4;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        body.dark-mode .ai-note {
+            background: #3c4043;
+            color: white;
+        }
+
+        .ai-note strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #1a73e8;
+        }
+
+        .controls-bar {
+            height: 80px;
+            background: #202124;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            border-top: 1px solid #3c4043;
+            z-index: 20;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: #3c4043;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .control-btn:hover {
+            background: #4a4e51;
+        }
+
+        .control-btn.active {
+            background: #8ab4f8;
+            color: #202124;
+        }
+
+        .control-btn.danger {
+            background: #ea4335;
+        }
+
+        .control-btn.danger:hover {
+            background: #d93025;
+        }
+
+        .recording-status {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(234, 67, 53, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            display: none;
+            /* Hidden by default */
+        }
+
+        .recording-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/notiflix/dist/notiflix-3.2.6.min.js"></script>
+</head>
+
+<body>
+
+    <div class="recording-status" id="recordingStatus">
+        <div class="recording-dot"></div> AI Recording
+    </div>
+
+    <div class="meeting-container">
+        <div class="video-grid" id="videoGrid">
+            <!-- Local Video -->
+            <div class="video-wrapper">
+                <video id="localVideo" autoplay muted playsinline></video>
+                <div class="participant-name">You</div>
+            </div>
+            <!-- Remote videos will be added here dynamically -->
+        </div>
+
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span><i class="fas fa-robot"></i> AI Assistant</span>
+                <button onclick="toggleSidebar()" class="icon-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="ai-content" id="aiContent">
+                <div class="ai-note">
+                    <strong>System</strong>
+                    Listening for action items...
+                </div>
+                <!-- AI Generated Notes will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="controls-bar">
+        <button class="control-btn" onclick="toggleAudio()" id="btnAudio" title="Mute/Unmute">
+            <i class="fas fa-microphone"></i>
+        </button>
+        <button class="control-btn" onclick="toggleVideo()" id="btnVideo" title="Video On/Off">
+            <i class="fas fa-video"></i>
+        </button>
+        <button class="control-btn" onclick="shareScreen()" id="btnScreen" title="Share Screen">
+            <i class="fas fa-desktop"></i>
+        </button>
+        <button class="control-btn" onclick="toggleSidebar()" id="btnAI" title="Show AI Assistant">
+            <i class="fas fa-robot"></i>
+        </button>
+        <button class="control-btn danger" onclick="endCall()" title="End Call">
+            <i class="fas fa-phone-slash"></i>
+        </button>
+    </div>
+
+    <script src="../src/firebase.js"></script>
+    <!-- Note: We are reusing the main firebase config, ensuring we have RTDB access there -->
+    <script src="js/meeting.js"></script>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('btnAI').classList.toggle('active');
+        }
+    </script>
+</body>
+
+</html>

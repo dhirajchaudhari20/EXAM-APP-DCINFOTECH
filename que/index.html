@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Voucher Request Email</title>
+</head>
+
+<body>
+
+    https://youtu.be/-_6IPizYgEE -- youtube link for voucher request mail format
+    https://cloud.google.com/resources/pck-page?hl=en for registration of voucher click here
+
+
+    send mail to --
+    <br>
+    cloud-partner-training@google.com
+    <br>
+    <title>Copy Email</title>
+    <style>
+        #email-link {
+            color: #1a73e8;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        #email-link:focus {
+            outline: none;
+        }
+
+        #copy-message {
+            margin-top: 10px;
+            font-size: 14px;
+            color: green;
+            visibility: hidden;
+        }
+    </style>
+    </head>
+
+    <body>
+
+        <p>Click the email below to copy it to your clipboard:</p>
+        <span id="email-link" onclick="copyEmail()">cloud-partner-training@google.com</span>
+
+        <p id="copy-message">Email copied to clipboard!</p>
+
+
+        <span id="email-link"
+            onclick="copyEmail()">https://chatgpt.com/share/68059451-0e08-8012-a520-c480b65e41e8</span>
+
+        <p id="copy-message">Email copied to clipboard!</p>
+        <P>https://chatgpt.com/share/68059451-0e08-8012-a520-c480b65e41e8 </p>
+        <script>
+            function copyEmail() {
+                const email = "cloud-partner-training@google.com";
+
+                // Create a temporary input field
+                const tempInput = document.createElement("input");
+                tempInput.value = email;
+                document.body.appendChild(tempInput);
+
+                // Select the content of the input field
+                tempInput.select();
+                tempInput.setSelectionRange(0, 99999); // For mobile devices
+
+                // Copy the text to clipboard
+                document.execCommand("copy");
+
+                // Remove the temporary input field
+                document.body.removeChild(tempInput);
+
+                // Show confirmation message
+                const message = document.getElementById("copy-message");
+                message.style.visibility = "visible";
+
+                // Hide the message after 2 seconds
+                setTimeout(() => {
+                    message.style.visibility = "hidden";
+                }, 2000);
+            }
+        </script>
+
+        Subject: Request for Cloud Digital Leader Certification Voucher
+
+
+
+
+
+        <p>Dear Google Cloud Partner Training Team,</p>
+
+        <p>I hope this message finds you well. I recently enrolled in the Partner Certification Kickstart program for
+            the Cloud Digital Leader certification and have completed the required learning modules on Google Cloud
+            Skills Boost for Partners. I would like to inquire about receiving the voucher for the certification exam.
+        </p>
+
+        <p>Here are the details:</p>
+        <ul>
+            <li><strong>Name:</strong> <span style="color: red;">[Change This]</span></li>
+            <li><strong>Email:</strong> <span style="color: red;">[Change This]</span></li>
+            <li><strong>Organization:</strong> DC Cloud Solutions</li>
+            <li><strong>Region:</strong> India</li>
+            <li><strong>Google Cloud Skills Boost Profile Link:</strong> <span style="color: red;">[Change This]</span>
+            </li>
+            <li><strong>Learning Path = Cloud Digital Leader Certification Path </strong>
+
+        </ul>
+
+        <p>I understand that it may take up to 5 days to receive the voucher after completing the learning requirements,
+            and I wanted to confirm that everything is in order. If there are any additional steps required from my end,
+            please let me know.</p>
+
+        <p>Thank you for your support, and I look forward to hearing from you soon.</p>
+
+        <p>Best regards,</p>
+        <p><strong><span style="color: red;">[Change This]</span></strong><br>
+            DC Cloud Solutions</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </body>
+
+</html>

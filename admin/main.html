@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DC Cloud Solutions — Admin (Protected)</title>
+  <style>
+    :root{ --accent:#0b5ed7; --bg:#f4f7fb; --card:#fff; --muted:#777; font-family: "Poppins",sans-serif; }
+    body{ margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center;
+      background:var(--bg); color:#222; }
+    header{ width:100%; background:var(--accent); color:#fff; padding:1.2rem 1rem; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+    header h1{ margin:0; font-size:1.6rem; }
+    .container{ width:90%; max-width:720px; margin-top:2.4rem; display:flex; flex-direction:column; gap:1.25rem; }
+    .card{ background:var(--card); border-radius:10px; padding:18px; box-shadow:0 6px 18px rgba(0,0,0,.06); }
+    .links a{ display:block; text-decoration:none; color:var(--accent); padding:12px 14px; border:1px solid var(--accent);
+      border-radius:8px; margin-bottom:10px; background:#fff; text-align:center; }
+    .links a:hover{ background:var(--accent); color:#fff; box-shadow:0 6px 12px rgba(11,94,215,.15); }
+    /* login modal */
+    .overlay{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.45); }
+    .login{ width:320px; background:var(--card); padding:18px; border-radius:10px; box-shadow:0 10px 40px rgba(0,0,0,.25); }
+    .login h2{ margin:0 0 8px 0; font-size:1.1rem; color:var(--accent); }
+    .field{ display:flex; flex-direction:column; gap:6px; margin-bottom:10px; }
+    input[type="text"], input[type="password"]{ padding:10px; border-radius:8px; border:1px solid #ddd; font-size:0.95rem; }
+    button{ background:var(--accent); color:#fff; border:none; padding:10px; border-radius:8px; width:100%; font-weight:600; cursor:pointer; }
+    .small{ font-size:0.85rem; color:var(--muted); text-align:center; margin-top:8px; }
+    footer{ margin-top:auto; padding:1rem; font-size:0.85rem; color:var(--muted); text-align:center; width:100%; }
+    @media(max-width:420px){ .login{ width:92%; } }
+  </style>
+</head>
+<body>
+  <header><h1>DC Cloud Solutions — Admin Dashboard</h1></header>
+
+  <div class="container">
+    <div class="card links" id="admin-links" aria-hidden="true" style="display:none;">
+      <a href="http://dcinfotech.org.in/admin/internship-comp-submission-data.html" target="_blank">Internship Completion Submissions Data</a>
+      <a href="https://dcinfotech.org.in/admin/exam-register-data" target="_blank">Exam Register Data</a>
+      <a href="program-feedback-view.html" target="_blank">Live Class Feedback Form Data</a>
+      <a href="contact-submissions.html" target="_blank">Contact Submissions Data</a>
+      <a href="program-register-submission.html" target="_blank">Launch Program Register Submission Data</a>
+      <a href="https://docs.google.com/spreadsheets/d/12NaM5NcYDV7TdZtS_s3FGGGkwguWN4dFBhXW6x5SxLU/edit?gid=0#gid=0" target="_blank">Google Sheet Data</a>
+            <a href="https://docs.google.com/spreadsheets/d/1ClbHckOuGxmIwYVbemlQP97nsP7OOhIPlPfLu6Ip-RU/edit?gid=0#gid=0" target="_blank">carrers page data </a>
+            <a href="google_groups_emails.html" target="_blank">google groups emails </a>
+
+    </div>
+  </div>
+
+  <footer>&copy; 2025 DC Cloud Solutions All rights reserved.</footer>
+
+  <!-- Login overlay -->
+  <div id="login-overlay" class="overlay" role="dialog" aria-modal="true">
+    <div class="login" role="document">
+      <h2>Admin Login</h2>
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" type="text" autocomplete="username" />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" />
+      </div>
+      <button id="login-btn">Unlock</button>
+    </div>
+  </div>
+
+  <script>
+  /**************************************************************************
+   * Client-side login using SHA-256 comparison (Web Crypto). 
+   * NOTE: This is only a deterrent — not true security.
+   *
+   * HOW IT WORKS:
+   *   - The server should store bcrypt hashes. Here we store SHA-256 hashes in JS
+   *     and compare a computed SHA-256 of entered username/password.
+   *
+   * Replace storedUsernameHash and storedPasswordHash with hashes you compute.
+   **************************************************************************/
+
+  // Example: hashes for username 'admin' and password 'P@ssw0rd123' (SHA-256 hex):
+  // username: 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+  // password: 231ecc7d178da5f22983bc579599396d6c139a457987ae1ee0026d88432d6a72
+  // Replace them with your own hashes (see bottom of file for how to compute).
+  const storedUsernameHash = "18ac3e7343f016890c510e93f935261169d9e3f565436429830faf0934f4f8e4";
+  const storedPasswordHash = "18ac3e7343f016890c510e93f935261169d9e3f565436429830faf0934f4f8e4";
+
+  // helper: string -> ArrayBuffer
+  function str2ab (str) {
+    const enc = new TextEncoder();
+    return enc.encode(str);
+  }
+  // helper: ArrayBuffer -> hex
+  function ab2hex(buffer) {
+    const bytes = new Uint8Array(buffer);
+    return Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+  // compute sha-256 hex via Web Crypto
+  async function sha256hex (text) {
+    const buf = str2ab(text);
+    const hash = await crypto.subtle.digest('SHA-256', buf);
+    return ab2hex(hash);
+  }
+
+  // login flow
+  const overlay = document.getElementById('login-overlay');
+  const loginBtn = document.getElementById('login-btn');
+  const adminLinks = document.getElementById('admin-links');
+
+  async function tryLogin() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    if (!username || !password) { alert('Enter username and password'); return; }
+
+    // compute hashes and compare
+    const uhash = await sha256hex(username);
+    const phash = await sha256hex(password);
+
+    if (uhash === storedUsernameHash && phash === storedPasswordHash) {
+      sessionStorage.setItem('dc_admin_logged', '1');
+      showAdmin();
+    } else {
+      alert('Invalid credentials');
+    }
+  }
+
+  function showAdmin() {
+    overlay.style.display = 'none';
+    adminLinks.style.display = 'block';
+    adminLinks.setAttribute('aria-hidden','false');
+  }
+
+  function hideAdmin() {
+    sessionStorage.removeItem('dc_admin_logged');
+    overlay.style.display = 'flex';
+    adminLinks.style.display = 'none';
+    adminLinks.setAttribute('aria-hidden','true');
+  }
+
+  loginBtn.addEventListener('click', tryLogin);
+  // allow Enter
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && overlay.style.display !== 'none') tryLogin();
+  });
+
+  // restore session if present
+  if (sessionStorage.getItem('dc_admin_logged') === '1') {
+    showAdmin();
+  }
+
+  /**************************************************************************
+   * Basic client-side deterrents:
+   *  - disable right-click context menu
+   *  - intercept dev-tools / view-source shortcuts
+   *  - attempt to detect DevTools open (best-effort) and force logout
+   *
+   * THESE ARE DETERRENTS ONLY — DO NOT RELY ON THIS FOR SECURITY.
+   **************************************************************************/
+
+  // Disable right-click
+  document.addEventListener('contextmenu', function(e){
+    e.preventDefault();
+    return false;
+  });
+
+  // Block common inspector/view-source shortcuts
+  document.addEventListener('keydown', function(e){
+    // F12
+    if (e.key === 'F12') { e.preventDefault(); return false; }
+    // Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+Shift+C
+    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+      e.preventDefault(); return false;
+    }
+    // Ctrl+U (view-source), Ctrl+Shift+U
+    if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) { e.preventDefault(); return false; }
+    // Ctrl+S / Ctrl+P (don't let user quickly save)
+    if (e.ctrlKey && (e.key === 's' || e.key === 'S' || e.key === 'p' || e.key === 'P')) { e.preventDefault(); return false; }
+  }, true);
+
+  // DevTools detection - best-effort using small heuristics
+  (function devtoolsDetect(){
+    let lastState = false;
+    function isDevToolsOpen() {
+      // heuristic 1: compare window sizes (works in many browsers)
+      const threshold = 160;
+      const widthDiff = window.outerWidth - window.innerWidth;
+      const heightDiff = window.outerHeight - window.innerHeight;
+      if (widthDiff > threshold || heightDiff > threshold) return true;
+      // heuristic 2: try debugger timing trick
+      let opened = false;
+      const start = performance.now();
+      // eslint-disable-next-line no-debugger
+      debugger;
+      const duration = performance.now() - start;
+      if (duration > 100) opened = true;
+      return opened;
+    }
+
+    setInterval(() => {
+      try {
+        const open = isDevToolsOpen();
+        if (open && !lastState) {
+          // If devtools opens: clear session and show login again
+          alert('Developer tools detected — logging out for security.');
+          hideAdmin();
+        }
+        lastState = open;
+      } catch(e){
+        // ignore
+      }
+    }, 1200);
+  })();
+
+  // Hardening: never allow the DOM to be right-clicked on the overlay login box (UX tweak)
+  document.getElementById('login-overlay').addEventListener('contextmenu', e => e.preventDefault());
+  </script>
+
+  <!-- HOW TO GENERATE NEW SHA-256 HASHES (use on a safe machine):
+       - In browser console: 
+         const enc=new TextEncoder(); crypto.subtle.digest('SHA-256', enc.encode('yourText'))
+           .then(buf=>Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''));
+       - Or on server/locally use: `openssl dgst -sha256` or many programming libs.
+       IMPORTANT: for production use bcrypt on the server, not SHA-256 in client JS.
+  -->
+</body>
+</html>

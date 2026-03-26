@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule Exam - Exam Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Google+Sans:wght@700&display=swap"
+    rel="stylesheet">
+  <!-- Add SweetAlert2 for modern, non-blocking alerts -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="page-section">
+      <h2>Schedule a New Exam</h2>
+      <form id="scheduleExamForm">
+        <div class="form-field">
+          <label>Select Your Exam *</label>
+          <div class="exam-selection-grid">
+            <div class="material-radio">
+              <input class="material-radio__input" type="radio" id="exam_ace" name="exam_category"
+                value="Associate Cloud Engineer" required>
+              <label class="material-radio__label-text" for="exam_ace">Associate Cloud Engineer</label>
+            </div>
+            <div class="material-radio">
+              <input class="material-radio__input" type="radio" id="exam_pca" name="exam_category"
+                value="Professional Cloud Architect" required>
+              <label class="material-radio__label-text" for="exam_pca">Professional Cloud Architect</label>
+            </div>
+            <div class="material-radio">
+              <input class="material-radio__input" type="radio" id="exam_pcd" name="exam_category"
+                value="Professional Cloud Developer" required>
+              <label class="material-radio__label-text" for="exam_pcd">Professional Cloud Developer</label>
+            </div>
+            <div class="material-radio">
+              <input class="material-radio__input" type="radio" id="exam_psd" name="exam_category"
+                value="Professional Cloud Security Engineer" required>
+              <label class="material-radio__label-text" for="exam_psd">Professional Cloud Security Engineer</label>
+            </div>
+            <div class="material-radio">
+              <input class="material-radio__input" type="radio" id="exam_data" name="exam_category"
+                value="Professional Data Engineer" required>
+              <label class="material-radio__label-text" for="exam_data">Professional Data Engineer</label>
+            </div>
+            <div class="material-radio">
+              <input class="material-radio__input" type="radio" id="exam_ml" name="exam_category"
+                value="Professional Machine Learning Engineer" required>
+              <label class="material-radio__label-text" for="exam_ml">Professional Machine Learning Engineer</label>
+            </div>
+            <div class="material-radio">
+              <input class="material-radio__input" type="radio" id="exam_net" name="exam_category"
+                value="Professional Cloud Network Engineer" required>
+              <label class="material-radio__label-text" for="exam_net">Professional Cloud Network Engineer</label>
+            </div>
+            <div class="material-radio">
+              <input class="material-radio__input" type="radio" id="exam_devops" name="exam_category"
+                value="Professional Cloud DevOps Engineer" required>
+              <label class="material-radio__label-text" for="exam_devops">Professional Cloud DevOps Engineer</label>
+            </div>
+            <div class="material-radio">
+              <input class="material-radio__input" type="radio" id="exam_db" name="exam_category"
+                value="Professional Cloud Database Engineer" required>
+              <label class="material-radio__label-text" for="exam_db">Professional Cloud Database Engineer</label>
+            </div>
+            <div class="material-radio">
+              <input class="material-radio__input" type="radio" id="exam_workspace" name="exam_category"
+                value="Google Workspace Administrator" required>
+              <label class="material-radio__label-text" for="exam_workspace">Google Workspace Administrator</label>
+            </div>
+            <div class="material-radio">
+              <input class="material-radio__input" type="radio" id="exam_aws_cp" name="exam_category"
+                value="AWS Certified Cloud Practitioner" required>
+              <label class="material-radio__label-text" for="exam_aws_cp">AWS Certified Cloud Practitioner</label>
+            </div>
+            <div class="material-radio">
+              <input class="material-radio__input" type="radio" id="exam_aws_saa" name="exam_category"
+                value="AWS Certified Solutions Architect - Associate" required>
+              <label class="material-radio__label-text" for="exam_aws_saa">AWS Certified Solutions Architect -
+                Associate</label>
+            </div>
+            <div class="material-radio">
+              <input class="material-radio__input" type="radio" id="exam_aws_sap" name="exam_category"
+                value="AWS Certified Solutions Architect - Professional" required>
+              <label class="material-radio__label-text" for="exam_aws_sap">AWS Certified Solutions Architect -
+                Professional</label>
+            </div>
+            <div class="material-radio">
+              <input class="material-radio__input" type="radio" id="exam_other" name="exam_category" value="Other"
+                required>
+              <label class="material-radio__label-text" for="exam_other">Other</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="examDateTime">Choose Date and Time *</label>
+          <input type="datetime-local" id="examDateTime" name="examDateTime" required>
+        </div>
+        <div class="form-field">
+          <label for="gmailAddress">Gmail Address for Invite *</label>
+          <input type="email" id="gmailAddress" name="gmailAddress" placeholder="e.g., your.name@gmail.com" required>
+          <small>Please use your personal email to schedule the exam and for the confirmation mail. <strong>Do not use
+              your DC Cloud Solutions email.</strong></small>
+        </div>
+        <div class="form-field">
+          <label for="voucherCode">Voucher Code *</label>
+          <div class="voucher-input-group">
+            <input type="text" id="voucherCode" name="voucherCode" placeholder="Enter voucher and click Apply" required>
+            <button type="button" id="applyVoucherBtn" class="btn apply-btn">Apply</button>
+          </div>
+          <div id="voucherStatus" class="voucher-status"></div>
+        </div>
+        <button type="submit" id="scheduleBtn" class="btn" disabled>Schedule Exam</button>
+      </form>
+    </div>
+
+    <div class="page-section">
+      <h2>Your Upcoming Exams</h2>
+      <div id="upcoming-exams-list">
+        <!-- Scheduled exams will be injected here by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // --- EmailJS Configuration ---
+      // IMPORTANT: Replace with your actual EmailJS credentials
+      const EMAILJS_SERVICE_ID = 'service_yploami';
+      const EMAILJS_TEMPLATE_ID = 'template_3yjwvce';
+      const EMAILJS_PUBLIC_KEY = 'PuXMOkifk3kuFLkOI'; // You can find this in your EmailJS account settings.
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+
+      const form = document.getElementById('scheduleExamForm');
+      const upcomingExamsList = document.getElementById('upcoming-exams-list');
+      const applyVoucherBtn = document.getElementById('applyVoucherBtn');
+      const voucherStatus = document.getElementById('voucherStatus');
+      const scheduleBtn = document.getElementById('scheduleBtn');
+      let isVoucherApplied = false;
+      let userScheduledExams = []; // Variable to hold the fetched exams
+
+      // Use an array for multiple valid voucher codes
+      const VALID_VOUCHER_CODES = [
+
+
+      'GCP-2095-FREE'
+,
+
+'DC-INTERN-2028',
+        'DC-INTERN-2026'];
+      let currentUser = null;
+
+      // --- User and Data Handling ---
+      function getCurrentUser() {
+        const userString = localStorage.getItem('cm_user');
+        if (userString) {
+          try {
+            const user = JSON.parse(userString);
+            // const gmailField = document.getElementById('gmailAddress'); // This ID is correct
+            // if (gmailField && user.email) {
+            //   gmailField.value = user.email;
+            // }
+            return user.email || 'guest';
+          } catch (e) { return 'guest'; }
+        }
+        return 'guest';
+      }
+
+      function getScheduledExams() {
+        // This function is no longer needed as we will fetch directly.
+        // Kept for reference, but we will use an async function instead.
+        return [];
+      }
+
+      function saveScheduledExams(exams) {
+        // We no longer need to save to localStorage as SheetDB is the source of truth.
+        // This function can be removed or left empty.
+        const allExams = JSON.parse(localStorage.getItem('scheduledExams') || '{}');
+        allExams[currentUser] = exams;
+        localStorage.setItem('scheduledExams', JSON.stringify(allExams));
+      }
+
+      // --- UI Rendering ---
+      async function renderExams(forceRefresh = false) {
+        if (!currentUser) {
+          upcomingExamsList.innerHTML = '<p class="no-exams-message">Please log in to see your scheduled exams.</p>';
+          return;
+        }
+
+        upcomingExamsList.innerHTML = '<p class="no-exams-message">Loading your exams...</p>';
+        let exams = [];
+        try {
+          const SHEETDB_API_URL = 'https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_schedules';
+          const cacheKey = `cached_exams_${currentUser}`;
+
+          if (forceRefresh) {
+            localStorage.removeItem(cacheKey);
+          }
+
+          const cachedData = localStorage.getItem(cacheKey);
+
+          if (cachedData) {
+            console.log('Loading exams from cache');
+            exams = JSON.parse(cachedData);
+          } else {
+            console.log('Fetching exams from Firebase API');
+            const response = await fetch(`${SHEETDB_API_URL}.json`);
+            if (!response.ok) throw new Error('Failed to fetch exams');
+            const allData = await response.json();
+
+            // Firebase returns an object of objects, convert to array
+            const examsArray = allData ? Object.values(allData) : [];
+
+            // Client-side filtering for the current user
+            exams = examsArray.filter(exam => exam.userEmail === currentUser);
+
+            // Update cache for other potential uses, but we always fetch fresh here
+            localStorage.setItem(cacheKey, JSON.stringify(exams));
+          }
+          userScheduledExams = exams; // Store the fetched exams
+        } catch (error) {
+          console.error("Error fetching exams from SheetDB:", error);
+          upcomingExamsList.innerHTML = '<p class="no-exams-message" style="color: red;">Could not load your exams. Please try again later.</p>';
+          return;
+        }
+
+        upcomingExamsList.innerHTML = '';
+
+        if (exams.length === 0) {
+          upcomingExamsList.innerHTML = '<p class="no-exams-message">You have no exams scheduled.</p>';
+          return;
+        }
+
+        exams.sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime());
+
+        exams.forEach(exam => {
+          const card = document.createElement('div');
+          card.className = 'exam-card';
+          card.dataset.examId = exam.id;
+
+          const examDate = new Date(exam.dateTime);
+          const formattedDate = examDate.toLocaleString('en-US', {
+            dateStyle: 'full',
+            timeStyle: 'short'
+          });
+
+          const now = new Date();
+          let rescheduleButtonHtml = '';
+
+          // Only show Reschedule button if the exam hasn't started yet
+          if (now < examDate) {
+            rescheduleButtonHtml = `<button class="btn reschedule-btn" data-exam-id="${exam.id}" data-exam-name="${exam.name}" data-current-date="${exam.dateTime}">Reschedule</button>`;
+          }
+
+          card.innerHTML = `
+            <div class="exam-card-details">
+              <h3>${exam.name}</h3>
+              <p>${formattedDate}</p>
+            </div>
+            <div class="exam-card-actions">
+              <a href="#" class="btn start-exam-btn disabled" role="button" aria-disabled="true">Start Exam</a>
+              ${rescheduleButtonHtml}
+              <button class="btn remind-btn" data-exam-name="${exam.name}" data-exam-time="${exam.dateTime}">Remind Me</button>
+              <button class="btn cancel-exam-btn" data-exam-id="${exam.id}">Cancel</button>
+            </div>
+          `;
+          upcomingExamsList.appendChild(card);
+        });
+        updateExamButtons();
+      }
+
+      function updateExamButtons() {
+        const now = new Date();
+        document.querySelectorAll('.exam-card').forEach(card => {
+          const examId = String(card.dataset.examId); // Ensure ID is a string for comparison
+          const exam = userScheduledExams.find(e => String(e.id) === examId);
+          if (!exam) return;
+
+          const examTime = new Date(exam.dateTime);
+          const startTime = new Date(examTime.getTime() - 15 * 60 * 1000); // 15 minutes before
+          const endTime = new Date(examTime.getTime() + 15 * 60 * 1000); // 15 minutes after // This duration seems short (15 mins)? Assuming 15 BEFORE + duration? Ah, the code says +15 mins AFTER exam start? Maybe it's a short exam or window? I should leave the logic as is, just update the button.
+          // Wait, endTime logic: `examTime.getTime() + 15 * 60 * 1000`. This means the window is 30 mins total around the start time?
+          // The user mentioned "if the exam period is past".
+          // I'll stick to the existing time window logic for now to determine valid state, but add the button handling.
+
+          const startButton = card.querySelector('.start-exam-btn');
+          const cancelButton = card.querySelector('.cancel-exam-btn');
+
+          // Check for saved state
+          const storageKey = `exam_state_${currentUser}_${exam.name.replace(/\s+/g, '_')}`;
+          const savedState = localStorage.getItem(storageKey);
+
+          if (now >= startTime && now <= endTime) {
+            startButton.classList.remove('disabled');
+            startButton.setAttribute('aria-disabled', 'false');
+
+            if (savedState) {
+              startButton.href = `exam-session.html?exam=${encodeURIComponent(exam.name)}&id=${exam.id}&resume=true`;
+              startButton.textContent = 'Exam Ongoing';
+              startButton.style.backgroundColor = '#ea4335'; // Red color for resume
+            } else {
+              startButton.href = `exam-session.html?exam=${encodeURIComponent(exam.name)}&id=${exam.id}`;
+              startButton.textContent = 'Start Exam';
+              startButton.style.backgroundColor = ''; // Reset color
+            }
+            if (cancelButton) cancelButton.style.display = 'none'; // Hide cancel button when exam can be started/ongoing
+
+          } else if (now > endTime) {
+            startButton.classList.add('disabled');
+            startButton.setAttribute('aria-disabled', 'true');
+            startButton.removeAttribute('href');
+            startButton.textContent = 'Exam Finished';
+            startButton.style.backgroundColor = ''; // Reset color
+            if (cancelButton) cancelButton.style.display = 'none'; // Hide cancel button when exam finished
+          } else {
+            startButton.classList.add('disabled');
+            startButton.setAttribute('aria-disabled', 'true');
+            startButton.removeAttribute('href');
+            const diff = startTime - now;
+            const hours = Math.floor(diff / 3600000);
+            const minutes = Math.floor((diff % 3600000) / 60000);
+            startButton.textContent = `Starts in ${hours}h ${minutes}m`;
+            startButton.style.backgroundColor = ''; // Reset color
+            if (cancelButton) cancelButton.style.display = ''; // Show cancel button for future exams
+          }
+        });
+      }
+
+      // --- Event Handlers ---
+      applyVoucherBtn.addEventListener('click', async () => {
+        const voucherInput = document.getElementById('voucherCode');
+        const code = voucherInput.value.trim().toUpperCase();
+
+        if (!code) {
+          voucherStatus.textContent = 'Please enter a code.';
+          voucherStatus.className = 'voucher-status error';
+          return;
+        }
+
+        // --- Loading State ---
+        const originalText = applyVoucherBtn.textContent;
+        applyVoucherBtn.disabled = true;
+        voucherInput.disabled = true;
+        applyVoucherBtn.textContent = 'Checking...';
+        voucherStatus.textContent = ''; // Clear previous status
+
+        try {
+          // 1. Basic check against valid list
+          if (!VALID_VOUCHER_CODES.includes(code)) {
+            throw new Error('Invalid Voucher Code.');
+          }
+
+          // 2. Server-side check for uniqueness (Goal: used by one ID at a time)
+          const SHEETDB_API_URL = 'https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_schedules';
+          const response = await fetch(`${SHEETDB_API_URL}.json`);
+          if (!response.ok) throw new Error('Error connecting to validation server.');
+          
+          const allSchedules = await response.json();
+          const schedulesArray = allSchedules ? Object.values(allSchedules) : [];
+          
+          // Look for any existing schedule (not cancelled) with this voucher code
+          const duplicateUsage = schedulesArray.find(s => 
+            s.voucherCode && 
+            s.voucherCode.trim().toUpperCase() === code && 
+            s.status !== 'Cancelled'
+          );
+
+          if (duplicateUsage) {
+            const isMe = duplicateUsage.userEmail === currentUser;
+            const errorMsg = isMe ? 
+              'You have already used this voucher for an upcoming exam.' : 
+              'This voucher has already been used by another candidate.';
+            throw new Error(errorMsg);
+          }
+
+          // Success
+          isVoucherApplied = true;
+          voucherStatus.textContent = 'Voucher Applied!';
+          voucherStatus.className = 'voucher-status success';
+          applyVoucherBtn.textContent = 'Applied';
+          scheduleBtn.disabled = false;
+
+        } catch (error) {
+          isVoucherApplied = false;
+          voucherStatus.textContent = error.message;
+          voucherStatus.className = 'voucher-status error';
+          applyVoucherBtn.disabled = false;
+          voucherInput.disabled = false;
+          applyVoucherBtn.textContent = originalText;
+          scheduleBtn.disabled = true;
+        }
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const selectedExamInput = form.querySelector('input[name="exam_category"]:checked');
+        const dateTimeInput = document.getElementById('examDateTime');
+        const gmailInput = document.getElementById('gmailAddress');
+        const voucherInput = document.getElementById('voucherCode');
+
+        if (!selectedExamInput || !dateTimeInput.value || !gmailInput.value) {
+          alert('Please fill out all required fields.');
+          return;
+        }
+
+        if (!isVoucherApplied) {
+          alert('Please apply a valid voucher code first.');
+          return;
+        }
+
+        // --- Slot Booking Check ---
+        const existingExams = getScheduledExams();
+        const isSlotTaken = existingExams.some(exam => new Date(exam.dateTime).getTime() === new Date(dateTimeInput.value).getTime());
+        if (isSlotTaken) {
+          Swal.fire('Slot Unavailable', 'You have already scheduled another exam for this exact date and time. Please choose a different slot.', 'warning');
+          return;
+        }
+
+        const examName = selectedExamInput.value;
+        const examDate = new Date(dateTimeInput.value);
+        const voucherCode = voucherInput.value.trim();
+
+        // Use SweetAlert2 for a better, non-blocking confirmation dialog
+        Swal.fire({
+          title: 'Confirm Exam Schedule',
+          html: `
+            <p>Are you sure you want to schedule the following exam?</p>
+            <p><strong>Exam:</strong> ${examName}</p>
+            <p><strong>Date:</strong> ${examDate.toLocaleString()}</p>
+            ${voucherCode ? `<p><strong>Voucher:</strong> ${voucherCode}</p>` : ''}
+          `,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#1a73e8',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, schedule it!'
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            scheduleBtn.disabled = true;
+            scheduleBtn.textContent = 'Scheduling...';
+
+            // --- The rest of the submission logic runs only if confirmed ---
+
+            const newExam = {
+              id: Date.now(),
+              userEmail: currentUser, // Add the logged-in user's email
+              name: examName,
+              dateTime: dateTimeInput.value,
+              gmail: gmailInput.value,
+              voucherCode: voucherCode,
+              status: 'Scheduled', // Add default status
+              scheduledAt: new Date().toISOString() // Add a timestamp
+            };
+
+            // --- Step 1: Save to LocalStorage (for immediate UI update) ---
+            // --- Step 2: Send data to SheetDB ---
+            try {
+              const SHEETDB_API_URL = 'https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_schedules';
+
+              await fetch(`${SHEETDB_API_URL}/${newExam.id}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newExam)
+              });
+
+              // Update Cache
+              const cacheKey = `cached_exams_${currentUser}`;
+              let cachedExams = JSON.parse(localStorage.getItem(cacheKey) || '[]');
+              cachedExams.push(newExam);
+              localStorage.setItem(cacheKey, JSON.stringify(cachedExams));
+
+              // Store scheduled email locally for quick retrieval in exam session
+              localStorage.setItem(`scheduled_email_${newExam.id}`, newExam.gmail);
+
+              // Mark Voucher as Used
+              if (voucherCode) {
+                const usedVouchers = JSON.parse(localStorage.getItem('usedVouchers') || '[]');
+                if (!usedVouchers.includes(voucherCode)) {
+                  usedVouchers.push(voucherCode);
+                  localStorage.setItem('usedVouchers', JSON.stringify(usedVouchers));
+                }
+              }
+
+              // --- Step 3: Send Confirmation Email via EmailJS ---
+              // This part remains the same, it will run after saving to SheetDB
+              emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                user_name: JSON.parse(localStorage.getItem('cm_user')).name,
+                user_email: newExam.gmail,
+                exam_name: newExam.name,
+                exam_date: examDate.toLocaleString(),
+                reply_to: 'support@dcinfotech.org.in'
+              }).then(function (response) {
+                console.log('SUCCESS! Email sent.', response.status, response.text);
+              }, function (error) {
+                console.log('FAILED to send email...', error);
+              });
+
+              // Show a success message with SweetAlert2
+              Swal.fire(
+                'Scheduled!',
+                `Your exam "${newExam.name}" has been successfully scheduled.`,
+                'success'
+              );
+              form.reset();
+              voucherStatus.textContent = '';
+              voucherInput.disabled = false;
+              applyVoucherBtn.disabled = false;
+              scheduleBtn.disabled = true; // Re-disable after successful schedule
+              gmailInput.value = ''; // Ensure email is empty after reset
+              renderExams();
+              // Trigger a custom event that other parts of the app could listen to
+              window.dispatchEvent(new Event('storage'));
+            } catch (error) {
+              console.error('Error submitting to SheetDB:', error);
+              Swal.fire('Error!', 'Could not save the schedule. Please try again later.', 'error');
+            } finally {
+              isVoucherApplied = false; // Reset voucher status
+              scheduleBtn.textContent = 'Schedule Exam';
+            }
+          }
+        });
+      });
+
+      upcomingExamsList.addEventListener('click', async (e) => {
+        // --- Reschedule Logic ---
+        if (e.target.classList.contains('reschedule-btn')) {
+          const examId = e.target.dataset.examId;
+          const examName = e.target.dataset.examName;
+          const currentDate = e.target.dataset.currentDate;
+
+          const { value: newDate } = await Swal.fire({
+            title: `Reschedule ${examName}`,
+            html: `
+                    <p>Current Date: ${new Date(currentDate).toLocaleString()}</p>
+                    <label for="swal-input1">Select New Date & Time:</label>
+                    <input id="swal-input1" class="swal2-input" type="datetime-local" min="${new Date().toISOString().slice(0, 16)}">
+                `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Reschedule',
+            preConfirm: () => {
+              const date = document.getElementById('swal-input1').value;
+              if (!date) {
+                Swal.showValidationMessage('Please select a date and time');
+              }
+              return date;
+            }
+          });
+
+          if (newDate) {
+            const SHEETDB_API_URL = 'https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_schedules';
+
+            // Check for conflicts locally first
+            const isSlotTaken = userScheduledExams.some(exam =>
+              String(exam.id) !== String(examId) &&
+              new Date(exam.dateTime).getTime() === new Date(newDate).getTime()
+            );
+
+            if (isSlotTaken) {
+              Swal.fire('Slot Unavailable', 'You have another exam at this time.', 'warning');
+              return;
+            }
+
+            Notiflix.Loading.standard('Rescheduling...');
+
+            try {
+              // Update Firebase
+              const response = await fetch(`${SHEETDB_API_URL}/${examId}.json`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ dateTime: newDate })
+              });
+
+              if (!response.ok) throw new Error('Failed to update schedule.');
+
+              // Update Local Cache
+              const cacheKey = `cached_exams_${currentUser}`;
+              let cachedExams = JSON.parse(localStorage.getItem(cacheKey) || '[]');
+              const examIndex = cachedExams.findIndex(e => String(e.id) === String(examId));
+              if (examIndex !== -1) {
+                cachedExams[examIndex].dateTime = newDate;
+                localStorage.setItem(cacheKey, JSON.stringify(cachedExams));
+              }
+
+              // Refresh UI
+              renderExams();
+              window.dispatchEvent(new Event('storage'));
+              Notiflix.Notify.success('Exam rescheduled successfully.');
+              Swal.fire('Rescheduled!', `Your exam has been moved to ${new Date(newDate).toLocaleString()}.`, 'success');
+
+            } catch (error) {
+              console.error("Reschedule Error:", error);
+              Notiflix.Report.failure('Error', 'Could not reschedule. Please try again.', 'OK');
+            } finally {
+              Notiflix.Loading.remove();
+            }
+          }
+        }
+
+        if (e.target.classList.contains('cancel-exam-btn')) {
+          const examId = e.target.dataset.examId; // Keep ID as a string
+          const examToDelete = userScheduledExams.find(exam => String(exam.id) === examId);
+
+          if (!examToDelete) return;
+
+          // Use SweetAlert2 for a better confirmation experience
+          const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: `This will permanently cancel your "${examToDelete.name}" exam. This action cannot be undone.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, cancel it!'
+          });
+
+          if (result.isConfirmed) {
+            const SHEETDB_API_URL = 'https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_schedules';
+
+            Notiflix.Loading.standard('Cancelling exam...');
+
+            try {
+              // Send DELETE request to Firebase
+              const response = await fetch(`${SHEETDB_API_URL}/${examToDelete.id}.json`, {
+                method: 'DELETE'
+              });
+
+              if (!response.ok) throw new Error('Failed to delete from server.');
+
+              // Update Cache
+              const cacheKey = `cached_exams_${currentUser}`;
+              let cachedExams = JSON.parse(localStorage.getItem(cacheKey) || '[]');
+              cachedExams = cachedExams.filter(e => String(e.id) !== String(examToDelete.id));
+              localStorage.setItem(cacheKey, JSON.stringify(cachedExams));
+
+              if (!response.ok) throw new Error('Failed to delete from server.');
+
+              renderExams();
+              window.dispatchEvent(new Event('storage')); // Notify other tabs/pages
+              Notiflix.Notify.success('Exam cancelled successfully.');
+            } catch (error) {
+              console.error('Error cancelling exam:', error);
+              Notiflix.Report.failure('Cancellation Failed', 'Could not cancel the exam. Please try again or contact support.', 'OK');
+            } finally {
+              Notiflix.Loading.remove();
+            }
+          }
+        }
+
+        if (e.target.classList.contains('remind-btn')) {
+          const examName = e.target.dataset.examName;
+          const examTime = e.target.dataset.examTime;
+
+          const startDate = new Date(examTime);
+          const endDate = new Date(startDate.getTime() + (2 * 60 * 60 * 1000)); // Assuming 2-hour duration
+
+          const formatDate = (date) => date.toISOString().replace(/-|:|\.\d+/g, '');
+
+          const calendarUrl = [
+            'https://www.google.com/calendar/render?action=TEMPLATE',
+            `&text=${encodeURIComponent('Google Cloud Exam: ' + examName)}`,
+            `&dates=${formatDate(startDate)}/${formatDate(endDate)}`,
+            `&details=${encodeURIComponent('Reminder for your upcoming Google Cloud certification exam. Good luck!')}`,
+            `&location=${encodeURIComponent('Online')}`
+          ].join('');
+
+          window.open(calendarUrl, '_blank');
+        }
+      });
+
+      // --- Initialization ---
+      function initialize() {
+        currentUser = getCurrentUser();
+        renderExams();
+        setInterval(updateExamButtons, 60000); // Update button states every minute
+      }
+
+      initialize();
+    }());
+  </script>
+  <script src="js/security.js"></script>
+</body>
+
+</html>

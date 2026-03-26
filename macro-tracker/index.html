@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MacroAI - Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --bg-dark: #0f0f13;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 3rem 2rem;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: -1rem;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .btn-google {
+            background: white;
+            color: #333;
+            width: 100%;
+            padding: 12px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-google:hover {
+            transform: translateY(-2px);
+        }
+
+        #authStatus {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            min-height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-card">
+        <div class="logo">Macro<span>AI</span></div>
+        <p class="subtitle">Personal Nutrition Tracker</p>
+
+        <form id="loginForm" style="width: 100%; display: flex; flex-direction: column; gap: 15px;">
+            <input type="text" id="userNameInput" placeholder="Enter your name" required
+                style="padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; outline: none; font-size: 1rem;">
+            <input type="email" id="emailInput" placeholder="Enter your email" required
+                style="padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; outline: none; font-size: 1rem;">
+            <button type="submit" id="loginBtn" class="btn-google"
+                style="background: var(--primary); color: white; margin-top: 10px;">
+                <i class="fas fa-sign-in-alt"></i> Continue
+            </button>
+        </form>
+
+        <div
+            style="width: 100%; display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.8rem; margin: 0.5rem 0;">
+            <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
+            <span>OR</span>
+            <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
+        </div>
+
+        <button id="googleLoginBtn" class="btn-google">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="18">
+            Login with Google
+        </button>
+
+        <a href="trainer-login.html"
+            style="font-size: 0.85rem; color: var(--text-muted); text-decoration: none; margin-top: 10px;">Are you a
+            Trainer? Login here.</a>
+
+        <p id="authStatus"></p>
+    </div>
+
+    <!-- Goal 20: Creator Footer & Version -->
+    <div
+        style="position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; color: var(--text-muted); font-size: 0.7rem; opacity: 0.8;">
+        <p style="margin: 0;">Designed & Developed by <strong>Dhiraj Chaudhari</strong></p>
+        <p id="app-version-display" style="margin: 0;">v1.0.0</p>
+    </div>
+
+    <!-- Firebase & Auth Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCohKlqNu0I1sXcLW4D_fv-OEw9x0S50q8",
+            authDomain: "dc-infotechpvt-1-d1a4b.firebaseapp.com",
+            databaseURL: "https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com",
+            projectId: "dc-infotechpvt-1-d1a4b",
+            storageBucket: "dc-infotechpvt-1-d1a4b.firebasestorage.app",
+            messagingSenderId: "330752838328",
+            appId: "1:330752838328:web:1fe0ca04953934d4638703"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Goal 20: Display version
+            const versionEl = document.getElementById('app-version-display');
+            if (versionEl) versionEl.textContent = 'v1.0.0';
+
+            const savedUser = localStorage.getItem('macro_user');
+            if (savedUser) {
+                window.location.href = "dashboard.html";
+            }
+
+            // Local login
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('userNameInput').value.trim();
+                const email = document.getElementById('emailInput').value.trim();
+
+                if (name && email) {
+                    const user = {
+                        uid: 'local_' + Date.now(),
+                        displayName: name,
+                        email: email
+                    };
+                    localStorage.setItem('macro_user', JSON.stringify(user));
+                    window.location.href = "dashboard.html";
+                } else {
+                    document.getElementById('authStatus').textContent = "Please fill in all fields.";
+                }
+            });
+
+            // Google login
+            document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+                const isCapacitor = window.hasOwnProperty('Capacitor');
+
+                if (isCapacitor) {
+                    alert("Google Login is optimizing for mobile. Please use the 'Local Login' above for now while we finalize the native secure link!");
+                    return;
+                }
+
+                try {
+                    const result = await signInWithPopup(auth, provider);
+                    const user = {
+                        uid: result.user.uid,
+                        displayName: result.user.displayName,
+                        email: result.user.email,
+                        photoURL: result.user.photoURL
+                    };
+
+                    // Goal 23: Sync identity to Firebase immediately
+                    const { getDatabase, ref, update } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js");
+                    const db = getDatabase(app);
+                    await update(ref(db, `users/${user.uid}/profile`), {
+                        uid: user.uid,
+                        displayName: user.displayName,
+                        email: user.email,
+                        photoURL: user.photoURL,
+                        lastLogin: new Date().toISOString()
+                    });
+
+                    localStorage.setItem('macro_user', JSON.stringify(user));
+                    window.location.href = "dashboard.html";
+                } catch (error) {
+                    console.error("Google Auth Error:", error);
+                    document.getElementById('authStatus').textContent = "Google Sign-In failed.";
+                }
+            });
+
+            // Goal 23: Fix Local Login sync too
+            document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('userNameInput').value.trim();
+                const email = document.getElementById('emailInput').value.trim();
+
+                if (name && email) {
+                    const uid = 'local_' + btoa(email).substring(0, 10); // More stable UID for local users
+                    const user = { uid, displayName: name, email: email };
+
+                    const { getDatabase, ref, update } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js");
+                    const db = getDatabase(app);
+                    await update(ref(db, `users/${user.uid}/profile`), {
+                        uid: user.uid,
+                        displayName: user.displayName,
+                        email: user.email,
+                        lastLogin: new Date().toISOString()
+                    });
+
+                    localStorage.setItem('macro_user', JSON.stringify(user));
+                    window.location.href = "dashboard.html";
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

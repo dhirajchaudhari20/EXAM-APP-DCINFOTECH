@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DC Cloud Solutions — Google Groups Emails</title>
+  <style>
+    :root {
+      font-family: Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: #0f172a
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #f8fafc
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
+      max-width: 900px;
+      margin: 0 auto
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 20px
+    }
+
+    p.lead {
+      margin: 0 0 16px;
+      color: #334155
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px
+    }
+
+    .btn {
+      background: #0ea5a4;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer
+    }
+
+    .btn.secondary {
+      background: #64748b
+    }
+
+    .search {
+      flex: 1;
+      min-width: 200px;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0
+    }
+
+    ul.list {
+      list-style: none;
+      padding: 0;
+      margin: 0
+    }
+
+    li.item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #eef2f7;
+      margin-bottom: 8px
+    }
+
+    .meta {
+      display: flex;
+      flex-direction: column
+    }
+
+    .title {
+      font-weight: 600
+    }
+
+    .email {
+      font-size: 13px;
+      color: #475569
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px
+    }
+
+    .small {
+      font-size: 12px;
+      color: #94a3b8
+    }
+
+    .copied {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(2, 6, 23, 0.15);
+      display: none
+    }
+  </style>
+  <link rel="stylesheet" href="components/layout.css">
+</head>
+
+<body>
+  <main class="admin-main">
+    <header class="admin-header">
+      <h1 class="admin-header-title">Google Groups Emails</h1>
+    </header>
+
+    <div class="admin-content">
+      <div class="admin-table-card">
+        <h1>DC Cloud Solutions — Google Groups</h1>
+        <p class="lead">Quick list of internship Google Groups. Use the buttons to copy individual emails, open a new
+          mail, or copy all emails at once.</p>
+
+        <div class="controls">
+          <input id="search" class="search" placeholder="Search groups (name or email)..." />
+          <button id="copyAll" class="btn">Copy all emails</button>
+          <button id="openMailAll" class="btn secondary">Open mail to all</button>
+        </div>
+
+        <ul id="groups" class="list">
+          <li class="item" data-email="interndecember2google-cloud-engineerprogramdc-infotech@googlegroups.com">
+            <div class="meta">
+              <div class="title">Intern DECEMBER — Google Cloud Engineer Program - DC Cloud Solutions</div>
+              <div class="email">interndecember2google-cloud-engineerprogramdc-infotech@googlegroups.com</div>
+            </div>
+            <div class="actions">
+              <button class="btn copyBtn">Copy</button>
+              <button class="btn secondary mailBtn">Mail</button>
+            </div>
+          </li>
+
+          <li class="item" data-email="intern-november-google-cloud-engineer-program---dc-infotech@googlegroups.com">
+            <div class="meta">
+              <div class="title">Intern November — Google Cloud Engineer Program - DC Cloud Solutions</div>
+              <div class="email">intern-november-google-cloud-engineer-program---dc-infotech@googlegroups.com</div>
+            </div>
+            <div class="actions">
+              <button class="btn copyBtn">Copy</button>
+              <button class="btn secondary mailBtn">Mail</button>
+            </div>
+          </li>
+
+          <li class="item" data-email="intern-google-cloud@googlegroups.com">
+            <div class="meta">
+              <div class="title">Intern September — Google Cloud Engineer Program - DC Cloud Solutions</div>
+              <div class="email">intern-google-cloud@googlegroups.com</div>
+            </div>
+            <div class="actions">
+              <button class="btn copyBtn">Copy</button>
+              <button class="btn secondary mailBtn">Mail</button>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <!-- Unified Sidebar Injector -->
+  <script src="components/sidebar.js"></script>
+
+  <div id="toast" class="copied">Copied to clipboard</div>
+
+  <script>
+    const copy = async (text) => {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast('Copied to clipboard');
+      } catch (e) {
+        // fallback
+        const t = document.createElement('textarea');
+        t.value = text;
+        document.body.appendChild(t);
+        t.select();
+        try { document.execCommand('copy'); showToast('Copied to clipboard'); } catch (err) { alert('Copy failed — select and copy manually: ' + text); }
+        document.body.removeChild(t);
+      }
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.style.display = 'block';
+      setTimeout(() => el.style.display = 'none', 1400);
+    }
+
+    document.querySelectorAll('.copyBtn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const li = e.target.closest('li.item');
+        const email = li.getAttribute('data-email');
+        copy(email);
+      })
+    });
+
+    document.querySelectorAll('.mailBtn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const li = e.target.closest('li.item');
+        const email = li.getAttribute('data-email');
+        window.location.href = 'mailto:' + encodeURIComponent(email);
+      })
+    });
+
+    document.getElementById('copyAll').addEventListener('click', () => {
+      const emails = Array.from(document.querySelectorAll('li.item')).map(li => li.getAttribute('data-email'));
+      // copy comma-separated so it can be pasted into To: field
+      copy(emails.join(', '));
+    });
+
+    document.getElementById('openMailAll').addEventListener('click', () => {
+      const emails = Array.from(document.querySelectorAll('li.item')).map(li => li.getAttribute('data-email'));
+      window.location.href = 'mailto:' + encodeURIComponent(emails.join(', '));
+    });
+
+    // search filter
+    document.getElementById('search').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll('li.item').forEach(li => {
+        const title = li.querySelector('.title').textContent.toLowerCase();
+        const email = li.getAttribute('data-email').toLowerCase();
+        li.style.display = (title.includes(q) || email.includes(q)) ? 'flex' : 'none';
+      })
+    });
+  </script>
+</body>
+
+</html>

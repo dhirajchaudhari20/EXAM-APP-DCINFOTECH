@@ -1,0 +1,382 @@
+/* Dashboard Revamp - Google Meet Style (Clean, Minimal, Modern) */
+/* Variables */
+:root {
+    --primary-color: #1a73e8;
+    /* Google Blue */
+    --primary-hover: #1557b0;
+    --secondary-color: #5f6368;
+    --success-color: #137333;
+    --info-color: #0d6efd;
+    --warning-color: #f9ab00;
+    --danger-color: #d93025;
+    --light-color: #f8f9fa;
+    --dark-color: #202124;
+    --body-bg: #ffffff;
+    /* Clean white background like Meet */
+    --card-bg: #ffffff;
+    --text-primary: #202124;
+    --text-secondary: #5f6368;
+    --border-radius: 8px;
+    /* Standard Google radius */
+    --shadow-sm: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+    /* Material elevation 1 */
+    --shadow-md: 0 1px 3px rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+    /* Material elevation 2 */
+    --font-family: 'Google Sans', 'Roboto', 'Arial', sans-serif;
+    --navbar-height: 64px;
+}
+
+/* Global Reset & Typography */
+body {
+    background-color: var(--body-bg);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 500;
+    /* Google uses lighter weights */
+    color: var(--text-primary);
+    margin-top: 0;
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+    transition: all 0.2s ease;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Navbar (Clean & Minimal) */
+.navbar {
+    background: #ffffff;
+    height: var(--navbar-height);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    border-bottom: 1px solid #dadce0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    justify-content: space-between;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+}
+
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e8f0fe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+/* Layout Containers */
+.booking-wrapper {
+    max-width: 600px;
+    /* Centered, focused view like Meet landing */
+    margin: 48px auto;
+    width: 100%;
+    padding: 0 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Center everything */
+}
+
+.header {
+    text-align: center;
+    /* Center header text */
+    margin-bottom: 24px;
+    width: 100%;
+}
+
+.header h2 {
+    font-size: 1.75rem;
+    margin-bottom: 8px;
+}
+
+/* Cards (Subtle borders, no heavy shadows) */
+.card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    border: 1px solid #dadce0;
+    padding: 24px;
+    margin-bottom: 24px;
+    width: 100%;
+    box-sizing: border-box;
+    /* transition: box-shadow 0.2s ease; Remove hover effect for cleaner look */
+}
+
+/* Buttons (Google Style - Blue Pill) */
+.btn-primary,
+.btn-confirm,
+.btn-start-call {
+    background: var(--primary-color);
+    border: none;
+    border-radius: 24px;
+    /* Pill shape */
+    padding: 10px 24px;
+    color: white;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    text-transform: none;
+    /* No uppercase */
+    letter-spacing: 0.25px;
+    display: inline-flex;
+    /* For centering content */
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary:hover,
+.btn-confirm:hover,
+.btn-start-call:hover {
+    background: var(--primary-hover);
+    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+    text-decoration: none;
+}
+
+.btn-confirm:disabled {
+    background-color: #dadce0;
+    color: #80868b;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Inputs (Material Style - Single Line) */
+.form-group {
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.form-control {
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    padding: 12px 12px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+    color: var(--text-primary);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    border-width: 2px;
+    padding: 11px 11px;
+    /* Adjust for borderWidth to prevent jump */
+    outline: none;
+}
+
+/* Scheduler Specifics */
+.date-selector {
+    padding-bottom: 8px;
+    display: flex;
+    justify-content: center;
+    /* Center dates */
+    gap: 8px;
+    flex-wrap: wrap;
+    /* Allow wrapping on small screens */
+}
+
+.date-card {
+    background: #fff;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    /* Consistent radius */
+    min-width: 70px;
+    padding: 12px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.date-card:hover {
+    background: #f1f3f4;
+    border-color: #dadce0;
+}
+
+.date-card.active {
+    background: #e8f0fe;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    /* Blue border when active */
+}
+
+.date-card div:nth-child(2) {
+    /* Day Number */
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 4px 0;
+}
+
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    /* slightly smaller */
+    gap: 8px;
+    justify-content: center;
+}
+
+.slot-card {
+    background: #fff;
+    border: 1px solid #dadce0;
+    border-radius: 18px;
+    /* Rounded chips */
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 8px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.slot-card:hover:not(.disabled) {
+    background: #e8f0fe;
+    border-color: #dadce0;
+}
+
+.slot-card.selected {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.slot-card.disabled {
+    background: #f1f3f4;
+    color: #bdc1c6;
+    border-color: transparent;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+/* Footer (Simple, centered) */
+.main-footer {
+    background: #fff;
+    border-top: 1px solid #dadce0;
+    padding: 24px 0;
+    margin-top: auto;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+}
+
+.footer-links a {
+    color: var(--text-secondary);
+    margin: 0 12px;
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+/* Utilities */
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+.text-success {
+    color: var(--success-color) !important;
+}
+
+.mb-3 {
+    margin-bottom: 16px !important;
+}
+
+.d-none {
+    display: none !important;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .booking-wrapper {
+        padding: 0 16px;
+        margin: 24px auto;
+    }
+
+    .card {
+        padding: 16px;
+        border-radius: 8px;
+    }
+
+    .header h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Toast Notification (Custom) */
+.toast-notification {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: #323232;
+    /* Dark background like Android toast */
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    /* Slight radius */
+    padding: 16px;
+    position: fixed;
+    z-index: 1001;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+    box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.3s, bottom 0.3s;
+}
+
+.toast-notification.show {
+    visibility: visible;
+    opacity: 1;
+    bottom: 50px;
+    /* Slight movement up */
+}

@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Exam Data - DC Cloud Solutions</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/notiflix@3.2.5/dist/notiflix-aio-3.2.5.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Firebase SDK (v8) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <!-- Shared Admin Layout Component -->
+    <link rel="stylesheet" href="components/layout.css">
+
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --primary-hover: #1557b0;
+            --bg-body: #f8f9fa;
+            --bg-card: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        /* Keeping necessary page-specific styles */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1px;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--text-main);
+            background-color: #f3f4f6;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1px;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--text-main);
+            background-color: #f3f4f6;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-wrapper {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            width: 18px;
+            height: 18px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 10px 10px 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.1);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-outline {
+            background-color: white;
+            border-color: var(--border);
+            color: var(--text-main) !important;
+        }
+
+        .btn-outline i, .btn-outline svg {
+            color: var(--text-muted);
+        }
+
+        .btn-outline:hover {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            width: 100%;
+            background: white;
+            position: relative;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1000px; /* Ensure table doesn't squish */
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            table-layout: auto;
+        }
+
+        th {
+            background-color: #f9fafb;
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        /* Essential fix for Actions column */
+        th:last-child, td:last-child {
+            position: sticky !important;
+            right: 0 !important;
+            background: #ffffff !important;
+            border-left: 1px solid var(--border);
+            min-width: 160px !important;
+            width: 160px !important;
+            text-align: center;
+            z-index: 20 !important;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.05); /* Visual separation */
+        }
+
+        th:last-child {
+            background-color: #f9fafb !important;
+            z-index: 21 !important;
+        }
+
+        .action-icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .action-icon-btn i, .action-icon-btn svg {
+            width: 18px !important;
+            height: 18px !important;
+            display: block !important;
+            stroke-width: 2.5;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-passed,
+        .status-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-failed,
+        .status-cancelled,
+        .status-terminated,
+        .status-stopped {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-scheduled {
+            background: #e0f2fe;
+            color: #075985;
+        }
+
+        .status-live {
+            background: #fdf2f8;
+            color: #9d174d;
+            border: 1px solid #fbcfe8;
+            animation: pulse-pink 2s infinite;
+        }
+
+        .status-paused_by_admin {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        @keyframes pulse-pink {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-bottom: 40px;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 32px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .action-icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .action-icon-btn:hover {
+            color: var(--primary);
+        }
+
+        .action-icon-btn.delete:hover {
+            color: var(--danger);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main Content Wrapper injected by unified layout -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1 class="admin-header-title">
+                <i data-lucide="database"></i>
+                Master Exam Data Dashboard
+            </h1>
+            <div class="action-btns">
+                <a href="../exam-portal/dashboard.html" class="admin-btn">
+                    <i data-lucide="layout-dashboard"
+                        style="width: 16px; height: 16px; vertical-align: text-bottom;"></i> Portal Dashboard
+                </a>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <div class="admin-table-card">
+                <div class="tabs">
+                    <button class="tab-btn active" id="tabSchedules">Active Schedules</button>
+                    <button class="tab-btn" id="tabResults">Exam Results</button>
+                </div>
+
+                <div class="controls">
+                    <div class="search-wrapper">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="searchInput" class="search-input"
+                            placeholder="Search by email, name or ID...">
+                    </div>
+                    <div class="action-btns">
+                        <button id="refreshBtn" class="btn btn-outline">
+                            <i data-lucide="refresh-cw"></i> Refresh
+                        </button>
+                        <button id="addScheduleBtn" class="btn btn-outline">
+                            <i data-lucide="plus"></i> Add New Schedule
+                        </button>
+                        <button id="exportBtn" class="btn btn-primary">
+                            <i data-lucide="download"></i> Export CSV
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container" id="contentArea">
+                    <!-- Data will be loaded here -->
+                </div>
+
+                <div id="statsArea" style="margin-top: 16px; font-size: 0.875rem; color: var(--text-muted);">
+                    <!-- Statistics will be shown here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit/Add Modal -->
+        <div id="scheduleModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Edit Exam Schedule</h3>
+                </div>
+                <form id="scheduleForm">
+                    <input type="hidden" id="editId">
+                    <div class="form-group">
+                        <label for="editUserEmail">User Email</label>
+                        <input type="email" id="editUserEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCandidateName">Candidate Name</label>
+                        <input type="text" id="editCandidateName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editExamName">Select Exam</label>
+                        <select id="editExamName" required>
+                            <option value="">-- Choose an Exam --</option>
+                            <option value="Associate Cloud Engineer">Associate Cloud Engineer</option>
+                            <option value="Professional Data Engineer">Professional Data Engineer</option>
+                            <option value="Professional Cloud Architect">Professional Cloud Architect</option>
+                            <option value="Professional Cloud DevOps Engineer">Professional Cloud DevOps Engineer</option>
+                            <option value="AWS Certified Solutions Architect - Associate">AWS Certified Solutions Architect - Associate</option>
+                            <option value="AWS Certified Solutions Architect - Professional">AWS Certified Solutions Architect - Professional</option>
+                            <option value="Azure Administrator Associate">Azure Administrator Associate</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDateTime">Date & Time</label>
+                        <input type="datetime-local" id="editDateTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStatus">Status</label>
+                        <select id="editStatus">
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" id="closeModalBtn">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Result Modal -->
+        <div id="resultModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Edit Exam Result</h3>
+                </div>
+                <form id="resultForm">
+                    <input type="hidden" id="editResultId">
+                    <div class="form-group">
+                        <label for="editResUserName">Candidate Name</label>
+                        <input type="text" id="editResUserName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editResUserEmail">User Email</label>
+                        <input type="email" id="editResUserEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editResExamName">Exam Name</label>
+                        <input type="text" id="editResExamName" required>
+                    </div>
+                    <div class="form-group" style="display:flex; gap:16px;">
+                        <div style="flex:1;">
+                            <label for="editResScore">Score</label>
+                            <input type="text" id="editResScore" required>
+                        </div>
+                        <div style="flex:1;">
+                            <label for="editResPercentage">Percentage</label>
+                            <input type="text" id="editResPercentage" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editResStatus">Status</label>
+                        <select id="editResStatus">
+                            <option value="PASS">PASS</option>
+                            <option value="FAIL">FAIL</option>
+                            <option value="TERMINATED">TERMINATED</option>
+                            <option value="EXPIRED">EXPIRED</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editResViolation">Violation Reason</label>
+                        <input type="text" id="editResViolation" placeholder="Leave blank if none">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" id="closeResultModalBtn">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Unified Sidebar Injector -->
+    <script src="components/sidebar.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCohKlqNu0I1sXcLW4D_fv-OEw9x0S50q8",
+            authDomain: "dc-infotechpvt-1-d1a4b.firebaseapp.com",
+            databaseURL: "https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com",
+            projectId: "dc-infotechpvt-1-d1a4b",
+            storageBucket: "dc-infotechpvt-1-d1a4b.firebasestorage.app",
+            messagingSenderId: "622552457680",
+            appId: "1:622552457680:web:4b80e21e14e2b8266f19d5"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+
+        let currentTab = 'schedules';
+        let allData = { schedules: [], results: [] };
+        let filteredData = [];
+
+        // Initialize Icons
+        lucide.createIcons();
+
+        // DOM Elements
+        const contentArea = document.getElementById('contentArea');
+        const statsArea = document.getElementById('statsArea');
+        const searchInput = document.getElementById('searchInput');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const tabSchedules = document.getElementById('tabSchedules');
+        const tabResults = document.getElementById('tabResults');
+
+        // Main Load Function
+        function loadData(force = false) {
+            const path = currentTab === 'schedules' ? 'exam_schedules' : 'exam_results';
+            
+            contentArea.innerHTML = `
+                <div class="loading-state">
+                    <i data-lucide="loader-2" class="spinner" style="width: 48px; height: 48px;"></i>
+                    <p>Fetching ${currentTab}...</p>
+                </div>
+            `;
+            lucide.createIcons();
+
+            // Use .on('value') for real-time updates!
+            db.ref(path).on('value', (snapshot) => {
+                const data = snapshot.val();
+                
+                // Convert object/dictionary to array
+                const dataArray = data ? Object.entries(data).map(([k, v]) => ({ ...v, _id: k })) : [];
+                
+                allData[currentTab] = dataArray;
+                applyFilters();
+                
+                // If it was a manual refresh or first load
+                if (force) {
+                    Notiflix.Notify.success(`Synchronized ${dataArray.length} ${currentTab} records`);
+                    force = false; // Reset force flag
+                }
+            }, (error) => {
+                console.error('Firebase Fetch Error:', error);
+                contentArea.innerHTML = `
+                    <div class="empty-state" style="color: var(--danger);">
+                        <i data-lucide="alert-circle" style="width: 48px; height: 48px; margin-bottom: 16px;"></i>
+                        <h3>Failed to load data</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                lucide.createIcons();
+            });
+        }
+
+        // Filter Function
+        function applyFilters() {
+            const query = searchInput.value.toLowerCase().trim();
+            const data = allData[currentTab];
+
+            if (!query) {
+                filteredData = [...data];
+            } else {
+                filteredData = data.filter(item => {
+                    return Object.values(item).some(val =>
+                        val && String(val).toLowerCase().includes(query)
+                    );
+                });
+            }
+
+            renderTable();
+        }
+
+        // Render Table
+        function renderTable() {
+            if (filteredData.length === 0) {
+                contentArea.innerHTML = '<div class="empty-state">No matching records found.</div>';
+                document.getElementById('statsArea').innerHTML = `Showing ${filteredData.length} records`;
+            
+                // Critical for dynamic icons!
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+                return;
+            }
+
+            let tableHtml = '';
+            if (currentTab === 'schedules') {
+                // Sort schedules: newest first
+                filteredData.sort((a, b) => new Date(b.dateTime) - new Date(a.dateTime));
+
+                tableHtml = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Exam ID</th>
+                                <th>User Email</th>
+                                <th>Candidate Name</th>
+                                <th>Exam Name</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filteredData.map(item => `
+                                <tr>
+                                    <td style="font-family: monospace; font-weight: 600;">${item.id || '-'}</td>
+                                    <td>${item.userEmail || '-'}</td>
+                                    <td>${item.name || '-'}</td>
+                                    <td>${item.examName || '-'}</td>
+                                    <td>${new Date(item.dateTime).toLocaleString()}</td>
+                                    <td><span class="status-badge status-${(item.status || 'scheduled').toLowerCase()}">${item.status || 'Scheduled'}</span></td>
+                                    <td class="action-btns" style="display: flex; justify-content: center; gap: 4px;">
+                                        <button class="action-icon-btn" onclick="updateExamStatus('${item._id}', 'TERMINATED')" title="Stop Exam" style="color: #ef4444;">
+                                            <i data-lucide="square"></i>
+                                        </button>
+                                        <button class="action-icon-btn" onclick="resetExam('${item._id}')" title="Reset/Resume" style="color: #22c55e;">
+                                            <i data-lucide="play-circle"></i>
+                                        </button>
+                                        <button class="action-icon-btn" onclick="openEditModal('${item._id}')" title="Edit" style="color: #3b82f6;">
+                                            <i data-lucide="edit-3"></i>
+                                        </button>
+                                        <button class="action-icon-btn delete" onclick="deleteSchedule('${item._id}')" title="Delete" style="color: #64748b;">
+                                            <i data-lucide="trash-2"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                // Sort results: newest first
+                filteredData.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
+
+                tableHtml = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Candidate Name</th>
+                                <th>User Email</th>
+                                <th>Exam Name</th>
+                                <th>Score</th>
+                                <th>Violations</th>
+                                <th>Snapshot Evidence</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filteredData.map(item => {
+                    // Parse SnapshotURL if it exists
+                    // Format: [time] reason: url \n ...
+                    let snapshotLinks = '-';
+                    if (item.SnapshotURL) {
+                        const lines = item.SnapshotURL.split('\n').filter(l => l.trim());
+                        snapshotLinks = lines.map((line, idx) => {
+                            const parts = line.split(' ');
+                            const url = parts[parts.length - 1];
+                            return `<a href="${url}" target="_blank" title="${line}" style="margin-right: 5px; display: inline-block;">
+                                            <i data-lucide="image" style="width: 16px; height: 16px; color: var(--primary);"></i>
+                                        </a>`;
+                        }).join('');
+                    }
+
+                    return `
+                                <tr>
+                                    <td style="font-size: 0.8rem; color: #666;">${new Date(item.Timestamp).toLocaleString()}</td>
+                                    <td style="font-weight: 600;">${item.UserName || '-'}</td>
+                                    <td>${item.UserEmail || '-'}</td>
+                                    <td>${item.ExamName || '-'}</td>
+                                    <td style="font-weight: 700;">${item.Score || '-'} (${item.Percentage || '0%'})</td>
+                                    <td style="max-width: 200px; font-size: 0.8rem; color: var(--danger);">${item.ViolationReason || '-'}</td>
+                                    <td>${snapshotLinks}</td>
+                                    <td><span class="status-badge status-${(item.Status || 'completed').toLowerCase()}">${item.Status || 'Completed'}</span></td>
+                                    <td class="action-btns">
+                                        <button class="action-icon-btn" onclick="openResultModal('${item._id}')" title="Edit">
+                                            <i data-lucide="edit-3" style="width: 16px; height: 16px;"></i>
+                                        </button>
+                                        <button class="action-icon-btn delete" onclick="deleteResult('${item._id}')" title="Delete">
+                                            <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `}).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+
+            contentArea.innerHTML = tableHtml;
+            statsArea.innerHTML = `Showing <strong>${filteredData.length}</strong> of ${allData[currentTab].length} total records`;
+        }
+
+        // Export Function
+        function exportToCSV() {
+            if (!filteredData.length) return;
+
+            const headers = Object.keys(filteredData[0]);
+            const csvRows = [
+                headers.join(','),
+                ...filteredData.map(row =>
+                    headers.map(header => {
+                        const cell = String(row[header] || '').replace(/"/g, '""');
+                        return `"${cell}"`;
+                    }).join(',')
+                )
+            ];
+
+            const csvBlob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+            const url = URL.createObjectURL(csvBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `exam_${currentTab}_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Manage Modals
+        const scheduleModal = document.getElementById('scheduleModal');
+        const scheduleForm = document.getElementById('scheduleForm');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const addScheduleBtn = document.getElementById('addScheduleBtn');
+        const modalTitle = document.getElementById('modalTitle');
+
+        function openEditModal(id = null) {
+            console.log('Opening modal for ID:', id);
+            if (id) {
+                const item = allData.schedules.find(s => s._id === id);
+                if (!item) {
+                    console.error('Item not found for ID:', id);
+                    return;
+                }
+                modalTitle.innerText = 'Edit Exam Schedule';
+                document.getElementById('editId').value = id;
+                document.getElementById('editUserEmail').value = item.userEmail || '';
+                document.getElementById('editCandidateName').value = item.name || '';
+                document.getElementById('editExamName').value = item.examName || '';
+                
+                // Format date for datetime-local input (YYYY-MM-DDTHH:mm)
+                try {
+                    const date = new Date(item.dateTime);
+                    if(!isNaN(date)) {
+                        const formattedDate = date.toISOString().slice(0, 16);
+                        document.getElementById('editDateTime').value = formattedDate;
+                    }
+                } catch(e) { console.error("Date format error", e); }
+                
+                document.getElementById('editStatus').value = item.status || 'Scheduled';
+            } else {
+                modalTitle.innerText = 'Add New Schedule';
+                scheduleForm.reset();
+                document.getElementById('editId').value = '';
+                // Default to tomorrow 10 AM
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(10, 0, 0, 0);
+                document.getElementById('editDateTime').value = tomorrow.toISOString().slice(0, 16);
+            }
+            scheduleModal.style.display = 'flex';
+            lucide.createIcons();
+        }
+
+        function closeModal() {
+            scheduleModal.style.display = 'none';
+        }
+
+        async function saveSchedule(e) {
+            e.preventDefault();
+            let id = document.getElementById('editId').value;
+            const data = {
+                userEmail: document.getElementById('editUserEmail').value,
+                name: document.getElementById('editCandidateName').value,
+                examName: document.getElementById('editExamName').value,
+                dateTime: new Date(document.getElementById('editDateTime').value).toISOString(),
+                status: document.getElementById('editStatus').value
+            };
+
+            if (!id) {
+                // Generate new ID if creating
+                id = 'EXAM-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                data.id = id;
+            } else {
+                data.id = id;
+            }
+
+            Notiflix.Loading.pulse('Saving to Firebase...');
+            try {
+                // Use .set() to either create or overwrite the record at the specific ID
+                await db.ref('exam_schedules/' + id).set(data);
+                
+                Notiflix.Loading.remove();
+                Notiflix.Notify.success('Schedule saved successfully');
+                closeModal();
+                // No need to manually loadData as .on('value') will trigger
+            } catch (error) {
+                console.error("Firebase Save Error:", error);
+                Notiflix.Loading.remove();
+                Notiflix.Notify.failure('Error: ' + error.message);
+            }
+        }
+
+        async function deleteSchedule(id) {
+            Notiflix.Confirm.show(
+                'Delete Schedule',
+                'Are you sure you want to delete this schedule from Firebase? This action cannot be undone.',
+                'Yes, Delete',
+                'Cancel',
+                async () => {
+                    Notiflix.Loading.pulse('Deleting...');
+                    try {
+                        await db.ref('exam_schedules/' + id).remove();
+
+                        Notiflix.Loading.remove();
+                        Notiflix.Notify.success('Schedule deleted');
+                        // No need to manually loadData as .on('value') will trigger
+                    } catch (error) {
+                        Notiflix.Loading.remove();
+                        Notiflix.Notify.failure('Error: ' + error.message);
+                    }
+                }
+            );
+        }
+
+        const resultModal = document.getElementById('resultModal');
+        const resultForm = document.getElementById('resultForm');
+        const closeResultModalBtn = document.getElementById('closeResultModalBtn');
+
+        function openResultModal(id) {
+            const item = allData.results.find(r => r._id === id);
+            if (!item) return;
+
+            document.getElementById('editResultId').value = id;
+            document.getElementById('editResUserName').value = item.UserName || '';
+            document.getElementById('editResUserEmail').value = item.UserEmail || '';
+            document.getElementById('editResExamName').value = item.ExamName || '';
+            document.getElementById('editResScore').value = item.Score || '';
+            document.getElementById('editResPercentage').value = item.Percentage || '';
+            document.getElementById('editResStatus').value = (item.Status || 'FAIL').toUpperCase();
+            document.getElementById('editResViolation').value = item.ViolationReason || '';
+
+            resultModal.style.display = 'flex';
+            lucide.createIcons();
+        }
+
+        function closeResultModal() {
+            resultModal.style.display = 'none';
+        }
+
+        async function saveResult(e) {
+            e.preventDefault();
+            const id = document.getElementById('editResultId').value;
+            const payload = {
+                UserName: document.getElementById('editResUserName').value.trim(),
+                UserEmail: document.getElementById('editResUserEmail').value.trim(),
+                ExamName: document.getElementById('editResExamName').value.trim(),
+                Score: document.getElementById('editResScore').value.trim(),
+                Percentage: document.getElementById('editResPercentage').value.trim(),
+                Status: document.getElementById('editResStatus').value
+            };
+            const v = document.getElementById('editResViolation').value.trim();
+            if (v) payload.ViolationReason = v;
+            else payload.ViolationReason = null;
+
+            Notiflix.Loading.pulse('Updating Result...');
+            try {
+                await db.ref('exam_results/' + id).update(payload);
+                Notiflix.Loading.remove();
+                Notiflix.Notify.success('Result updated successfully');
+                closeResultModal();
+            } catch (error) {
+                Notiflix.Loading.remove();
+                Notiflix.Notify.failure('Error: ' + error.message);
+            }
+        }
+
+        async function updateExamStatus(id, newStatus) {
+            Notiflix.Confirm.show(
+                'Change Exam Status',
+                `Are you sure you want to change this exam's status to ${newStatus}?`,
+                'Yes, Proceed',
+                'Cancel',
+                async () => {
+                    Notiflix.Loading.pulse('Updating Status...');
+                    try {
+                        await db.ref('exam_schedules/' + id).update({ status: newStatus });
+                        Notiflix.Loading.remove();
+                        Notiflix.Notify.success(`Status updated to ${newStatus}`);
+                    } catch (error) {
+                        Notiflix.Loading.remove();
+                        Notiflix.Notify.failure('Error: ' + error.message);
+                    }
+                }
+            );
+        }
+
+        async function resetExam(id) {
+            Notiflix.Confirm.show(
+                'Reset/Resume Exam',
+                'This will set the status back to "Scheduled", allowing the student to re-enter the exam. Proceed?',
+                'Yes, Reset',
+                'Cancel',
+                async () => {
+                    Notiflix.Loading.pulse('Resetting Exam...');
+                    try {
+                        await db.ref('exam_schedules/' + id).update({ status: 'Scheduled' });
+                        Notiflix.Loading.remove();
+                        Notiflix.Notify.success('Exam reset and ready for re-entry');
+                    } catch (error) {
+                        Notiflix.Loading.remove();
+                        Notiflix.Notify.failure('Error: ' + error.message);
+                    }
+                }
+            );
+        }
+
+        async function deleteResult(id) {
+            Notiflix.Confirm.show(
+                'Delete Result',
+                'Permanently remove this exam result from Firebase? Cannot be undone.',
+                'Yes, Delete',
+                'Cancel',
+                async () => {
+                    Notiflix.Loading.pulse('Deleting...');
+                    try {
+                        await db.ref('exam_results/' + id).remove();
+                        Notiflix.Loading.remove();
+                        Notiflix.Notify.success('Result deleted');
+                    } catch (error) {
+                        Notiflix.Loading.remove();
+                        Notiflix.Notify.failure('Error: ' + error.message);
+                    }
+                }
+            );
+        }
+
+        // Global functions for inline onclick
+        window.openEditModal = openEditModal;
+        window.deleteSchedule = deleteSchedule;
+        window.openResultModal = openResultModal;
+        window.deleteResult = deleteResult;
+        window.updateExamStatus = updateExamStatus;
+        window.resetExam = resetExam;
+
+        // Event Listeners
+        searchInput.addEventListener('input', applyFilters);
+        refreshBtn.addEventListener('click', () => loadData(true));
+        exportBtn.addEventListener('click', exportToCSV);
+        addScheduleBtn.addEventListener('click', () => openEditModal());
+        closeModalBtn.addEventListener('click', closeModal);
+        scheduleForm.addEventListener('submit', saveSchedule);
+        closeResultModalBtn.addEventListener('click', closeResultModal);
+        resultForm.addEventListener('submit', saveResult);
+        
+        window.addEventListener('click', (e) => { 
+            if (e.target === scheduleModal) closeModal(); 
+            if (e.target === resultModal) closeResultModal();
+        });
+
+        tabSchedules.addEventListener('click', () => {
+            if (currentTab === 'schedules') return;
+            currentTab = 'schedules';
+            tabSchedules.classList.add('active');
+            tabResults.classList.remove('active');
+            addScheduleBtn.style.display = 'inline-flex';
+            searchInput.value = '';
+            loadData();
+        });
+
+        tabResults.addEventListener('click', () => {
+            if (currentTab === 'results') return;
+            currentTab = 'results';
+            tabResults.classList.add('active');
+            tabSchedules.classList.remove('active');
+            addScheduleBtn.style.display = 'none';
+            searchInput.value = '';
+            loadData();
+        });
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+
+</html>

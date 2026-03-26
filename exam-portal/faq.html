@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ - Exam Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Google+Sans:wght@700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --blue-600: #1a73e8;
+      --grey-100: #f8f9fa;
+      --grey-200: #e9ecef;
+      --grey-700: #495057;
+      --grey-800: #343a40;
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --radius-lg: 12px;
+    }
+
+    body {
+      font-family: 'Roboto', 'Segoe UI', sans-serif;
+      background-color: var(--grey-100);
+      color: var(--grey-800);
+      margin: 0;
+      padding: 0;
+      padding: 0;
+      /* Reset body padding */
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      padding: 2rem;
+      /* Apply padding to the container */
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    header h1 {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 2.5rem;
+      color: var(--blue-600);
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: var(--grey-700);
+    }
+
+    .search-container {
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    #faq-search {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--grey-200);
+      box-shadow: var(--shadow-md);
+      box-sizing: border-box;
+      padding-left: 3rem;
+    }
+
+    #faq-search:focus {
+      outline: none;
+      border-color: var(--blue-600);
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--grey-700);
+      pointer-events: none;
+    }
+
+    .faq-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .faq-item {
+      background-color: #fff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      border-left: 4px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+
+    .faq-item.active {
+      border-left-color: var(--blue-600);
+    }
+
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 1.5rem;
+      background: none;
+      border: none;
+      text-align: left;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--grey-800);
+    }
+
+    .faq-question:hover {
+      background-color: #f1f3f4;
+    }
+
+    .faq-icon {
+      width: 24px;
+      height: 24px;
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+      margin-left: 1rem;
+    }
+
+    .faq-item.active .faq-icon {
+      transform: rotate(45deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+      padding: 0 1.5rem;
+      color: var(--grey-700);
+    }
+
+    .faq-answer p {
+      margin: 0;
+      padding-bottom: 1.5rem;
+    }
+
+    .faq-answer a {
+      color: var(--blue-600);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .faq-answer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Frequently Asked Questions</h1>
+      <p>Find answers to common questions about our exam portal and certification process.</p>
+    </header>
+
+    <div class="search-container">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" id="faq-search" placeholder="Search for a question...">
+    </div>
+
+    <main class="faq-section">
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>How do I register for an exam?</span>
+          <svg class="faq-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <p>You can register for an exam through the "Schedule Exam" link on your dashboard. Follow the on-screen
+            instructions to select your exam, date, and testing center or online proctoring option.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>Where can I find my exam voucher?</span>
+          <svg class="faq-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <p>If you are eligible for an exam voucher, it will be sent to your registered email address. Please check
+            your inbox and spam folder. If you haven't received it, visit the <a href="support-portal.html">Support
+              Portal</a>.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>What are the technical requirements for an online proctored exam?</span>
+          <svg class="faq-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <p>You will need a reliable internet connection, a webcam, a microphone, and a quiet, private space. You must
+            also install the secure testing browser provided by the exam delivery partner. We recommend running the
+            system check well before your exam time.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>How can I reschedule or cancel my exam?</span>
+          <svg class="faq-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <p>You can reschedule or cancel your exam through the exam provider's portal (e.g., Webassessor). Please be
+            aware of the cancellation policy, as fees may apply if you reschedule too close to the exam date.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>When will I get my exam results?</span>
+          <svg class="faq-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <p>For most exams, you will receive a provisional pass/fail result immediately after completion. The official
+            result and your digital certificate will be emailed to you within 7-10 business days.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>Who should I contact for support?</span>
+          <svg class="faq-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <p>For issues related to exam content or vouchers, please visit our <a href="support-portal.html">Support
+              Portal</a>. For technical issues during an exam, contact the exam provider's support line immediately.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function initializeFaqAccordion() {
+      const faqItems = document.querySelectorAll('.faq-item');
+      const searchInput = document.getElementById('faq-search');
+
+      faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        const answer = item.querySelector('.faq-answer');
+
+        question.addEventListener('click', () => {
+          const wasActive = item.classList.contains('active');
+
+          // Close all items first for a cleaner accordion experience
+          faqItems.forEach(otherItem => {
+            otherItem.classList.remove('active');
+            otherItem.querySelector('.faq-answer').style.maxHeight = null;
+          });
+
+          // If the clicked item wasn't active, open it
+          if (!wasActive) {
+            item.classList.add('active');
+            answer.style.maxHeight = answer.scrollHeight + "px";
+          }
+        });
+      });
+
+      // Search functionality
+      searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+
+        faqItems.forEach(item => {
+          const questionText = item.querySelector('.faq-question > span').textContent.toLowerCase();
+          const answerText = item.querySelector('.faq-answer p').textContent.toLowerCase();
+
+          if (questionText.includes(searchTerm) || answerText.includes(searchTerm)) {
+            item.style.display = '';
+          } else {
+            item.style.display = 'none';
+            item.classList.remove('active');
+            item.querySelector('.faq-answer').style.maxHeight = null;
+          }
+        });
+      });
+    }
+
+    // Run the script if the page is loaded directly, or wait for the dashboard to call it.
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeFaqAccordion);
+    } else {
+      initializeFaqAccordion();
+    }
+  </script>
+  <script src="js/security.js"></script>
+</body>
+
+</html>

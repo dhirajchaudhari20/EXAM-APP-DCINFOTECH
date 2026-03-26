@@ -1,0 +1,350 @@
+{
+    "sess_0": {
+        "day": "Mon, September 22, 2025",
+        "time": "12:30 PM - 8:30 PM GMT+5:30",
+        "description": "GenAI25235 Deploy Multi-Agent Systems with Agent Dev Kit and Agent Engine",
+        "details": "Agenda: Build multi-agent systems using Agent Development Kit, deploy and manage agent flows in Agent Engine",
+        "link": "https://meet.google.com/vuc-fymj-ksy"
+    },
+    "sess_1": {
+        "day": "Tue, November 11, 2025",
+        "time": "1:30 PM - 3:30 PM GMT+5:30",
+        "description": "Exam Readyness Workshop For ACE ",
+        "details": "",
+        "link": "https://meet.google.com/sva-ncpr-hgo"
+    },
+    "sess_2": {
+        "day": "Mon, September 22, 2025",
+        "time": "12:45 PM - 3:30 PM GMT+5:30",
+        "description": "GenAI25328 Build with Vertex AI – Technical Expert Badge (Day 1)",
+        "details": "Agenda: Extend Gemini with controlled generation and tool use",
+        "link": "https://meet.google.com/zze-qujk-xai"
+    },
+    "sess_3": {
+        "day": "Mon, September 23, 2025",
+        "time": "1:05 PM - 3:30 PM GMT+5:30",
+        "description": "GenAI25328 Build with Vertex AI – Technical Expert Badge (Day 2)",
+        "details": "Agenda: Extend Gemini with controlled generation and tool use",
+        "link": "https://meet.google.com/ubu-waad-bxn"
+    },
+    "sess_4": {
+        "day": "Mon, September 22, 2025",
+        "time": "1:45 PM - 5:00 PM GMT+5:30",
+        "description": "GenAI25327 Customer Engagement Suite with Google AI – Technical Expert Badge (Day 1)",
+        "details": "Agenda: Build conversational agents with Playbooks and Flows",
+        "link": "https://meet.google.com/moq-obxz-oyd"
+    },
+    "sess_5": {
+        "day": "Tue, September 23, 2025",
+        "time": "1:30 PM - 5:30 PM GMT+5:30",
+        "description": "GenAI25236 Accelerate Knowledge Exchange with Google Agentspace",
+        "details": "Agenda: Use Agentspace dashboards, build search agents, connect data stores, accelerate collaboration",
+        "link": "https://meet.google.com/hve-hwif-pks"
+    },
+    "sess_6": {
+        "day": "Fri, October 3, 2025",
+        "time": "12:15 PM - 8:30 PM GMT+5:30",
+        "description": "GenAI25594 Build Vertex AI Search and Google Agentspace Apps",
+        "details": "Agenda: Create and configure Vertex AI Search and Google Agentspace apps, deploy recommendation engines",
+        "link": "https://meet.google.com/qpq-ggsm-kyy",
+        "recording": "https://youtu.be/7njG8Yh0xEA"
+    },
+    "sess_7": {
+        "day": "Mon, October 13, 2025",
+        "time": "1:15 PM - 4:30 PM GMT+5:30",
+        "description": "GenAI25597 Introduction to Google Agentspace",
+        "details": "Agenda: Agentspace overview, architecture, enterprise use cases",
+        "link": "https://meet.google.com/ydg-souq-eii",
+        "recording": "https://youtube.com/live/Fs_H_I0F_OI?feature=share"
+    },
+    "sess_8": {
+        "day": "Sat, November 22, 2025",
+        "time": "12:40 AM - 5:00 PM GMT+5:30",
+        "description": "Demo session for testing ",
+        "details": "Agenda: delivered in English"
+    },
+    "sess_9": {
+        "day": "Mon, November 24, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Data Warehousing",
+        "details": "Agenda: delivered in English",
+        "link": "https://meet.google.com/pyg-utgs-iig",
+        "recording": "https://youtube.com/live/Fs_H_I0F_OI?feature=share"
+    },
+    "sess_10": {
+        "day": "Tue, November 25, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Data Warehousing",
+        "details": "Agenda: delivered in English",
+        "link": "https://meet.google.com/qpq-udzj-jwm",
+        "recording": "https://youtube.com/live/Fs_H_I0F_OI?feature=share"
+    },
+    "sess_11": {
+        "day": "Wed, November 26, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Data Warehousing",
+        "details": "Agenda: delivered in English",
+        "link": "https://meet.google.com/agv-eguy-cff",
+        "recording": "https://youtube.com/live/Fs_H_I0F_OI?feature=share"
+    },
+    "sess_12": {
+        "day": "Thu, November 27, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Data Warehousing",
+        "details": "Agenda: delivered in English",
+        "link": "https://meet.google.com/jdo-moyf-kic",
+        "recording": "https://youtube.com/live/Fs_H_I0F_OI?feature=share"
+    },
+    "sess_13": {
+        "day": "Mon, December 1, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Design and Manage Oracle Workloads on Google Cloud",
+        "details": "Agenda: delivered in English",
+        "link": "https://meet.google.com/qjz-hykn-hsa",
+        "recording": "https://youtu.be/7njG8Yh0xEA"
+    },
+    "sess_14": {
+        "day": "Wed, November 12, 2025",
+        "time": "2:30 PM - 10:30 PM GMT+5:30",
+        "description": "Enterprise Database Migration",
+        "details": "Agenda: delivered in English",
+        "link": "https://meet.google.com/rea-vuyj-zpn",
+        "recording": "https://youtu.be/7njG8Yh0xEA"
+    },
+    "sess_15": {
+        "day": "Thu, November 13, 2025",
+        "time": "2:30 PM - 10:30 PM GMT+5:30",
+        "description": "Enterprise Database Migration",
+        "details": "Agenda: delivered in English",
+        "link": "https://meet.google.com/pai-msqi-oqh",
+        "recording": "https://youtu.be/7njG8Yh0xEA"
+    },
+    "sess_16": {
+        "day": "Fri, November 14, 2025",
+        "time": "2:30 PM - 10:30 PM GMT+5:30",
+        "description": "Enterprise Database Migration",
+        "details": "Agenda: delivered in English",
+        "link": "https://meet.google.com/hzg-zwqy-rpq",
+        "recording": "https://youtu.be/7njG8Yh0xEA"
+    },
+    "sess_17": {
+        "day": "Mon, December 1, 2025",
+        "time": "7:30 AM - 3:30 PM GMT+5:30",
+        "description": "Google Workspace - Work Transformation",
+        "details": "Agenda: delivered in English",
+        "link": "https://meet.google.com/tsj-ionk-jpu",
+        "recording": "https://youtu.be/7njG8Yh0xEA"
+    },
+    "sess_18": {
+        "day": "Tue, December 2, 2025",
+        "time": "7:30 AM - 3:30 PM GMT+5:30",
+        "description": "Google Workspace - Work Transformation",
+        "details": "Agenda: delivered in English"
+    },
+    "sess_19": {
+        "day": "Mon, December 15, 2025",
+        "time": "1:30 PM - 9:30 PM GMT+5:30",
+        "description": "Implement and Migrate Google Cloud VMware Engine Day-1",
+        "details": "Agenda: delivered in English"
+    },
+    "sess_20": {
+        "day": "Tue, December 16, 2025",
+        "time": "1:30 PM - 9:30 PM GMT+5:30",
+        "description": "Implement and Migrate Google Cloud VMware Engine Day-2",
+        "details": "Agenda: delivered in English"
+    },
+    "sess_21": {
+        "day": "Wed, December 17, 2025",
+        "time": "1:30 PM - 9:30 PM GMT+5:30",
+        "description": "Implement and Migrate Google Cloud VMware Engine Day-3",
+        "details": "Agenda: delivered in English"
+    },
+    "sess_22": {
+        "day": "Thu, December 18, 2025",
+        "time": "1:30 PM - 9:30 PM GMT+5:30",
+        "description": "Implement and Migrate Google Cloud VMware Engine Day-4",
+        "details": "Agenda: delivered in English"
+    },
+    "sess_23": {
+        "day": "Mon, December 15, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Manage Scalable Workloads in GKE Enterprise",
+        "details": "Agenda: delivered in English"
+    },
+    "sess_24": {
+        "day": "Tue, December 16, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Manage Scalable Workloads in GKE Enterprise",
+        "details": "Agenda: delivered in English"
+    },
+    "sess_25": {
+        "day": "Wed, December 17, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Manage Scalable Workloads in GKE Enterprise",
+        "details": "Agenda: delivered in English"
+    },
+    "sess_26": {
+        "day": "Mon, December 8, 2025",
+        "time": "7:30 AM - 3:30 PM GMT+5:30",
+        "description": "Managing Change for Google Workspace",
+        "details": "Agenda: delivered in English"
+    },
+    "sess_27": {
+        "day": "Tue, December 9, 2025",
+        "time": "7:30 AM - 3:30 PM GMT+5:30",
+        "description": "Managing Change for Google Workspace",
+        "details": "Agenda: delivered in English"
+    },
+    "sess_28": {
+        "day": "Mon, November 17, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Migrating Virtual Machines to Google Cloud",
+        "details": "Agenda: delivered in English",
+        "link": "https://meet.google.com/tvf-fvcs-yvc",
+        "recording": "https://youtu.be/7njG8Yh0xEA"
+    },
+    "sess_29": {
+        "day": "Tue, November 18, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Migrating Virtual Machines to Google Cloud",
+        "details": "Agenda: delivered in English",
+        "link": "https://meet.google.com/pbk-udzy-aoc",
+        "recording": "https://youtu.be/7njG8Yh0xEA"
+    },
+    "sess_30": {
+        "day": "Wed, November 19, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Migrating Virtual Machines to Google Cloud",
+        "details": "Agenda: delivered in English",
+        "link": "https://meet.google.com/mgv-biap-bhc",
+        "recording": "https://youtu.be/7njG8Yh0xEA"
+    },
+    "sess_31": {
+        "day": "Thu, November 20, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Migrating Virtual Machines to Google Cloud",
+        "details": "Agenda: delivered in English",
+        "link": "https://meet.google.com/fyr-qujf-ugg",
+        "recording": "https://youtu.be/7njG8Yh0xEA"
+    },
+    "sess_32": {
+        "day": "Fri, November 14, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Application Development with LLMs on Google Cloud",
+        "details": "Agenda: Learn to design and deploy large language model applications on Google Cloud.",
+        "link": "https://meet.google.com/ncp-apfn-ihv",
+        "recording": "https://youtu.be/7njG8Yh0xEA"
+    },
+    "sess_33": {
+        "day": "Mon, November 19, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Developing Data Models with LookML",
+        "details": "Agenda: Learn to design LookML models for data analytics.",
+        "link": "https://meet.google.com/pty-qudo-ixo",
+        "recording": "https://youtu.be/7njG8Yh0xEA"
+    },
+    "sess_34": {
+        "day": "Mon, November 24, 2025",
+        "time": "10:00 AM - 6:00 PM GMT+5:30",
+        "description": "Developing APIs with Google Cloud's Apigee API Platform (Day 1)",
+        "details": "Agenda: Build, secure, and manage APIs using Apigee.",
+        "link": "https://meet.google.com/nhk-wmnt-bgi",
+        "recording": ""
+    },
+    "sess_35": {
+        "day": "Tue, November 25, 2025",
+        "time": "10:00 AM - 6:00 PM GMT+5:30",
+        "description": "Developing APIs with Google Cloud's Apigee API Platform (Day 2)",
+        "details": "Agenda: Continue exploring Apigee API development and deployment.",
+        "link": "https://meet.google.com/nhk-wmnt-bgi",
+        "recording": ""
+    },
+    "sess_36": {
+        "day": "Wed, November 26, 2025",
+        "time": "10:00 AM - 6:00 PM GMT+5:30",
+        "description": "Developing APIs with Google Cloud's Apigee API Platform (Day 3)",
+        "details": "Agenda: Production readiness, troubleshooting, and monitoring.",
+        "link": "https://meet.google.com/nhk-wmnt-bgi",
+        "recording": ""
+    },
+    "sess_37": {
+        "day": "Thu, November 27, 2025",
+        "time": "6:30 PM - 9:30 PM GMT+5:30",
+        "description": "Deploy a RAG application with vector search in Firestore",
+        "details": "Agenda: Learn to build no-code business apps using Google AppSheet.",
+        "link": "https://meet.google.com/rxh-gewd-yjz",
+        "recording": ""
+    },
+    "sess_38": {
+        "day": "Mon, December 1, 2025",
+        "time": "10:00 AM - 6:00 PM GMT+5:30",
+        "description": "Managing Google Cloud’s Apigee API Platform for Hybrid Cloud (Day 1)",
+        "details": "Agenda: Manage Apigee API Platform across hybrid environments.",
+        "link": "https://meet.google.com/aam-zffi-isa",
+        "recording": ""
+    },
+    "sess_39": {
+        "day": "Tue, December 2, 2025",
+        "time": "10:00 AM - 6:00 PM GMT+5:30",
+        "description": "Managing Google Cloud’s Apigee API Platform for Hybrid Cloud (Day 2)",
+        "details": "Agenda: API monitoring, hybrid deployment strategies.",
+        "link": "",
+        "recording": ""
+    },
+    "sess_40": {
+        "day": "Wed, December 3, 2025",
+        "time": "10:00 AM - 6:00 PM GMT+5:30",
+        "description": "Managing Google Cloud’s Apigee API Platform for Hybrid Cloud (Day 3)",
+        "details": "Agenda: Advanced configurations and automation.",
+        "link": "",
+        "recording": ""
+    },
+    "sess_41": {
+        "day": "Mon, December 1, 2025",
+        "time": "1:30 PM - 9:30 PM GMT+5:30",
+        "description": "Deploy Multi-Agent Systems with Agent Development Kit and Agent Engine",
+        "details": "Agenda: Learn to build, train, and deploy multi-agent systems using ADK and Agent Engine.",
+        "link": "https://meet.google.com/fna-qcou-vvq",
+        "recording": ""
+    },
+    "sess_42": {
+        "day": "Tue, December 2, 2025",
+        "time": "1:30 PM - 5:30 PM GMT+5:30",
+        "description": "Accelerate Knowledge Exchange with Gemini Enterprise",
+        "details": "Agenda: Explore Gemini Enterprise for data insights and collaboration.",
+        "link": "",
+        "recording": ""
+    },
+    "sess_43": {
+        "day": "Mon, December 1, 2025",
+        "time": "8:30 PM - 11:30 PM GMT+5:30",
+        "description": "Introduction to Gemini Enterprise",
+        "details": "Agenda: Overview of Gemini Enterprise, capabilities, and setup.",
+        "link": "https://meet.google.com/fna-qcou-vvq",
+        "recording": ""
+    },
+    "sess_44": {
+        "day": "Wed, December 17, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Architecting with Google Kubernetes Engine (Day 1)",
+        "details": "Agenda: Explore Kubernetes architecture, GKE components, and deployments.",
+        "link": "",
+        "recording": ""
+    },
+    "sess_45": {
+        "day": "Thu, December 18, 2025",
+        "time": "9:00 AM - 5:00 PM GMT+5:30",
+        "description": "Architecting with Google Kubernetes Engine (Day 2)",
+        "details": "Agenda: Advanced Kubernetes features, autoscaling, and production design.",
+        "link": "",
+        "recording": ""
+    },
+    "sess_46": {
+        "day": "Mon, December 1, 2025",
+        "time": "1:15 PM - 9:30 PM GMT+5:30",
+        "description": "Develop Apps with Conversational Agents [GenAI25224]",
+        "details": "Agenda: Build conversational AI apps with stateful agents and best practices.",
+        "link": "https://meet.google.com/sqe-mzfa-qqp",
+        "recording": ""
+    }
+}

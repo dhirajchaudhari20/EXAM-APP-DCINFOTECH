@@ -1,0 +1,261 @@
+/* Dashboard & Shared Styles */
+
+:root {
+    --primary: #f97316;
+    /* HealthifyMe Orange */
+    --bg-dark: #f3f4f6;
+    /* Now light gray */
+    --bg-card: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+}
+
+/* Sidebar (Desktop) */
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg-dark);
+}
+
+.sidebar {
+    width: 250px;
+    background: #ffffff;
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    z-index: 20;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 0 1rem;
+    color: var(--text-main);
+}
+
+.logo .highlight {
+    color: var(--primary);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav-item {
+    padding: 1rem;
+    border-radius: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.2s;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    background: #fff7ed;
+    /* Light orange tint */
+    color: var(--primary);
+}
+
+.nav-item i {
+    width: 20px;
+    text-align: center;
+}
+
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+    background: var(--bg-dark);
+}
+
+.app-container {
+    max-width: 500px;
+    /* narrowed for mobile app feel on desktop */
+    margin: 0 auto;
+    padding: 2rem;
+    padding-bottom: 80px;
+}
+
+/* Bottom Navigation (Mobile) */
+.bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 0.8rem 1rem;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.bottom-nav-item {
+    color: #9ca3af;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    flex: 1;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.bottom-nav-item i {
+    font-size: 1.25rem;
+    margin-bottom: 2px;
+}
+
+.bottom-nav-item.active {
+    color: var(--primary);
+}
+
+
+/* Mobile Responsive Tweaks */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .bottom-nav {
+        display: flex;
+    }
+
+    .app-container {
+        padding: 1rem;
+        padding-bottom: 90px;
+    }
+
+    .progress-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    .checkin-img {
+        height: 180px !important;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+    }
+
+    .comparison-bar {
+        bottom: 80px !important;
+        width: 90% !important;
+        padding: 0.8rem 1rem !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        background: #ffffff !important;
+        color: var(--text-main) !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    }
+}
+
+/* Progress Grid & Cards */
+.progress-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.checkin-card {
+    background: #ffffff;
+    border: 1px solid #f3f4f6;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+}
+
+.checkin-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.checkin-card.selected {
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.checkin-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    background: #000;
+}
+
+.checkin-info {
+    padding: 0.75rem;
+}
+
+.checkin-date {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 0.85rem;
+}
+
+.checkin-weight {
+    color: var(--primary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+/* History Items */
+.history-item {
+    transition: transform 0.2s;
+}
+
+.history-item:hover {
+    transform: translateX(5px);
+}
+
+/* App Footer Styling */
+.app-footer {
+    text-align: center;
+    padding: 1.5rem 1rem 6rem;
+    /* Bottom padding accounts for mobile nav */
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    width: 100%;
+    max-width: 500px;
+    margin-top: auto;
+}
+
+.app-footer p {
+    margin: 0.1rem 0;
+}
+
+.app-footer strong {
+    color: var(--text-main);
+}
+
+@media (min-width: 769px) {
+    .app-footer {
+        padding: 2rem 1rem;
+        /* Less bottom padding on desktop where nav is sidebar */
+    }
+}

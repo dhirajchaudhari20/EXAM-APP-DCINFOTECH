@@ -1,0 +1,120 @@
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Noto Sans', 'Noto Sans JP', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans TC', sans-serif;
+  background-color: hsl(210, 10%, 24%);
+}
+
+.login {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.login__container {
+  box-shadow: 0 20px 40px #0003;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+  flex: 1 1 100%;
+  max-width: 24rem;
+  background-color: var(--white, #fff);
+  border-radius: .25rem;
+}
+
+.login__header {
+  border-top: var(--cp-login--border);
+  border-top-left-radius: .25rem;
+  border-top-right-radius: .25rem;
+}
+
+.login__branding {
+  background-color: var(--gray-xlight, #f1f3f4);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.login__branding img {
+  max-width: 11.25rem;
+}
+
+.login__content {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+}
+
+.login__form {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+}
+
+.login__form-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.login__form button[type=submit] {
+  width: 100%;
+}
+
+.login__footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-items: flex-end;
+  padding: 1rem 2rem;
+}
+
+.login__message:not(:empty) {
+  padding-bottom: 1rem;
+}
+
+.pwd-match-error {
+  width: 100%;
+}
+
+.mat-mdc-input-element::placeholder {
+  color: #5f6368;
+  opacity: 1;
+  transition: opacity .15s;
+}
+
+.mat-mdc-input-element:not(:placeholder-shown)::placeholder {
+  opacity: 0;
+}
+
+.mat-form-field-should-float .mat-mdc-floating-label {
+  transform: translateY(-1.5em) scale(.75) !important;
+}
+
+.login-error {
+  color: #d93025;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 480px) {
+  .login__container {
+    max-width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+
+  .login__content {
+    padding: 1.5rem;
+  }
+}

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exam Sponsorship Form</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    /* Animated background */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(-45deg, #ffe4ec, #ffdede, #fff1f0, #ffe9f5);
+      background-size: 400% 400%;
+      animation: gradient 20s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: start;
+      padding: 40px 10px;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      max-width: 620px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    }
+
+    h2 {
+      text-align: center;
+      color: #c2185b;
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      margin-top: 18px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      margin-top: 6px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: #ec407a;
+      outline: none;
+      box-shadow: 0 0 5px rgba(236, 64, 122, 0.2);
+    }
+
+    button {
+      margin-top: 22px;
+      background-color: #ec407a;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #d81b60;
+    }
+
+    button.loading {
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    button .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 3px solid transparent;
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    button.loading .spinner {
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .note, .info-section {
+      margin-top: 20px;
+      font-size: 0.92em;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .note strong {
+      color: #b71c1c;
+    }
+
+    .leaderboard {
+      margin-top: 35px;
+    }
+
+    .leaderboard h3 {
+      text-align: center;
+      color: #ad1457;
+      margin-bottom: 10px;
+    }
+
+    .leaderboard ol {
+      padding-left: 20px;
+    }
+
+    .leaderboard li {
+      margin-bottom: 10px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    a {
+      color: #d81b60;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🎓 Google Cloud Certification Sponsorship</h2>
+    <form id="submissionForm">
+      <label for="name">Your Full Name</label>
+      <input type="text" id="name" required />
+
+      <label for="profile">SkillBoost Profile URL</label>
+      <input type="url" id="profile" required placeholder="https://www.cloudskillsboost.google/user/..." />
+
+      <label for="path">Learning Path Name</label>
+      <input type="text" id="path" required placeholder="e.g., Cloud Engineer Learning Path" />
+
+      <label for="completed">
+        <strong>Please confirm:</strong> Have you completed all learning paths for your certification?
+      </label>
+      <select id="completed" required>
+        <option value="">-- Select an option --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <button type="submit" id="submitBtn">
+        Submit
+        <span class="spinner"></span>
+      </button>
+    </form>
+
+    <p class="note">
+      <strong>Note:</strong> Only the <strong>first 5 complete submissions</strong> are eligible for sponsorship.
+    </p>
+
+    <div class="leaderboard">
+      <h3>📋 First 5 Submissions</h3>
+      <ol id="submissionList">Loading...</ol>
+    </div>
+
+    <div class="info-section">
+      <p>
+        This form is for tracking your progress in the Google Cloud Certification program. 
+        Please ensure you have completed all required learning paths before submitting.
+     Visit <a href="https://dcinfotech.org.in/tos" target="_blank">Terms And Privacy Policy</a> for more info.
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://sheetdb.io/api/v1/lzs82sefd8i1b";
+    const form = document.getElementById("submissionForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const submissionList = document.getElementById("submissionList");
+
+    async function fetchSubmissions() {
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        const sorted = data
+          .filter(entry => entry.timestamp)
+          .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+          .slice(0, 5);
+
+        submissionList.innerHTML = "";
+        if (sorted.length === 0) {
+          submissionList.innerHTML = "<li>No entries yet.</li>";
+        } else {
+          sorted.forEach((entry, index) => {
+            const li = document.createElement("li");
+            li.innerHTML = `${index + 1}. <strong>${entry.name}</strong> - <a href="${entry.profile}" target="_blank">SkillBoost</a> - ${entry.path} - <em>${entry.completed}</em> - <small>${new Date(entry.timestamp).toLocaleString()}</small>`;
+            submissionList.appendChild(li);
+          });
+        }
+      } catch (err) {
+        submissionList.innerHTML = "<li>⚠️ Failed to load submissions.</li>";
+      }
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const profile = document.getElementById("profile").value.trim();
+      const path = document.getElementById("path").value.trim();
+      const completed = document.getElementById("completed").value;
+      const timestamp = new Date().toISOString();
+
+      const payload = {
+        data: { name, profile, path, completed, timestamp }
+      };
+
+      submitBtn.classList.add("loading");
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Submitted!',
+            text: 'Your submission was successful.',
+            confirmButtonColor: '#ec407a'
+          });
+          form.reset();
+          fetchSubmissions();
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed!',
+            text: 'Could not submit your form.',
+            confirmButtonColor: '#ec407a'
+          });
+        }
+      } catch (err) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Network Error',
+          text: 'Please check your internet connection.',
+          confirmButtonColor: '#ec407a'
+        });
+      }
+
+      submitBtn.classList.remove("loading");
+    });
+
+    fetchSubmissions();
+  </script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exam Essentials</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      color: #202124;
+    }
+
+    header {
+      background-color: white;
+      padding: 12px 24px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: bold;
+      color: #4285F4;
+      font-size: 20px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #202124;
+      font-size: 14px;
+    }
+
+    main {
+      padding: 30px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .section-title {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 50px;
+    }
+
+    .card {
+      flex: 1 1 300px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      padding: 20px;
+    }
+
+    .card img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .card h3 {
+      font-size: 18px;
+      margin: 10px 0;
+      color: #1967d2;
+    }
+
+    .card p, .card ul {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    iframe {
+      width: 100%;
+      height: 350px;
+      border: none;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    details {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+    }
+
+    summary {
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+      color: #202124;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: white;
+      font-size: 14px;
+      border-top: 1px solid #eee;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .cards {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">Google</div>
+    <nav class="nav">
+      <a href="#">Home</a>
+      <a href="#">Certifications</a>
+      <a href="#">Live Classes</a>
+      <a href="#">FAQs</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1 class="section-title">Exam Essentials</h1>
+
+    <div class="cards">
+      <div class="card">
+        <img src="https://services.google.com/fh/files/misc/before_exam_1.png" alt="Before exam">
+        <h3>🗓️ Before the exam</h3>
+        <p>Check your timezone. Booking times are shown in 24-hour format.</p>
+      </div>
+      <div class="card">
+        <h3>Name–ID Match</h3>
+        <p>Ensure the ID you show matches your Webassessor profile name. <a href="#">Update name</a></p>
+      </div>
+      <div class="card">
+        <h3>Exam Reschedule</h3>
+        <p>Use Webassessor to reschedule before the deadline. <a href="#">Log in</a></p>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <img src="https://services.google.com/fh/files/misc/exam_dayyy.png" alt="On exam day">
+        <h3>📆 On exam day</h3>
+        <p>Have your government-issued photo ID ready for identity verification.</p>
+      </div>
+      <div class="card">
+        <h3>Remote Proctored</h3>
+        <ul>
+          <li>Login 15 minutes early</li>
+          <li>Click "Launch" on My Assessments</li>
+          <li>Exam starts within 20 minutes</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Onsite Proctored</h3>
+        <ul>
+          <li>Arrive 15 minutes early</li>
+          <li>Bring valid photo ID</li>
+          <li>No personal items allowed</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 style="margin-top: 40px;">🎥 Watch Exam Do's and Don'ts</h2>
+    <iframe src="https://www.youtube.com/embed/8bc3jd9Z5Rw" allowfullscreen></iframe>
+
+    <details open>
+      <summary>✅ Essential Requirements</summary>
+      <ul>
+        <li>Install secure browser</li>
+        <li>Strong internet connection</li>
+        <li>Camera and mic must stay on</li>
+        <li>No one else in room</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>📋 Testing Environment</summary>
+      <ul>
+        <li>Quiet, private, well-lit room</li>
+        <li>Remove all devices and papers</li>
+        <li>No food, drink, headphones</li>
+        <li>Do not leave camera view</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>🚫 Prohibited Actions</summary>
+      <ul>
+        <li>No whispering or talking</li>
+        <li>No screenshots</li>
+        <li>No breaks allowed</li>
+      </ul>
+    </details>
+
+    <div class="card">
+      <h3>🔁 Retake Policy</h3>
+      <p>If you need to retake, read the <a href="#">Retake Policy</a> carefully. Do not create duplicate accounts.</p>
+    </div>
+  </main>
+
+  <footer>
+    Google • Privacy • Terms • FAQs
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Schedule Data Visualization - DC Cloud Solutions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9fbfd;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background-color: #1a73e8;
+            /* Google Blue */
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header .logo-icon {
+            font-size: 1.8rem;
+        }
+
+        /* Main Content */
+        .container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            padding-left: 35px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            width: 16px;
+            height: 16px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: #1a73e8;
+            /* Google Blue */
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1557b0;
+        }
+
+        .btn-outline {
+            background-color: white;
+            border: 1px solid #dadce0;
+            color: #1a73e8;
+        }
+
+        .btn-outline:hover {
+            background-color: #f1f3f4;
+        }
+
+        /* Data Table Container */
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            /* Horizontal scroll for small screens */
+        }
+
+        /* Table Styles - imitating Google Sheets/Excel feel */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #5f6368;
+            border-right: 1px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            background: #f8f9fa;
+        }
+
+        th:last-child {
+            border-right: none;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f3f4;
+            border-right: 1px solid #f1f3f4;
+            color: #3c4043;
+        }
+
+        td:last-child {
+            border-right: none;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-scheduled {
+            background-color: #e6f4ea;
+            color: #137333;
+        }
+
+        .status-completed {
+            background-color: #e8f0fe;
+            color: #1967d2;
+        }
+
+        .status-cancelled {
+            background-color: #fce8e6;
+            color: #c5221f;
+        }
+
+        /* Loading State */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .toolbar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>
+            <span class="logo-icon">&#128202;</span> <!-- Bar chart emoji as icon -->
+            Exam Schedule Data
+        </h1>
+        <div class="user-profile">
+            <!-- Could add user profile info here if available -->
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div class="toolbar">
+            <div class="search-box">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                        d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                </svg>
+                <input type="text" id="searchInput" placeholder="Search exams...">
+            </div>
+            <div class="actions">
+                <button id="refreshBtn" class="btn btn-outline">
+                    &#x21bb; Refresh
+                </button>
+                <button id="downloadBtn" class="btn btn-primary">
+                    Download CSV
+                </button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="examTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User Email</th>
+                        <th>Exam Name</th>
+                        <th>Date & Time</th>
+                        <th>Invite Email</th>
+                        <th>Voucher Code</th>
+                        <th>Status</th>
+                        <th>Scheduled At</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="8" class="loading-spinner">Loading data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <footer>
+            DC Cloud Solutions - Exam Portal Admin
+        </footer>
+    </div>
+
+    <script>
+        const API_URL = 'https://sheetdb.io/api/v1/xe72jnfa2jsib';
+        let allData = [];
+
+        // Fetch Data Function
+        async function fetchData() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '<tr><td colspan="8" class="loading-spinner">Loading data...</td></tr>';
+
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Failed to fetch data');
+
+                allData = await response.json();
+                renderTable(allData);
+            } catch (error) {
+                console.error('Error:', error);
+                tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:red; padding:20px;">Error loading data: ${error.message}</td></tr>`;
+            }
+        }
+
+        // Render Table Function
+        function renderTable(data) {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            if (data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px;">No records found.</td></tr>';
+                return;
+            }
+
+            // Sort by date (newest first)
+            data.sort((a, b) => new Date(b.dateTime) - new Date(a.dateTime));
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+
+                // Format Date
+                const dateObj = new Date(item.dateTime);
+                const dateStr = dateObj.toLocaleString();
+
+                // Determine Status Class
+                let statusClass = 'status-scheduled'; // Default
+                if (item.status === 'Completed') statusClass = 'status-completed';
+                if (item.status === 'Cancelled') statusClass = 'status-cancelled';
+
+                // Handle missing fields gracefully
+                const id = item.id || '-';
+                const userEmail = item.userEmail || '-';
+                const name = item.name || '-';
+                const inviteEmail = item.gmail || '-';
+                const voucher = item.voucherCode || '-';
+                const status = item.status || 'Scheduled';
+                const scheduledAt = item.scheduledAt ? new Date(item.scheduledAt).toLocaleString() : '-';
+
+                row.innerHTML = `
+                    <td>${id}</td>
+                    <td>${userEmail}</td>
+                    <td>${name}</td>
+                    <td>${dateStr}</td>
+                    <td>${inviteEmail}</td>
+                    <td>${voucher}</td>
+                    <td><span class="status-badge ${statusClass}">${status}</span></td>
+                    <td>${scheduledAt}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Search Functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredData = allData.filter(item => {
+                return Object.values(item).some(val =>
+                    String(val).toLowerCase().includes(searchTerm)
+                );
+            });
+            renderTable(filteredData);
+        });
+
+        // CSV Export Functionality
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            if (allData.length === 0) {
+                alert('No data to export!');
+                return;
+            }
+
+            // Define CSV Headers
+            const headers = ['ID', 'User Email', 'Exam Name', 'Date & Time', 'Invite Email', 'Voucher Code', 'Status', 'Scheduled At'];
+
+            // Map data to CSV rows
+            const rows = allData.map(item => [
+                item.id,
+                item.userEmail,
+                item.name,
+                item.dateTime, // Keep ISO string for better machine readability in CSV? Or format it? Let's keep raw or ISO.
+                item.gmail,
+                item.voucherCode,
+                item.status || 'Scheduled',
+                item.scheduledAt
+            ]);
+
+            // Combine headers and rows
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(field => `"${String(field || '').replace(/"/g, '""')}"`).join(',')) // Escape quotes and wrap in quotes
+            ].join('\n');
+
+            // Create Blob and Download Link
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `exam_schedule_data_${new Date().toISOString().slice(0, 10)}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        // Initialize
+        document.getElementById('refreshBtn').addEventListener('click', fetchData);
+        fetchData();
+
+    </script>
+</body>
+
+</html>

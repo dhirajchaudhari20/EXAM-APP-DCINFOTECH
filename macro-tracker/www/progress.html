@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Tracking - MacroAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .checkin-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .checkin-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .checkin-card.selected {
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 15px rgba(108, 92, 231, 0.3);
+        }
+
+        .checkin-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .checkin-info {
+            padding: 1rem;
+        }
+
+        .checkin-date {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .checkin-weight {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Comparison Bar */
+        .comparison-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            z-index: 900;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .comparison-bar.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Analysis Result */
+        .analysis-result {
+            background: rgba(108, 92, 231, 0.1);
+            border: 1px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .analysis-result.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar (Shared) -->
+        <aside class="sidebar">
+            <div class="logo">Macro<span class="highlight">AI</span></div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="history.html" class="nav-item"><i class="fas fa-history"></i> History</a>
+                <a href="#" class="nav-item active"><i class="fas fa-chart-line"></i> Progress</a>
+                <a href="index.html" class="nav-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="app-container" style="max-width: 1200px;">
+                <header style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h1>Transformation <span class="highlight">Tracker</span></h1>
+                        <p class="subtitle">Document your journey, week by week.</p>
+                    </div>
+                    <button id="addCheckinBtn" class="btn"><i class="fas fa-camera"></i> Add Check-in</button>
+                </header>
+
+                <!-- Analysis Output -->
+                <div id="analysisResult" class="analysis-result">
+                    <h3><i class="fas fa-magic"></i> AI Analysis</h3>
+                    <p id="analysisText">Analyzing differences...</p>
+                </div>
+
+                <!-- Gallery -->
+                <div id="progressGrid" class="progress-grid">
+                    <!-- Cards injected via JS -->
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-muted);">
+                        <i class="fas fa-spinner fa-spin"></i> Loading photos...
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Comparison Action Bar -->
+    <div id="comparisonBar" class="comparison-bar">
+        <span><span id="selectedCount">0</span> selected</span>
+        <button id="compareBtn" class="btn btn-small">Compare with AI</button>
+        <button id="cancelSelectionBtn" class="btn btn-outline btn-small" style="padding: 0.5rem 1rem;">Cancel</button>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <h2>Add Progress Entry</h2>
+            <div id="checkinWeekLabel"
+                style="font-size:0.9rem; color:var(--primary); margin-bottom: 1rem; font-weight:600;">Day 1 Entry</div>
+
+            <div class="input-group">
+                <label>Date</label>
+                <input type="date" id="checkinDate"
+                    style="width:100%; padding:10px; background:rgba(0,0,0,0.3); border:1px solid #444; color:white; border-radius:8px;">
+            </div>
+
+            <h3 style="margin-top: 1.5rem; font-size:1rem; border-bottom:1px solid #333; padding-bottom:0.5rem;">Photos
+                (Required)</h3>
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top:1rem;">
+                <div class="input-group">
+                    <label style="font-size:0.8rem">Front</label>
+                    <input type="file" id="checkinPhotoFront" accept="image/*" style="width:100%; font-size: 0.7rem;">
+                    <div id="photoPreviewFront"
+                        style="margin-top:5px; height:80px; background:#000; display:none; background-size:cover; background-position:center; border-radius:4px;">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label style="font-size:0.8rem">Back</label>
+                    <input type="file" id="checkinPhotoBack" accept="image/*" style="width:100%; font-size: 0.7rem;">
+                    <div id="photoPreviewBack"
+                        style="margin-top:5px; height:80px; background:#000; display:none; background-size:cover; background-position:center; border-radius:4px;">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label style="font-size:0.8rem">Side</label>
+                    <input type="file" id="checkinPhotoSide" accept="image/*" style="width:100%; font-size: 0.7rem;">
+                    <div id="photoPreviewSide"
+                        style="margin-top:5px; height:80px; background:#000; display:none; background-size:cover; background-position:center; border-radius:4px;">
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem; font-size:1rem; border-bottom:1px solid #333; padding-bottom:0.5rem;">
+                Measurements (inches)</h3>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:1rem;">
+                <div class="input-group">
+                    <label style="font-size:0.8rem">Weight (kg/lbs)</label>
+                    <input type="number" id="checkinWeight" placeholder="e.g. 75.5"
+                        style="width:100%; padding:8px; background:rgba(0,0,0,0.3); border:1px solid #444; color:white; border-radius:8px;">
+                </div>
+                <div class="input-group">
+                    <label style="font-size:0.8rem">Arms</label>
+                    <input type="number" id="checkinArms" placeholder="e.g. 15"
+                        style="width:100%; padding:8px; background:rgba(0,0,0,0.3); border:1px solid #444; color:white; border-radius:8px;">
+                </div>
+                <div class="input-group">
+                    <label style="font-size:0.8rem">Chest</label>
+                    <input type="number" id="checkinChest" placeholder="e.g. 40"
+                        style="width:100%; padding:8px; background:rgba(0,0,0,0.3); border:1px solid #444; color:white; border-radius:8px;">
+                </div>
+                <div class="input-group">
+                    <label style="font-size:0.8rem">Waist</label>
+                    <input type="number" id="checkinWaist" placeholder="e.g. 32"
+                        style="width:100%; padding:8px; background:rgba(0,0,0,0.3); border:1px solid #444; color:white; border-radius:8px;">
+                </div>
+                <div class="input-group">
+                    <label style="font-size:0.8rem">Abs (Navel)</label>
+                    <input type="number" id="checkinAbs" placeholder="e.g. 34"
+                        style="width:100%; padding:8px; background:rgba(0,0,0,0.3); border:1px solid #444; color:white; border-radius:8px;">
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-top:1rem;">
+                <label>Notes</label>
+                <textarea id="checkinNotes" placeholder="How was this week?"
+                    style="width:100%; padding:10px; background:rgba(0,0,0,0.3); border:1px solid #444; color:white; border-radius:8px;"></textarea>
+            </div>
+
+            <div style="margin-top:1.5rem; display:flex; gap:10px; justify-content:flex-end;">
+                <button id="closeModalBtn" class="btn btn-outline" style="color:white; border:none;">Cancel</button>
+                <button id="saveCheckinBtn" class="btn">Save Check-in</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation for Mobile -->
+    <nav class="bottom-nav">
+        <a href="dashboard.html" class="bottom-nav-item"><i class="fas fa-home"></i> Home</a>
+        <a href="history.html" class="bottom-nav-item"><i class="fas fa-history"></i> History</a>
+        <a href="#" class="bottom-nav-item active"><i class="fas fa-chart-line"></i> Progress</a>
+        <a href="index.html" class="bottom-nav-item"><i class="fas fa-sign-out-alt"></i></a>
+    </nav>
+
+    <!-- Goal 20: Creator Footer & Version -->
+    <footer class="app-footer">
+        <p>Designed & Developed by <strong>Dhiraj Chaudhari</strong></p>
+        <p id="app-version-display">v1.0.0</p>
+    </footer>
+
+    <script type="module" src="progress.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Syllabus Theory Quiz</title>
+    <style>
+        /* CSS for KBC-Style Theme and Animation */
+        :root {
+            --primary-color: #0056b3;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --accent-color: #ffc107;
+            --text-color: #333;
+            --bg-color: #f4f4f9;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            width: 95%;
+            max-width: 800px;
+            border-top: 5px solid var(--accent-color);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        /* Question Block Styling */
+        .question-block {
+            margin-bottom: 30px;
+            padding: 25px;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            background-color: #ffffff;
+            transition: transform 0.3s ease-out;
+            position: relative;
+        }
+
+        .question-block p {
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-size: 1.25em;
+        }
+
+        .answers label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .answers label:hover:not(.checked) {
+            background-color: #e6f0ff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Check Button */
+        .check-button {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .check-button:hover:not(:disabled) {
+            background-color: #1e7e34;
+        }
+
+        .check-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        /* Feedback Animation */
+        .feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none;
+            text-align: center;
+            animation: pulse 0.5s 2;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .feedback.correct {
+            background-color: #d4edda;
+            color: var(--success-color);
+        }
+
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            color: var(--danger-color);
+        }
+
+        /* Highlighting Styles */
+        .correct-answer-highlight {
+            background-color: #c3e6cb !important;
+            border-color: var(--success-color) !important;
+            animation: correctFlash 0.5s 3;
+        }
+        @keyframes correctFlash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .incorrect-selection-highlight {
+            background-color: #f5c6cb !important;
+            border-color: var(--danger-color) !important;
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        /* Timer and Score Display */
+        #status-bar {
+            position: sticky;
+            top: 0;
+            background: #212529;
+            color: white;
+            padding: 10px 0;
+            margin: -40px -40px 30px -40px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-around;
+            font-size: 1.1em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #status-bar div {
+            padding: 0 20px;
+        }
+        
+        #final-score {
+            text-align: center;
+            margin-top: 30px;
+            padding: 25px;
+            font-size: 1.6em;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        #final-score strong {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>ML Syllabus (Theory Only)</h1>
+        
+        <div id="status-bar">
+            <div id="q-counter">Question: 1/30</div>
+            <div id="score">Score: 0</div>
+            <div id="timer">Time: 0s</div>
+        </div>
+
+        <div id="quiz">
+            </div>
+        
+        <div id="final-score"></div>
+    </div>
+    <script>
+        /* JavaScript (Logic for interaction and timing) */
+        const quizQuestions = [
+            // Module I: Introduction & Concepts
+            { question: "1. The main challenge discussed in Module I where a model learns the noise in the training data is called:", options: ["Underfitting", "Model Inflexibility", "Overfitting", "Data Leakage"], correctAnswer: "Overfitting" },
+            { question: "2. Which of the following is a step in developing a Machine Learning Application, as mentioned in the syllabus content?", options: ["Model Deployment", "Application of Machine Learning", "Bias-Variance trade-off", "Dimensionality Reduction"], correctAnswer: "Application of Machine Learning" },
+            { question: "3. The concept of **Overfitting** is discussed alongside which other concept in Module I?", options: ["Logistic Regression", "Expectation Minimization", "Bias-Variance trade-off", "Singular Value Decomposition"], correctAnswer: "Bias-Variance trade-off" },
+            { question: "4. The Course Outcome (CO) related to **selecting, applying, and evaluating** an appropriate machine learning model for a given problem is:", options: ["CO1: Fundamental Knowledge", "CO2: Model Selection and Evaluation", "CO3: Ensemble Demonstration", "CO4: Classification Understanding"], correctAnswer: "CO2: Model Selection and Evaluation" },
+            { question: "5. A model's ability to perform well on previously unseen data is measured by its:", options: ["Training Accuracy", "Bias", "Variance", "Generalization Error"], correctAnswer: "Generalization Error" },
+            
+            // Module II: Regression and Trees
+            { question: "6. Which type of regression is explicitly listed under the 'Learning with Regression' section?", options: ["Polynomial Regression", "Ridge Regression", "Logistic Regression", "Lasso Regression"], correctAnswer: "Logistic Regression" },
+            { question: "7. **Decision Trees** are constructed using which impurity measure in Module II?", options: ["Entropy", "Gini Index", "Chi-Square", "Variance"], correctAnswer: "Gini Index" },
+            { question: "8. Which of the following is a Performance Metric included in Module II's content?", options: ["R-squared", "Mean Squared Error", "Recall", "Area Under the Curve (AUC)"], correctAnswer: "Recall" },
+            { question: "9. The primary goal of **Regularization** techniques (like L1/L2) in regression is to:", options: ["Increase model training speed", "Reduce model variance/overfitting", "Boost model complexity", "Handle missing data"], correctAnswer: "Reduce model variance/overfitting" },
+            { question: "10. Which algorithm is listed as an experiment to be implemented?", options: ["Expectation Minimization", "Linear Discriminant Analysis (LDA)", "K-Means", "Support Vector Regression"], correctAnswer: "Linear Discriminant Analysis (LDA)" },
+            
+            // Module III: Ensemble Learning
+            { question: "11. Which concept is listed as a self-learning topic under the Ensemble Learning module?", options: ["Role of Classifiers", "Fundamentals of ML", "Decision Trees", "Linear Analysis"], correctAnswer: "Decision Trees" },
+            { question: "12. **XGBoost** is categorized under which ensemble technique in the syllabus content?", options: ["Bagging", "Subagging", "Boosting", "Random Forest"], correctAnswer: "Boosting" },
+            { question: "13. The main principle of the **Bagging** ensemble technique (used in Random Forest) is to:", options: ["Sequentially correct previous errors (Boosting)", "Introduce randomness to reduce variance", "Weight samples based on error", "Convert a non-linear problem to linear"], correctAnswer: "Introduce randomness to reduce variance" },
+            { question: "14. Which ensemble technique is compared with Boosting in the module content?", options: ["Subagging", "Bagging", "Stumping", "XGBoost"], correctAnswer: "Bagging" },
+            { question: "15. The **Kernel Trick** is a fundamental concept for which classification algorithm in Module IV?", options: ["Logistic Regression", "Decision Trees", "Naive Bayes", "Support Vector Machine (SVM)"], correctAnswer: "Support Vector Machine (SVM)" },
+            
+            // Module IV: Learning with Classification
+            { question: "16. Support Vector Machine (SVM) is formulated as which type of problem in the syllabus?", options: ["Convex Optimization", "Quadratic Programming", "Linear Programming", "Gradient Descent"], correctAnswer: "Quadratic Programming" },
+            { question: "17. The basic concept that makes SVM work for non-linear classification is: ", options: ["The Confusion Matrix", "The Kernel trick", "Constrained Optimization", "Multiclass Classification"], correctAnswer: "The Kernel trick" },
+            { question: "18. Which metric is used to summarize the performance of a classification model across all possible classification thresholds?", options: ["R-squared", "Precision-Recall Curve", "Area Under the Curve (AUC) - ROC", "Mean Absolute Error"], correctAnswer: "Area Under the Curve (AUC) - ROC" },
+            { question: "19. The purpose of the **Loss Function** in training a classification model is to:", options: ["Calculate the model's prediction speed", "Select the best features", "Measure the error/difference between prediction and truth", "Normalize the input data"], correctAnswer: "Measure the error/difference between prediction and truth" },
+            { question: "20. The Course Objective specifically dedicated to reducing the number of input features is:", options: ["To introduce basic concepts", "To apply supervised and unsupervised algorithms", "To apply ensemble techniques", "To demonstrate dimensionality reduction techniques"], correctAnswer: "To demonstrate dimensionality reduction techniques" },
+            
+            // Module V: Learning with Clustering
+            { question: "21. Which clustering approach involves the **Expectation Maximization Algorithm**?", options: ["Graph Based Clustering", "Density Based Clustering", "Model based Clustering", "Hierarchical Clustering"], correctAnswer: "Model based Clustering" },
+            { question: "22. **DBSCAN** is listed as a technique under which clustering approach?", options: ["Graph Based Clustering", "Density Based Clustering", "Model based Clustering", "Spectral Clustering"], correctAnswer: "Density Based Clustering" },
+            { question: "23. Graph Based Clustering specifically involves clustering with a:", options: ["Max-flow min-cut theorem", "Minimal spanning tree", "K-d tree", "Bipartite graph"], correctAnswer: "Minimal spanning tree" },
+            { question: "24. The **K-Means** algorithm minimizes which specific metric to define clusters?", options: ["Total Variance (TSS)", "The sum of squared distances to the cluster mean", "Gini Impurity", "Maximal Margin"], correctAnswer: "The sum of squared distances to the cluster mean" },
+            { question: "25. The core principle of **Principal Component Analysis (PCA)** in dimensionality reduction is to:", options: ["Maximize class separability (LDA goal)", "Find axes that maximize variance in data", "Select the features with the highest correlation", "Cluster high-dimensional data"], correctAnswer: "Find axes that maximize variance in data" },
+            
+            // Module VI: Dimensionality Reduction & References
+            { question: "26. Which of the following is *not* listed as a Dimensionality Reduction Technique in Module VI?", options: ["Principal Component Analysis (PCA)", "Linear Discriminant Analysis (LDA)", "Singular Valued Decomposition (SVD)", "Independent Component Analysis (ICA)"], correctAnswer: "Independent Component Analysis (ICA)" },
+            { question: "27. **Linear Discriminant Analysis (LDA)** is distinct from PCA because it focuses on:", options: ["Finding axes that maximize data variance", "Finding axes that maximize class separability", "Decomposing the data into singular values", "Iteratively refining cluster centers"], correctAnswer: "Finding axes that maximize class separability" },
+            { question: "28. Which author wrote the textbook listed in the syllabus as 'Machine Learning: A Probabilistic Perspective'?", options: ["Tom M. Mitchell", "Ethem Alpaydın", "Kevin P. Murphy", "Stephen Marsland"], correctAnswer: "Kevin P. Murphy" },
+            { question: "29. The textbook 'Pattern Classification' is listed under the reference books. Its authors include Richard Duda, Peter Hart, and:", options: ["Han Kamber", "Margaret H. Dunham", "David G. Stork", "Samir Roy"], correctAnswer: "David G. Stork" },
+            { question: "30. Which website is explicitly listed in the syllabus under 'Useful Links' as a source for Machine Learning datasets?", options: ["archive.ics.uci.edu/ml", "towardsdatascience.com", "onlinecourses.nptel.ac.in", "www.kaggle.com/datasets"], correctAnswer: "www.kaggle.com/datasets" }
+        ];
+
+        const quizContainer = document.getElementById('quiz');
+        const finalScoreContainer = document.getElementById('final-score');
+        const scoreDisplay = document.getElementById('score');
+        const qCounterDisplay = document.getElementById('q-counter');
+        const timerDisplay = document.getElementById('timer');
+        
+        let totalCorrect = 0;
+        let questionsAnswered = 0;
+        let totalTime = 0;
+        let timerInterval;
+
+        // --- Timer Functions ---
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                totalTime++;
+                timerDisplay.textContent = `Time: ${totalTime}s`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        // --- Quiz Building and Logic ---
+        function buildQuiz() {
+            const output = [];
+            quizQuestions.forEach((currentQuestion, questionNumber) => {
+                const answers = [];
+                for (const [key, text] of Object.entries(currentQuestion.options)) {
+                    const optionLetter = String.fromCharCode(65 + parseInt(key));
+                    answers.push(
+                        `<label for="q${questionNumber}o${key}">
+                            <input type="radio" id="q${questionNumber}o${key}" name="question${questionNumber}" value="${text}">
+                            ${optionLetter}) ${text}
+                        </label>`
+                    );
+                }
+
+                output.push(
+                    `<div class="question-block" id="qblock${questionNumber}">
+                        <p>${currentQuestion.question}</p>
+                        <div class="answers" id="answers${questionNumber}">${answers.join('')}</div>
+                        <button class="check-button" data-q-id="${questionNumber}">Lock Kar Diya Jaye! (Check Answer)</button>
+                        <div class="feedback" id="feedback${questionNumber}"></div>
+                    </div>`
+                );
+            });
+
+            quizContainer.innerHTML = output.join('');
+            
+            document.querySelectorAll('.check-button').forEach(button => {
+                button.addEventListener('click', checkAnswer);
+            });
+
+            startTimer();
+        }
+
+        function checkAnswer(event) {
+            const button = event.target;
+            const questionNumber = parseInt(button.getAttribute('data-q-id'));
+            const currentQuestion = quizQuestions[questionNumber];
+            const answerContainer = document.getElementById(`answers${questionNumber}`);
+            const feedbackElement = document.getElementById(`feedback${questionNumber}`);
+            
+            const selectedInput = answerContainer.querySelector(`input[name="question${questionNumber}"]:checked`);
+            
+            if (!selectedInput) {
+                // KBC-style "Time Out" alert
+                alert("Please make a selection! The clock is ticking!");
+                return;
+            }
+
+            const userAnswer = selectedInput.value;
+            const isCorrect = userAnswer === currentQuestion.correctAnswer;
+            
+            // --- Highlighting Logic ---
+            const allLabels = answerContainer.querySelectorAll('label');
+            allLabels.forEach(label => {
+                const input = label.querySelector('input');
+                // Disable all radio buttons after checking
+                input.disabled = true;
+
+                // Identify the correct answer label and apply green flash
+                if (input.value === currentQuestion.correctAnswer) {
+                    label.classList.add('correct-answer-highlight');
+                }
+                
+                // Identify the user's incorrect selection (if any) and apply red shake
+                if (input === selectedInput && !isCorrect) {
+                    label.classList.add('incorrect-selection-highlight');
+                }
+            });
+
+            // --- Feedback Logic and Scoring ---
+            feedbackElement.style.display = 'block';
+            if (isCorrect) {
+                feedbackElement.className = 'feedback correct';
+                feedbackElement.textContent = "Sahi Jawab! (Correct Answer)";
+                totalCorrect++;
+            } else {
+                feedbackElement.className = 'feedback incorrect';
+                feedbackElement.textContent = `Afsos! (Incorrect). The correct answer was: ${currentQuestion.correctAnswer}`;
+            }
+            scoreDisplay.textContent = `Score: ${totalCorrect}`;
+
+            // Disable the current button and update total questions answered
+            button.disabled = true;
+            questionsAnswered++;
+            
+            updateStatus();
+        }
+        
+        function updateStatus() {
+            // Only update counter if there are questions remaining
+            if (questionsAnswered < quizQuestions.length) {
+                qCounterDisplay.textContent = `Question: ${questionsAnswered + 1}/${quizQuestions.length}`;
+            } else {
+                qCounterDisplay.textContent = `Quiz Complete`;
+                stopTimer();
+                showFinalScore();
+            }
+        }
+        
+        function showFinalScore() {
+            const percentage = ((totalCorrect / quizQuestions.length) * 100).toFixed(1);
+            finalScoreContainer.style.display = 'block';
+            finalScoreContainer.innerHTML = `
+                **CONGRATULATIONS! QUIZ COMPLETE.**<br><br>
+                You answered **${totalCorrect}** out of **${quizQuestions.length}** correctly.<br>
+                Your Final Score: <strong>${percentage}%</strong><br>
+                Total Time Taken: <strong>${totalTime} seconds</strong>
+            `;
+        }
+
+        // Initialize the quiz
+        buildQuiz();
+    </script>
+</body>
+</html>

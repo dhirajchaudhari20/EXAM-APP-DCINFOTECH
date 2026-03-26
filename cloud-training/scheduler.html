@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Follow-up Call - DC Cloud Solutions</title>
+    <!-- CSS Dependencies -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/dashboard-revamp.css"> <!-- Google Meet Styles -->
+    <!-- JS Dependencies (Removed Notiflix) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <style>
+        /* Local overrides if needed, most styles in dashboard-revamp.css */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .booking-wrapper {
+            max-width: 1000px;
+            margin: 40px auto;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .header {
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .header h2 {
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .date-selector {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            scrollbar-width: thin;
+        }
+
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img src="https://dcinfotech.org.in/assets/img/logo.png" alt="DC Cloud Solutions" height="28">
+            <span>Cloud Training Portal</span>
+        </div>
+        <div class="navbar-user">
+            <span class="user-avatar"><i class="fas fa-user"></i></span>
+        </div>
+    </nav>
+
+    <div class="booking-wrapper">
+        <div class="header">
+            <h2><i class="fas fa-calendar-check"></i> Schedule Follow-up Call</h2>
+            <p class="text-secondary">Book your weekly sync-up. Available 24/7 (Mon-Sun).</p>
+
+            <!-- DEMO BUTTON -->
+            <div class="card"
+                style="margin-top: 24px; border-left: 4px solid #137333; display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 16px;">
+                <div>
+                    <strong style="color: #137333;">Want to test the AI Agent?</strong>
+                    <div style="font-size: 13px; color: #5f6368;">Start a demo call immediately without booking.</div>
+                </div>
+                <a href="agent.html" class="btn-start-call" style="background: #137333; color: white;">
+                    <i class="fas fa-robot"></i> Try Demo
+                </a>
+            </div>
+        </div>
+
+        <!-- My Bookings Section -->
+        <div class="card my-bookings" id="myBookings" style="display: none; margin-bottom: 24px;">
+            <h4><i class="fas fa-calendar-day"></i> Your Upcoming Calls</h4>
+            <div id="bookingsList"></div>
+        </div>
+
+        <div class="card">
+            <h4 class="mb-3">Select Date</h4>
+            <div class="date-selector" id="dateSelector">
+                <!-- Dates injected dynamically via JS -->
+            </div>
+
+            <div id="slotsContainer" style="margin-top: 24px;">
+                <h4 class="mb-3">Available Slots (24 Hours)</h4>
+                <div class="slots-grid" id="slotsGrid">
+                    <!-- Slots injected dynamically -->
+                    <p class="text-secondary">Select a date to view slots.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card form-section" id="bookingForm" style="display: none; margin-top: 24px;">
+            <h4 class="mb-3">Confirm Booking</h4>
+            <div class="form-group mb-3">
+                <label class="form-label">Intern Name</label>
+                <input type="text" class="form-control" id="internName" readonly>
+            </div>
+            <div class="form-group mb-3">
+                <label class="form-label">Batch</label>
+                <input type="text" class="form-control" id="internBatch" readonly>
+            </div>
+            <div class="form-group mb-3">
+                <label class="form-label">Email (for confirmation)</label>
+                <input type="email" class="form-control" id="guestEmailInput" placeholder="Enter your email">
+            </div>
+            <div class="form-group mb-3">
+                <label class="form-label">Discussion Topic</label>
+                <select class="form-control" id="topicSelect">
+                    <option value="Weekly Progress">Weekly Progress</option>
+                    <option value="Project Blocker">Project Blocker</option>
+                    <option value="General Query">General Query</option>
+                </select>
+            </div>
+            <div style="text-align: right; margin-top: 16px;">
+                <button class="btn-confirm" id="confirmBtn" onclick="confirmBooking()">
+                    <span>Confirm Booking</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="https://dcinfotech.org.in/assets/img/logo.png" alt="DC Cloud Solutions" height="20"
+                    style="opacity: 0.6;">
+            </div>
+            <span class="footer-text" style="font-size: 0.75rem;">TDES and DE by DC Cloud Solutions Cloud Solutions 2025</span>
+            <div class="footer-links">
+                <a href="https://dcinfotech.org.in" target="_blank">Home</a>
+                <a href="https://dcinfotech.org.in/about" target="_blank">About</a>
+                <a href="support.html">Support</a>
+                <a href="feedback.html">Feedback</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toast" class="toast-notification"></div>
+
+    <script>
+        // 1. Config & Init (Same config as other files)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCohKlqNu0I1sXcLW4D_fv-OEw9x0S50q8",
+            authDomain: "dc-infotechpvt-1-d1a4b.firebaseapp.com",
+            databaseURL: "https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com",
+            projectId: "dc-infotechpvt-1-d1a4b",
+            storageBucket: "dc-infotechpvt-1-d1a4b.firebasestorage.app",
+            messagingSenderId: "622552457680",
+            appId: "1:622552457680:web:4b80e21e14e2b8266f19d5"
+        };
+        try {
+            firebase.initializeApp(firebaseConfig);
+        } catch (e) { console.error("Firebase Init Error", e); }
+        const db = firebase.database();
+
+        let selectedDate = null;
+        let selectedSlot = null;
+        let currentUser = null;
+
+        // Custom Toast Function
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById("toast");
+            toast.innerText = message;
+            toast.className = "toast-notification show";
+            setTimeout(function () {
+                toast.className = toast.className.replace("show", "");
+            }, duration);
+        }
+
+        // 2. Load User & Auth
+        document.addEventListener('DOMContentLoaded', () => {
+            // Try to restore user from localStorage first for immediate UI
+            const stored = localStorage.getItem('cloudUser');
+            if (stored) {
+                currentUser = JSON.parse(stored);
+                updateUIWithUser();
+            }
+
+            // Handle Firebase Auth
+            firebase.auth().onAuthStateChanged(user => {
+                if (user) {
+                    console.log("User authenticated:", user.uid);
+                    if (!currentUser) currentUser = { name: user.displayName, email: user.email };
+                    if (!currentUser.email) currentUser.email = user.email;
+                    updateUIWithUser();
+                } else {
+                    console.warn("No user signed in. Attempting Guest Mode.");
+                    // Try anon auth, but if it fails, just go to Guest Mode
+                    firebase.auth().signInAnonymously()
+                        .then(() => console.log("Anon auth success"))
+                        .catch(err => console.warn("Anon auth failed, using Guest Mode anyway:", err))
+                        .finally(() => {
+                            if (!currentUser) {
+                                currentUser = { name: "Guest User", email: "guest@dcinfotech.org.in", batch: "TEST" };
+                            }
+                            updateUIWithUser();
+                        });
+                }
+            });
+        });
+
+        function updateUIWithUser() {
+            if (currentUser && currentUser.email) {
+                document.getElementById('internName').value = currentUser.name || "User";
+                document.getElementById('internBatch').value = currentUser.batch || 'ACE24';
+                // Hide email input if logged in
+                const emailGroup = document.getElementById('guestEmailInput').closest('.form-group');
+                if (emailGroup) emailGroup.style.display = 'none';
+
+                localStorage.setItem('cloudUser', JSON.stringify(currentUser));
+                loadUserBookings();
+            } else {
+                // Guest mode
+                document.getElementById('internName').value = "Guest";
+                document.getElementById('internBatch').value = "N/A";
+            }
+            generateDates();
+        }
+
+        // 3. Generate Dates (Next 7 Days - 24/7 Availability)
+        function generateDates() {
+            const container = document.getElementById('dateSelector');
+            const today = new Date();
+            const dates = [];
+
+            // Generate next 7 days
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(today);
+                d.setDate(today.getDate() + i);
+                dates.push(d);
+            }
+
+            container.innerHTML = '';
+            dates.forEach((dateObj, index) => {
+                // Use local date string to avoid TZ issues
+                const year = dateObj.getFullYear();
+                const monthPad = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const dayPad = String(dateObj.getDate()).padStart(2, '0');
+                const dateStr = `${year}-${monthPad}-${dayPad}`;
+
+                const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+                const dayNum = dateObj.getDate();
+                const month = dateObj.toLocaleDateString('en-US', { month: 'short' });
+
+                const card = document.createElement('div');
+                card.className = 'date-card';
+                // Only auto-select if nothing selected
+                if (index === 0 && !selectedDate) card.classList.add('active');
+
+                card.innerHTML = `<div>${dayName}</div><div style="font-size:18px;font-weight:bold">${dayNum}</div><div style="font-size:12px">${month}</div>`;
+                card.onclick = () => selectDate(dateStr, card);
+                container.appendChild(card);
+
+                if (index === 0 && !selectedDate) selectDate(dateStr, card);
+            });
+        }
+
+        function selectDate(dateStr, cardEl) {
+            selectedDate = dateStr;
+            document.querySelectorAll('.date-card').forEach(c => c.classList.remove('active'));
+            if (cardEl) cardEl.classList.add('active');
+            selectedSlot = null;
+            document.getElementById('bookingForm').style.display = 'none';
+
+            loadSlots(dateStr);
+        }
+
+        // 4. Load & Render Slots (24 Hours Logic)
+        function loadSlots(dateStr) {
+            const grid = document.getElementById('slotsGrid');
+            grid.innerHTML = '<p>Loading availability...</p>';
+
+            // Generate slots for 24 hours (00:00 to 23:45)
+            const hours = [];
+            for (let h = 0; h < 24; h++) {
+                for (let m = 0; m < 60; m += 30) { // 30 min intervals
+                    const hStr = h.toString().padStart(2, '0');
+                    const mStr = m.toString().padStart(2, '0');
+                    hours.push(`${hStr}:${mStr}`);
+                }
+            }
+
+            db.ref(`appointments/${dateStr}`).once('value', snapshot => {
+                const bookedData = snapshot.val() || {};
+
+                grid.innerHTML = '';
+                hours.forEach(time => {
+                    const isBooked = bookedData[time.replace(':', '')] ? true : false;
+                    const slot = document.createElement('div');
+                    slot.className = `slot-card ${isBooked ? 'disabled' : ''}`;
+                    slot.innerText = time;
+
+                    if (isBooked) {
+                        slot.title = "Already Booked";
+                    } else {
+                        slot.onclick = () => selectSlot(time, slot);
+                    }
+                    grid.appendChild(slot);
+                });
+            });
+        }
+
+        function selectSlot(time, slotEl) {
+            if (slotEl.classList.contains('disabled')) return;
+
+            selectedSlot = time;
+            document.querySelectorAll('.slot-card').forEach(s => s.classList.remove('selected'));
+            slotEl.classList.add('selected');
+
+            document.getElementById('bookingForm').style.display = 'block';
+            document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 5. Load User Bookings (Multi-Date Scan)
+        function loadUserBookings() {
+            // Support checking for guest email if stored/provided
+            const userEmail = currentUser ? currentUser.email : localStorage.getItem('guestEmail');
+            if (!userEmail) return;
+
+            const sanitizedEmail = userEmail.replace('.', '_');
+            const container = document.getElementById('bookingsList');
+            const section = document.getElementById('myBookings');
+
+            // Show loading state
+            container.innerHTML = '<p class="text-secondary" style="padding:10px;">Loading bookings...</p>';
+            section.style.display = 'block';
+
+            // Check next 7 days for bookings
+
+            // Check next 7 days for bookings
+            const datesToCheck = [];
+            const today = new Date();
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(today);
+                d.setDate(today.getDate() + i);
+                datesToCheck.push(d);
+            }
+
+            let foundAny = false;
+
+            // Fetch all dates
+            const promises = datesToCheck.map(dateObj => {
+                const year = dateObj.getFullYear();
+                const monthPad = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const dayPad = String(dateObj.getDate()).padStart(2, '0');
+                const dateStr = `${year}-${monthPad}-${dayPad}`;
+
+                return db.ref(`appointments/${dateStr}`).orderByChild('userId').equalTo(sanitizedEmail).once('value')
+                    .then(snapshot => ({ dateStr, data: snapshot.val() }));
+            });
+
+            Promise.all(promises).then(results => {
+                // CLEAR ONCE BEFORE APPENDING to avoid duplicates
+                container.innerHTML = '';
+                let foundAny = false;
+
+                results.forEach(({ dateStr, data }) => {
+                    if (!data) return;
+                    foundAny = true;
+
+                    Object.keys(data).forEach(key => {
+                        const booking = data[key];
+                        // key is usually HHMM
+                        const time = key.replace(/(\d{2})(\d{2})/, '$1:$2');
+
+                        // Parse slot time
+                        const [y, mon, day] = dateStr.split('-').map(Number);
+                        const [h, m] = time.split(':').map(Number);
+                        const slotTime = new Date(y, mon - 1, day, h, m, 0, 0);
+
+                        const now = new Date();
+                        const diffMs = now - slotTime;
+                        const diffMins = diffMs / 60000;
+
+                        // Window: 10 mins before to 15 mins after
+                        const canJoin = diffMins >= -10 && diffMins <= 15;
+                        const isFuture = diffMins < -10;
+
+                        let actionHtml = '';
+                        if (canJoin) {
+                            actionHtml = `
+                                <a href="agent.html" class="btn-start-call">
+                                    <i class="fas fa-video"></i> Start Call
+                                </a>`;
+                        } else if (isFuture) {
+                            // Add Cancel Button
+                            actionHtml = `
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    <span class="badge bg-warning text-dark"><i class="fas fa-clock"></i> In ${Math.ceil(-diffMins)}m</span>
+                                    <button class="btn-cancel" onclick="cancelBooking('${dateStr}', '${time}')" title="Cancel Booking" style="background:transparent; border:1px solid #dc3545; color:#dc3545; border-radius:4px; padding:4px 8px; cursor:pointer;">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>`;
+                        } else {
+                            actionHtml = `<span class="badge bg-secondary">Expired</span>`;
+                        }
+
+                        const div = document.createElement('div');
+                        div.className = 'booking-item card mb-2';
+                        div.style.flexDirection = 'row';
+                        div.style.justifyContent = 'space-between';
+                        div.style.alignItems = 'center';
+                        div.innerHTML = `
+                             <div class="booking-info">
+                                 <strong>${dateStr}, ${time}</strong>
+                                 <span class="text-secondary d-block">${booking.topic}</span>
+                             </div>
+                             <div>
+                                 ${actionHtml}
+                             </div>
+                         `;
+                        container.appendChild(div);
+                    });
+                });
+
+                if (foundAny) {
+                    section.style.display = 'block';
+                }
+            });
+        }
+
+        // 6. Confirm Booking
+        function confirmBooking() {
+            if (!selectedDate || !selectedSlot) return;
+
+            const confirmBtn = document.getElementById("confirmBtn");
+            const originalText = confirmBtn.innerHTML;
+
+            // Get Email (User or Input)
+            let userEmail = currentUser ? currentUser.email : null;
+            if (!userEmail) {
+                const emailInput = document.getElementById('guestEmailInput');
+                if (emailInput && emailInput.value.trim() !== "") {
+                    userEmail = emailInput.value.trim();
+                } else {
+                    showToast("Please enter your email to confirm.");
+                    return;
+                }
+            }
+
+            // Show Spinner
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Confirming...`;
+
+            const topic = document.getElementById('topicSelect').value;
+            const timeKey = selectedSlot.replace(':', '');
+
+            const bookingData = {
+                userId: userEmail.replace('.', '_'), // Sanitize for Firebase key if needed, though userId field is value
+                email: userEmail,
+                name: currentUser ? currentUser.name : "Guest",
+                batch: currentUser ? currentUser.batch : "N/A",
+                topic: topic,
+                status: 'confirmed',
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            };
+
+            db.ref(`appointments/${selectedDate}/${timeKey}`).set(bookingData)
+                .then(() => {
+                    showToast(`Booking Confirmed! Email sent to ${userEmail}`);
+                    confirmBtn.innerHTML = `<i class="fas fa-check"></i> Confirmed`;
+                    confirmBtn.style.backgroundColor = "#137333";
+
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error(err);
+                    showToast("Booking failed: " + err.message);
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = originalText;
+                });
+        }
+
+        // 7. Cancel Booking
+        function cancelBooking(dateStr, timeStr) {
+            if (!confirm("Are you sure you want to cancel this booking?")) return;
+
+            const timeKey = timeStr.replace(':', '');
+            db.ref(`appointments/${dateStr}/${timeKey}`).remove()
+                .then(() => {
+                    showToast("Booking Cancelled.");
+                    loadUserBookings(); // Refresh list
+                    // Also refresh slots if we are viewing that date
+                    if (selectedDate === dateStr) loadSlots(dateStr);
+                })
+                .catch(err => {
+                    console.error(err);
+                    showToast("Failed to cancel: " + err.message);
+                });
+        }
+    </script>
+</body>
+
+</html>

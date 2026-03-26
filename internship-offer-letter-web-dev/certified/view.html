@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Certificate | DC Cloud Solutions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/notiflix@3.2.5/dist/notiflix-aio-3.2.5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #202124;
+            font-family: 'Google Sans', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            box-sizing: border-box;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #8ab4f8;
+            color: #202124;
+        }
+
+        .btn-primary:hover {
+            background-color: #aecbfa;
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #e8eaed;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .certificate-container {
+            max-width: 90%;
+            max-height: 80vh;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .certificate-img {
+            max-width: 100%;
+            max-height: 80vh;
+            display: block;
+        }
+
+        .error-msg {
+            text-align: center;
+            color: #e8eaed;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="brand">
+            <span class="material-icons-round" style="color: #8ab4f8;">verified</span>
+            DC Cloud Solutions Certified
+        </div>
+        <div class="actions">
+            <a href="index.html" class="btn btn-secondary">
+                <span class="material-icons-round">search</span> Find Another
+            </a>
+            <button id="downloadBtn" class="btn btn-primary" onclick="downloadCurrentPdf()">
+                <span class="material-icons-round">download</span> Download PDF
+            </button>
+        </div>
+    </div>
+
+    <div id="content" class="certificate-container">
+        <div class="error-msg">Loading certificate...</div>
+    </div>
+
+    <!-- Load Data -->
+    <script src="certified-students.js"></script>
+    <script>
+        let currentImage = null;
+        let currentName = "Certificate";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get('name');
+            const email = urlParams.get('email'); // Optional for verification if needed
+
+            if (!name) {
+                showError("No student name provided.");
+                return;
+            }
+
+            // Find student in the mapping (from certified-students.js)
+            if (typeof nameInfoMapping === 'undefined') {
+                showError("Student data not loaded.");
+                return;
+            }
+
+            const normalizedName = name.trim().toLowerCase();
+            const nameKey = Object.keys(nameInfoMapping).find(
+                key => key.trim().toLowerCase() === normalizedName
+            );
+
+            if (nameKey) {
+                const data = nameInfoMapping[nameKey];
+                // Handle multiple images, take first for view
+                const image = data.image && typeof data.image === 'string' ? data.image.split(',')[0] : null;
+
+                if (image) {
+                    currentImage = image;
+                    currentName = nameKey;
+                    document.getElementById('content').innerHTML = `<img src="${image}" alt="Certificate for ${nameKey}" class="certificate-img">`;
+                } else {
+                    showError("Certificate image not found.");
+                }
+            } else {
+                showError("Student not found in our certified records.");
+            }
+        });
+
+        function showError(msg) {
+            document.getElementById('content').innerHTML = `<div class="error-msg">
+                <span class="material-icons-round" style="font-size: 48px; color: #ea4335; margin-bottom: 16px;">error_outline</span><br>
+                ${msg}
+            </div>`;
+            document.getElementById('downloadBtn').style.display = 'none';
+        }
+
+        function downloadCurrentPdf() {
+            if (currentImage && window.downloadAsPDF) {
+                const filename = `${currentName.replace(/\s+/g, '_')}_Certificate.pdf`;
+                window.downloadAsPDF(currentImage, filename);
+            } else {
+                Notiflix.Notify.failure("Cannot download certificate.");
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Information</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --google-blue: #4285F4;
+            --google-grey-100: #f8f9fa;
+            --google-grey-300: #e0e0e0;
+            --google-grey-700: #5f6368;
+            --google-grey-900: #202124;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--google-grey-900);
+            background-color: var(--google-grey-100);
+            margin: 0;
+        }
+
+        .app-bar {
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            height: 64px;
+            background-color: #fff;
+            border-bottom: 1px solid var(--google-grey-300);
+        }
+
+        .logo {
+            height: 32px;
+            width: auto;
+            margin-right: 16px;
+        }
+
+        .app-title {
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--google-grey-700);
+        }
+
+        main {
+            display: flex;
+            flex-grow: 1;
+            height: calc(100vh - 64px - 145px); /* Full height minus header and footer */
+        }
+
+        .sidebar {
+            width: 350px;
+            flex-shrink: 0;
+            background-color: #fff;
+            border: 1px solid var(--google-grey-300);
+            border-top: none;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .pdf-viewer-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+        }
+
+        p {
+            font-size: 16px;
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+
+        #pdf-links-container {
+            border-top: 1px solid var(--google-grey-300);
+            padding-top: 16px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 0 25px 25px 0; /* Google style pill shape */
+            transition: background-color 0.2s ease-in-out;
+            margin-bottom: 8px;
+            cursor: pointer;
+            margin-left: -24px; /* Extend to edge */
+            padding-left: 24px;
+        }
+
+        .link-item:hover {
+            background-color: #f1f3f4;
+            border-color: var(--google-grey-300);
+        }
+
+        .link-item.active {
+            background-color: #e8f0fe; /* Google's selection blue */
+            font-weight: 700;
+        }
+
+        .link-item.active a {
+            color: var(--google-blue);
+        }
+
+        .link-item.active .material-icons {
+            color: var(--google-blue);
+        }
+
+        .link-item a {
+            color: var(--google-grey-900);
+            text-decoration: none;
+            font-weight: 500;
+            flex-grow: 1;
+            pointer-events: none; /* Let parent div handle click */
+        }
+
+        .link-item .material-icons {
+            color: var(--google-grey-700);
+            margin-right: 16px;
+        }
+
+        #pdf-viewer {
+            flex-grow: 1;
+            border: 1px solid var(--google-grey-300);
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        #viewer-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            flex-direction: column;
+            color: var(--google-grey-700);
+        }
+
+        #viewer-placeholder .material-icons {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        footer {
+            background-color: #fff;
+            border-top: 1px solid var(--google-grey-300);
+            padding: 24px;
+            text-align: center;
+            color: var(--google-grey-700);
+            font-size: 14px;
+        }
+
+        .footer-links {
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            color: var(--google-grey-900);
+            text-decoration: none;
+            margin: 0 12px;
+            font-weight: 500;
+        }
+
+        .footer-links a:hover {
+            color: var(--google-blue);
+            text-decoration: underline;
+        }
+
+        .social-links {
+            margin-bottom: 16px;
+        }
+
+        .copyright {
+            font-size: 12px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                display: block;
+            }
+            main {
+                flex-direction: column;
+                height: auto;
+            }
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--google-grey-300);
+                box-sizing: border-box;
+            }
+            .pdf-viewer-container {
+                height: 80vh; /* Give it a fixed height on mobile */
+            }
+            .app-bar {
+                padding: 0 16px;
+            }
+            .app-title {
+                font-size: 20px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <header class="app-bar">
+        <img src="http://dcinfotech.org.in/images/dcintro.gif" alt="DC Cloud Solutions Logo" class="logo">
+        <h1 class="app-title">Learning Paths</h1>
+    </header>
+
+    <main>
+        <div class="sidebar">
+            <p>Select a learning path to view the official course document.</p>
+            <div id="pdf-links-container"></div>
+        </div>
+        <div class="pdf-viewer-container">
+            <iframe id="pdf-viewer" title="PDF Viewer" style="display: none;"></iframe>
+            <div id="viewer-placeholder">
+                <i class="material-icons">menu_book</i>
+                <span>Select a document to begin</span>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="social-links footer-links">
+            <a href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="#" target="_blank" rel="noopener noreferrer">Twitter</a>
+            <a href="#" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+        <div class="footer-links">
+            <a href="mailto:support@dcinfotech.org.in">support@dcinfotech.org.in</a>
+            <a href="https://www.dcinfotech.org.in" target="_blank" rel="noopener noreferrer">www.dcinfotech.org.in</a>
+        </div>
+        <p class="copyright">&copy; 2024 DC Cloud Solutions All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('learning-paths.json')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('pdf-links-container');
+                    const pdfViewer = document.getElementById('pdf-viewer');
+                    const placeholder = document.getElementById('viewer-placeholder');
+
+                    data.forEach(item => {
+                        const linkItemDiv = document.createElement('div');
+                        linkItemDiv.className = 'link-item';
+                        linkItemDiv.innerHTML = `<i class="material-icons">picture_as_pdf</i><a href="#">${item.title}</a>`;
+                        
+                        linkItemDiv.addEventListener('click', () => {
+                            // Show viewer and hide placeholder
+                            if (pdfViewer.style.display === 'none') {
+                                pdfViewer.style.display = 'block';
+                                placeholder.style.display = 'none';
+                            }
+
+                            // Set PDF source
+                            pdfViewer.src = item.url;
+
+                            // Update active state for links
+                            document.querySelectorAll('.link-item').forEach(el => el.classList.remove('active'));
+                            linkItemDiv.classList.add('active');
+                        });
+
+                        container.appendChild(linkItemDiv);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching learning paths:', error);
+                    const container = document.getElementById('pdf-links-container');
+                    container.innerHTML = '<p>Could not load learning paths.</p>';
+                });
+        });
+    </script>
+</body>
+</html>

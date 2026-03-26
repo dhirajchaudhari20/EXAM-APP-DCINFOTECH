@@ -1,0 +1,34 @@
+# Netlify Configuration for DC Cloud Solutions Website
+# HTML/CSS/JS static site with serverless functions
+
+[build]
+  # Install dependencies from root package.json
+  command = "npm install && node scripts/generate-firebase-config.js"
+  
+  # Publish the root directory (where your HTML files are)
+  publish = "."
+  
+  # Functions directory for Razorpay serverless functions
+  functions = "netlify/functions"
+
+# Redirect API calls to serverless functions (optional, for cleaner URLs)
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Force HTTPS
+[[redirects]]
+  from = "http://dcinfotech.org.in/*"
+  to = "https://dcinfotech.org.in/:splat"
+  status = 301
+  force = true
+
+# Custom headers for security
+[[headers]]
+  for = "/*"
+  [headers.values]
+
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

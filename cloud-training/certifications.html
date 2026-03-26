@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certifications - Cloud Training</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .cert-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .cert-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            position: relative;
+        }
+
+        .cert-badge {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+        }
+
+        .cert-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .cert-status {
+            text-align: center;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin: 0 auto 16px;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-inprogress {
+            background: #fef3c7;
+            color: #f59e0b;
+        }
+
+        .status-planned {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .cert-details {
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+            margin-top: 16px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .progress-section {
+            margin-top: 16px;
+        }
+
+        .progress-label {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar-full {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="page-transition-loader" class="page-loader">
+        <div class="loader-content">
+            <div class="spinner-circle"></div>
+            <div class="loader-text">Loading...</div>
+        </div>
+    </div>
+
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="video/video.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
+    <div id="dashboardContainer" class="saas-container">
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h2 class="page-title">🏆 My Certifications</h2>
+                    <span class="current-date" id="currentTime"></span>
+                </div>
+                <div class="topbar-right">
+                    <button id="darkModeToggle" class="icon-btn">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-scrollable">
+                <div class="content-wrapper">
+
+                    <div class="cert-grid">
+                        <!-- ACE Certification -->
+                        <div class="cert-card">
+                            <div class="cert-badge">
+                                <i class="fas fa-cloud"></i>
+                            </div>
+                            <div class="cert-title">Associate Cloud Engineer</div>
+                            <div style="text-align: center;">
+                                <span class="cert-status status-inprogress">In Progress</span>
+                            </div>
+                            <div class="cert-details">
+                                <div class="detail-row">
+                                    <span>Scheduled Date:</span>
+                                    <strong>Jan 15, 2026</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Voucher Status:</span>
+                                    <strong style="color: #16a34a;">Active</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Study Hours:</span>
+                                    <strong>42 / 80</strong>
+                                </div>
+                                <div class="progress-section">
+                                    <div class="progress-label">Exam Readiness: 68%</div>
+                                    <div class="progress-bar-full">
+                                        <div class="progress-fill" style="width: 68%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PCA Certification -->
+                        <div class="cert-card">
+                            <div class="cert-badge"
+                                style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div class="cert-title">Professional Cloud Architect</div>
+                            <div style="text-align: center;">
+                                <span class="cert-status status-planned">Planned</span>
+                            </div>
+                            <div class="cert-details">
+                                <div class="detail-row">
+                                    <span>Target Date:</span>
+                                    <strong>March 2026</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Prerequisites:</span>
+                                    <strong>ACE Required</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Recommended Experience:</span>
+                                    <strong>3+ years</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DevOps Engineer -->
+                        <div class="cert-card">
+                            <div class="cert-badge"
+                                style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                                <i class="fas fa-code-branch"></i>
+                            </div>
+                            <div class="cert-title">Professional DevOps Engineer</div>
+                            <div style="text-align: center;">
+                                <span class="cert-status status-planned">Planned</span>
+                            </div>
+                            <div class="cert-details">
+                                <div class="detail-row">
+                                    <span>Target Date:</span>
+                                    <strong>June 2026</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Focus Areas:</span>
+                                    <strong>CI/CD, Monitoring</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Certification Path -->
+                    <div
+                        style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px;">
+                        <h3>Recommended Certification Path</h3>
+                        <p style="color: var(--text-medium); margin-bottom: 16px;">Based on your current progress and
+                            career goals</p>
+                        <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                            <div
+                                style="padding: 12px 20px; background: #dcfce7; border-radius: 8px; font-weight: 600; color: #16a34a;">
+                                ✓ ACE (Current)
+                            </div>
+                            <div style="font-size: 1.5rem; color: var(--text-medium);">→</div>
+                            <div
+                                style="padding: 12px 20px; background: #fef3c7; border-radius: 8px; font-weight: 600; color: #f59e0b;">
+                                PCA (Next)
+                            </div>
+                            <div style="font-size: 1.5rem; color: var(--text-medium);">→</div>
+                            <div
+                                style="padding: 12px 20px; background: #e5e7eb; border-radius: 8px; font-weight: 600; color: #6b7280;">
+                                DevOps / Security
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/sidebar.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/session.js"></script>
+    <script src="js/fix-layout.js"></script>
+    <script src="js/interactions.js"></script>
+    <script src="js/profile-photo.js"></script>
+
+</body>
+
+</html>

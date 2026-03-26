@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certmetrics Records - DC Cloud Solutions</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #eef4ff, #f9fbff);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0b5ed7;
+      font-size: 2rem;
+      padding: 1.5rem 0;
+      margin: 0;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .container {
+      padding: 1.5rem;
+      max-width: 100%;
+    }
+
+    .search-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+    }
+
+    .search-container input {
+      width: 100%;
+      max-width: 400px;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      transition: 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .search-container input:focus {
+      outline: none;
+      border-color: #0b5ed7;
+      box-shadow: 0 0 15px rgba(11, 94, 215, 0.3);
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      animation: floatCard 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatCard {
+      from {
+        transform: translateY(0);
+      }
+
+      to {
+        transform: translateY(-6px);
+      }
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1000px;
+    }
+
+    thead {
+      background: linear-gradient(90deg, #0b5ed7, #2196f3);
+      color: #fff;
+    }
+
+    th,
+    td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      transition: 0.2s;
+    }
+
+    tbody tr:hover {
+      background: #f0f7ff;
+      box-shadow: inset 0 0 12px rgba(11, 94, 215, 0.1);
+    }
+
+    .loading {
+      text-align: center;
+      font-weight: 500;
+      color: #0b5ed7;
+      margin: 2rem 0;
+    }
+
+    .no-records {
+      text-align: center;
+      color: #d9534f;
+      font-weight: 500;
+      padding: 1rem;
+    }
+
+    .verify-btn {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #bbb;
+      color: #fff;
+      font-size: 0.85rem;
+      transition: 0.3s ease;
+    }
+
+    .verify-btn:hover {
+      background: #0b5ed7;
+      box-shadow: 0 0 10px rgba(11, 94, 215, 0.5);
+    }
+
+    .verify-btn.verified {
+      background: #28a745 !important;
+      color: #fff;
+      box-shadow: 0 0 12px rgba(40, 167, 69, 0.6);
+    }
+
+    @media (max-width: 768px) {
+      table {
+        font-size: 0.85rem;
+        min-width: unset;
+      }
+
+      th,
+      td {
+        padding: 0.6rem;
+      }
+
+      .search-container {
+        justify-content: center;
+      }
+    }
+  </style>
+  <!-- Shared Admin Layout Component -->
+  <link rel="stylesheet" href="components/layout.css">
+</head>
+
+<body>
+  <!-- Main Content Wrapper injected by unified layout -->
+  <main class="admin-main">
+    <header class="admin-header">
+      <h1 class="admin-header-title">Submitted Certmetrics Records</h1>
+    </header>
+
+    <div class="admin-content">
+      <div class="admin-table-card">
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="🔍 Search by any field...">
+        </div>
+
+        <div id="loading" class="loading">Loading data...</div>
+
+        <div class="table-wrapper" style="display:none;">
+          <table id="dataTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Temp Password</th>
+                <th>Exam Name</th>
+                <th>Exam Date</th>
+                <th>Exam Time</th>
+                <th>Mode</th>
+                <th>Location</th>
+                <th>Backup Date 1</th>
+                <th>Backup Time 1</th>
+                <th>Backup Date 2</th>
+                <th>Backup Time 2</th>
+                <th>Verified</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Unified Sidebar Injector -->
+  <script src="components/sidebar.js"></script>
+
+  <script>
+    const FIREBASE_RESULTS = "https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_results";
+    const FIREBASE_SCHEDULES = "https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_schedules"; // Using Schedules to match 't4p2vclkp1avh' functionality
+    const tableBody = document.getElementById("tableBody");
+    const tableWrapper = document.querySelector(".table-wrapper");
+    const loading = document.getElementById("loading");
+    const searchInput = document.getElementById("searchInput");
+
+    fetch(`${FIREBASE_SCHEDULES}.json`)
+      .then(res => res.json())
+      .then(dataObj => {
+        const data = dataObj ? Object.values(dataObj) : [];
+        data.sort((a, b) => {
+          const dateA = new Date((a["Exam Date"] || "") + " " + (a["Exam Time"] || "00:00"));
+          const dateB = new Date((b["Exam Date"] || "") + " " + (b["Exam Time"] || "00:00"));
+          return dateA - dateB; // soonest first
+        });
+
+        loading.style.display = "none";
+        tableWrapper.style.display = "block";
+        renderTable(data);
+
+        searchInput.addEventListener("keyup", () => {
+          const query = searchInput.value.toLowerCase();
+          const filtered = data.filter(row =>
+            Object.values(row).some(val => (val || "").toLowerCase().includes(query))
+          );
+          renderTable(filtered);
+        });
+      })
+      .catch(err => {
+        loading.textContent = "⚠️ Failed to load data.";
+        console.error("Error:", err);
+      });
+
+    function renderTable(rows) {
+      tableBody.innerHTML = "";
+      if (rows.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="14" class="no-records">No records found</td></tr>`;
+        return;
+      }
+      rows.forEach((row, index) => {
+        const tr = document.createElement("tr");
+        const verified = row["Verified"] && row["Verified"].toLowerCase() === "yes";
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${row["Full Name"] || ""}</td>
+          <td>${row["Email"] || ""}</td>
+          <td>${row["Temporary Password"] || ""}</td>
+          <td>${row["Exam Name"] || ""}</td>
+          <td>${row["Exam Date"] || ""}</td>
+          <td>${row["Exam Time"] || ""}</td>
+          <td>${row["Mode"] || ""}</td>
+          <td>${row["Preferred Location"] || ""}</td>
+          <td>${row["Backup Date 1"] || ""}</td>
+          <td>${row["Backup Time 1"] || ""}</td>
+          <td>${row["Backup Date 2"] || ""}</td>
+          <td>${row["Backup Time 2"] || ""}</td>
+          <td>
+            <button class="verify-btn ${verified ? "verified" : ""}" onclick="markVerified('${row.id}', this)">
+              ${verified ? "✔ Verified" : "Mark"}
+            </button>
+          </td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+
+    function markVerified(id, btn) {
+      fetch(`${FIREBASE_SCHEDULES}/${id}.json`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ "Verified": "Yes" })
+      })
+        .then(res => res.json())
+        .then(() => {
+          btn.classList.add("verified");
+          btn.textContent = "✔ Verified";
+        })
+        .catch(err => console.error("Update error:", err));
+    }
+  </script>
+
+</body>
+
+</html>

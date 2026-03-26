@@ -1,0 +1,109 @@
+<style>
+    /* General styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        padding: 50px;
+        margin: 0; /* Reset margin */
+    }
+
+    /* Top Bar Notification */
+    #topBar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: #2c3e50; /* Dark background */
+        color: white;
+        padding: 10px;
+        text-align: center;
+        z-index: 1000; /* Ensure it stays on top */
+    }
+
+    #timer {
+        font-size: 1.5rem;
+        margin: 10px 0;
+        color: #ffcc00; /* Yellow color for timer */
+    }
+
+    #message {
+        font-size: 1.1rem;
+        color: #d9534f; /* Red color for message */
+    }
+
+    /* Main content styling */
+    .main-content {
+        padding-top: 80px; /* Add space for the top bar */
+    }
+
+    /* Button to close the notification */
+    .close-bar {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        position: absolute;
+        right: 10px;
+        top: 5px;
+    }
+</style>
+</head>
+<body>
+
+<!-- Top Bar Notification -->
+<div id="topBar">
+   
+    <p>⚠️ Scheduled maintenance will start in <span id="countdown">15:00</span> minutes. All servers will be going down for maintenance . The site and servers will be back by <strong>8:00 PM</strong>.</p>
+    <div id="timer">Loading...</div>
+    <div id="message"></div>
+</div>
+
+
+
+<script>
+    function closeTopBar() {
+        document.getElementById('topBar').style.display = 'none';
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var timerDisplay = document.getElementById('timer');
+        var messageDisplay = document.getElementById('message');
+
+        // Set target time to 8:00 PM of the current day
+        var targetTime = new Date();
+        targetTime.setHours(17, 0, 0, 0); // 8:00 PM
+
+        // If the target time has already passed today, set it to tomorrow's 8:00 PM
+        var now = new Date();
+        if (now > targetTime) {
+            targetTime.setDate(targetTime.getDate() + 1); // Move to the next day
+        }
+
+        function updateTimer() {
+            var currentTime = new Date();
+            var timeDifference = targetTime - currentTime;
+
+            if (timeDifference <= 0) {
+                timerDisplay.textContent = "00:00:00"; // Display zero time
+                messageDisplay.textContent = "Something Went Wrong. Please Try Again Later. Thank You!";
+                clearInterval(intervalId); // Stop the timer
+                return;
+            }
+
+            var hours = Math.floor(timeDifference / (1000 * 60 * 60));
+            var minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+            timerDisplay.textContent = 
+                (hours < 10 ? '0' + hours : hours) + ':' +
+                (minutes < 10 ? '0' + minutes : minutes) + ':' +
+                (seconds < 10 ? '0' + seconds : seconds);
+        }
+
+        // Update the timer immediately and set an interval to update it every second
+        updateTimer();
+        var intervalId = setInterval(updateTimer, 1000);
+    });
+</script>

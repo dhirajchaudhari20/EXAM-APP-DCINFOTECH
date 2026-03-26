@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MacroAI - Trainer Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            /* Green for trainer */
+            --bg-dark: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            padding: 3rem 2rem;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: -1rem;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .btn-google {
+            background: #f1f5f9;
+            color: #333;
+            width: 100%;
+            padding: 12px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-google:hover {
+            transform: translateY(-2px);
+            background: #e2e8f0;
+        }
+
+        #authStatus {
+            color: #ef4444;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            min-height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-card">
+        <div class="logo">Macro<span style="color: #6c5ce7;">AI</span></div>
+        <div
+            style="background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-top: -15px; margin-bottom: 0.5rem; letter-spacing: 1px; text-transform: uppercase;">
+            Trainer Portal</div>
+        <p class="subtitle">Log in to manage your clients.</p>
+
+        <form id="loginForm" style="width: 100%; display: flex; flex-direction: column; gap: 15px;">
+            <input type="text" id="userNameInput" placeholder="Trainer Name" required
+                style="padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc; color: #1e293b; outline: none; font-size: 1rem;">
+            <input type="email" id="emailInput" placeholder="Trainer Email" required
+                style="padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc; color: #1e293b; outline: none; font-size: 1rem;">
+            <button type="submit" id="loginBtn" class="btn-google"
+                style="background: var(--primary); color: white; border: none; margin-top: 10px;">
+                <i class="fas fa-sign-in-alt"></i> Access Portal
+            </button>
+        </form>
+
+        <div
+            style="width: 100%; display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.8rem; margin: 0.5rem 0;">
+            <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+            <span>OR</span>
+            <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+        </div>
+
+        <button id="googleLoginBtn" class="btn-google">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="18">
+            Trainer Login with Google
+        </button>
+
+        <a href="index.html"
+            style="font-size: 0.85rem; color: #64748b; text-decoration: none; margin-top: 10px;">Looking for the Client
+            App?</a>
+
+        <p id="authStatus"></p>
+    </div>
+
+    <!-- Firebase & Auth Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCohKlqNu0I1sXcLW4D_fv-OEw9x0S50q8",
+            authDomain: "dc-infotechpvt-1-d1a4b.firebaseapp.com",
+            databaseURL: "https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com",
+            projectId: "dc-infotechpvt-1-d1a4b",
+            storageBucket: "dc-infotechpvt-1-d1a4b.firebasestorage.app",
+            messagingSenderId: "330752838328",
+            appId: "1:330752838328:web:1fe0ca04953934d4638703"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for existing trainer session
+            const savedTrainer = localStorage.getItem('macro_trainer_user');
+            if (savedTrainer) {
+                window.location.href = "trainer.html";
+            }
+
+            // Local login
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('userNameInput').value.trim();
+                const email = document.getElementById('emailInput').value.trim();
+
+                if (name && email) {
+                    const user = {
+                        uid: 'trainer_' + Date.now(),
+                        displayName: name,
+                        email: email
+                    };
+                    // Save to a separate trainer variable
+                    localStorage.setItem('macro_trainer_user', JSON.stringify(user));
+                    window.location.href = "trainer.html";
+                } else {
+                    document.getElementById('authStatus').textContent = "Please fill in all fields.";
+                }
+            });
+
+            // Google login
+            document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+                try {
+                    const result = await signInWithPopup(auth, provider);
+                    const user = {
+                        uid: result.user.uid,
+                        displayName: result.user.displayName,
+                        email: result.user.email,
+                        photoURL: result.user.photoURL
+                    };
+                    localStorage.setItem('macro_trainer_user', JSON.stringify(user));
+                    window.location.href = "trainer.html";
+                } catch (error) {
+                    console.error("Google Auth Error:", error);
+                    document.getElementById('authStatus').textContent = "Google Sign-In failed.";
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

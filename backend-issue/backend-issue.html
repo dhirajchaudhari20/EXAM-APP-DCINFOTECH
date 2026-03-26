@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+     <!-- Favicon -->
+  <link rel="icon" href="DC Cloud Solutionslogo.ico" type="image/x-icon">
+    <style>
+/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    position: relative;
+    color: #333;
+}
+
+/* Container for form and content */
+.container {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Header styles */
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2em;
+    font-weight: 600;
+}
+
+/* Form Group Styles */
+.form-group {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 0.875em;
+    margin-top: 5px;
+}
+
+/* Button Styles */
+button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+button:active {
+    background-color: #004494;
+    transform: translateY(0);
+}
+
+/* Footer Styling */
+footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #777;
+    font-size: 0.9em;
+}
+
+footer a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Spinner Overlay Styles */
+.spinner-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner-overlay .spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #007bff;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinner-overlay p {
+    color: #fff;
+    font-size: 1.2em;
+    margin-top: 15px;
+}
+
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        font-size: 1.7em;
+        margin-bottom: 20px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    button {
+        padding: 12px;
+    }
+
+    footer {
+        font-size: 0.8em;
+    }
+}
+
+    </style>
+</head>
+<body>
+     <!-- Favicon -->
+  <link rel="icon" href="DC Cloud Solutionslogo.ico" type="image/x-icon">
+    <div class="container">
+        <h1>Contact Us</h1>
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Your Name" required>
+                <span class="error-message" id="nameError"></span>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Your Email" required>
+                <span class="error-message" id="emailError"></span>
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="Your Message" rows="4" required></textarea>
+                <span class="error-message" id="messageError"></span>
+            </div>
+            <div class="form-group">
+                <label for="errorType">Error Type (if any)</label>
+                <select id="errorType" name="errorType">
+                    <option value="" selected>Select error type</option>
+                    <option value="Form not submitting">Form not submitting</option>
+                    <option value="Incomplete details">Incomplete details</option>
+                    <option value="Technical issue">Technical issue</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group" id="otherErrorDiv" style="display: none;">
+                <label for="otherErrorDetails">Please describe the error:</label>
+                <textarea id="otherErrorDetails" name="otherErrorDetails" placeholder="Describe the issue" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="offerLetter">Offer Letter Received?</label>
+                <select id="offerLetter" name="offerLetter" required>
+                    <option value="" selected>Select status</option>
+                    <option value="Received">Received</option>
+                    <option value="Not Received">Not Received</option>
+                </select>
+                <span class="error-message" id="offerLetterError"></span>
+            </div>
+            <div class="form-group">
+                <label for="internshipDomain">Internship Domain</label>
+                <select id="internshipDomain" name="internshipDomain" required>
+                    <option value="" selected>Select domain</option>
+                    <option value="Web Development">Web Development</option>
+                     <option value="Cloud Engineer">Cloud Engineer</option>
+                 
+              
+                </select>
+                <span class="error-message" id="internshipDomainError"></span>
+            </div>
+            <div class="form-group" id="otherDomainDiv" style="display: none;">
+                <label for="otherDomainDetails">Please specify the domain:</label>
+                <input type="text" id="otherDomainDetails" name="otherDomainDetails" placeholder="Specify the domain">
+            </div>
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+    <footer>
+        <p>Developed by <a href="https://www.dcinfotech.org.in
+" target="_blank">DC Cloud Solutions </a></p>
+    </footer>
+    <div class="spinner-overlay" id="spinnerOverlay">
+        <div class="spinner"></div>
+        <p>Kindly wait...</p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let isValid = true;
+
+            // Clear previous errors
+            document.getElementById('nameError').textContent = '';
+            document.getElementById('emailError').textContent = '';
+            document.getElementById('messageError').textContent = '';
+            document.getElementById('offerLetterError').textContent = '';
+            document.getElementById('internshipDomainError').textContent = '';
+
+            // Get form values
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
+            const errorType = document.getElementById('errorType').value;
+            const otherErrorDetails = document.getElementById('otherErrorDetails').value.trim();
+            const offerLetter = document.getElementById('offerLetter').value;
+            const internshipDomain = document.getElementById('internshipDomain').value;
+            const otherDomainDetails = document.getElementById('otherDomainDetails').value.trim();
+
+            // Validate form fields
+            if (!name) {
+                document.getElementById('nameError').textContent = 'Name is required.';
+                isValid = false;
+            }
+            if (!email) {
+                document.getElementById('emailError').textContent = 'Email is required.';
+                isValid = false;
+            }
+            if (!message) {
+                document.getElementById('messageError').textContent = 'Message is required.';
+                isValid = false;
+            }
+            if (!offerLetter) {
+                document.getElementById('offerLetterError').textContent = 'Offer letter status is required.';
+                isValid = false;
+            }
+            if (!internshipDomain) {
+                document.getElementById('internshipDomainError').textContent = 'Internship domain is required.';
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            // Show loading spinner
+            document.getElementById('spinnerOverlay').style.display = 'flex';
+
+            // Prepare data to send
+            const data = {
+                'Name': name,
+                'Email': email,
+                'Message': message,
+                'Error Type': errorType,  // Exact column name with space
+                'Other Error Details': otherErrorDetails,  // Exact column name with space
+                'Offer Letter Received?': offerLetter,  // Exact column name with question mark
+                'Internship Domain': internshipDomain,  // Exact column name with space
+                'Other Domain Details': otherDomainDetails  // Exact column name with space
+            };
+
+            // Send data to the API endpoint
+            fetch('https://sheetdb.io/api/v1/nxunb5fvzstrx', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading spinner
+                document.getElementById('spinnerOverlay').style.display = 'none';
+                
+                // Show success message
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Your message has been sent successfully.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+
+                // Reset the form
+                document.getElementById('contactForm').reset();
+                document.getElementById('otherErrorDiv').style.display = 'none';
+                document.getElementById('otherDomainDiv').style.display = 'none';
+            })
+            .catch(error => {
+                // Hide loading spinner
+                document.getElementById('spinnerOverlay').style.display = 'none';
+                
+                // Show error message
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'There was an error sending your message. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+        });
+
+        // Show/hide additional fields based on selection
+        document.getElementById('errorType').addEventListener('change', function() {
+            const errorType = this.value;
+            if (errorType === 'Other') {
+                document.getElementById('otherErrorDiv').style.display = 'block';
+            } else {
+                document.getElementById('otherErrorDiv').style.display = 'none';
+            }
+        });
+
+        document.getElementById('internshipDomain').addEventListener('change', function() {
+            const domain = this.value;
+            if (domain === 'Other') {
+                document.getElementById('otherDomainDiv').style.display = 'block';
+            } else {
+                document.getElementById('otherDomainDiv').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

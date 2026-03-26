@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>DC Points & Certification Tracks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: #f7f7ff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #222;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 24px rgba(95, 45, 237, 0.08);
+      padding: 32px 24px;
+    }
+
+    h1 {
+      color: #5f2ded;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #555;
+      margin-bottom: 28px;
+      font-size: 18px;
+    }
+
+    .info-box {
+      background: #e7e3fa;
+      border-left: 5px solid #5f2ded;
+      padding: 18px 20px;
+      border-radius: 8px;
+      margin-bottom: 28px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .live-chat-link {
+      color: #5f2ded;
+      text-decoration: underline;
+      font-weight: 500;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      background: #fafaff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th,
+    td {
+      padding: 16px 12px;
+      text-align: left;
+    }
+
+    th {
+      background: #5f2ded;
+      color: #fff;
+      font-size: 17px;
+      letter-spacing: 0.5px;
+    }
+
+    tr:nth-child(even) {
+      background: #f1f0fa;
+    }
+
+    tr:hover {
+      background: #e7e3fa;
+    }
+
+    td.points {
+      font-weight: bold;
+      color: #5f2ded;
+      font-size: 16px;
+    }
+
+    td.reward {
+      font-size: 15px;
+    }
+
+    .programs-section {
+      margin-top: 40px;
+    }
+
+    .program-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+    }
+
+    .program-card {
+      background: #f7f7ff;
+      border: 1px solid #e7e3fa;
+      border-radius: 10px;
+      width: 270px;
+      padding: 20px 18px 18px 18px;
+      box-shadow: 0 2px 8px rgba(95, 45, 237, 0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .program-title {
+      color: #5f2ded;
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .program-desc {
+      color: #333;
+      font-size: 15px;
+      margin-bottom: 14px;
+      min-height: 48px;
+    }
+
+    .view-btn {
+      background: #5f2ded;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 18px;
+      font-size: 15px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+      margin-top: auto;
+    }
+
+    .view-btn:hover {
+      background: #4321a6;
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        padding: 12px 2vw;
+      }
+
+      .program-list {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .program-card {
+        width: 98%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>DC Points & Rewards Program</h1>
+    <div class="subtitle">
+      Earn DC Points by playing games and quizzes. Unlock your next training and win exciting gifts!
+    </div>
+    <div class="info-box">
+      <b>DC Cloud Solutions Cloud Training Campaign</b> <br>
+      <span style="color:#222;">
+        This campaign is run by <b>DC Cloud Solutions</b> to help more interns get hands-on cloud skills.<br>
+        <b>Duration:</b> 22 July – 15 August<br>
+        <b>How it works:</b> Play games, complete training, and earn DC Points.<br>
+        <b>What are DC Points?</b> DC Points are your reward for being active on the portal.<br>
+        <b>How to earn?</b> Play games like Ping Pong, complete quizzes, and participate in training activities.<br>
+        <b>What can you win?</b> Unlock free training, exclusive DC Cloud Solutions gifts, and more surprises as you collect
+        points.<br>
+        <b>Gifts include:</b> DC Cloud Solutions T-shirt and surprise for top scorers.<br>
+        <b>How to claim?</b> Once you reach the required points, <b>contact us via <a
+            href="https://dcinfotech.org.in
+/live-chat" target="_blank" class="live-chat-link">live chat</a></b> to claim your
+        reward.<br>
+      </span>
+      <br>
+      <span style="color:#5f2ded;">Keep playing, keep learning, and level up your cloud career!</span>
+    </div>
+    <!-- Leaderboard Section -->
+    <div class="info-box" style="margin-top:40px;">
+      <h2 style="color:#5f2ded; margin-bottom: 12px;">🏆 DC Points Leaderboard (Top 10)</h2>
+      <ul id="leaderboardList" style="list-style:none;padding:0;margin:0;font-size:15px;color:#333;"></ul>
+      <div id="leaderboardError" style="color:red; display:none;">Failed to load leaderboard. Please try again later.
+      </div>
+    </div>
+
+    <table>
+      <tr>
+        <th>Track / Activity</th>
+        <th>Points Needed</th>
+      </tr>
+      <tr>
+        <td>Google Cloud Digital Leader</td>
+        <td class="points">3500</td>
+      </tr>
+      <tr>
+        <td>Generative AI Leader</td>
+        <td class="points">4000</td>
+      </tr>
+      <tr>
+        <td>Associate Cloud Engineer</td>
+        <td class="points">5200</td>
+      </tr>
+      <tr>
+        <td>Professional Cloud Architect</td>
+        <td class="points">7000</td>
+      </tr>
+      <tr>
+        <td>Professional Cloud Developer</td>
+        <td class="points">7000</td>
+      </tr>
+      <tr>
+        <td>Professional Cloud Database Engineer</td>
+        <td class="points">7000</td>
+      </tr>
+      <tr>
+        <td>Professional Data Engineer</td>
+        <td class="points">7000</td>
+      </tr>
+      <tr>
+        <td>Professional Cloud DevOps Engineer</td>
+        <td class="points">8200</td>
+      </tr>
+      <tr>
+        <td>Professional Cloud Security Engineer</td>
+        <td class="points">8200</td>
+      </tr>
+      <tr>
+        <td>Professional Cloud Network Engineer</td>
+        <td class="points">8200</td>
+      </tr>
+      <tr>
+        <td>Professional Machine Learning Engineer</td>
+        <td class="points">10000</td>
+      </tr>
+      <tr>
+        <td>Google Workspace Administrator</td>
+        <td class="points">5200</td>
+      </tr>
+      <tr>
+        <td>Data Practitioner</td>
+        <td class="points">3000</td>
+      </tr>
+      <tr>
+        <td>Top 10 on Leaderboard</td>
+        <td class="points">--- (Legend Tier)</td>
+      </tr>
+    </table>
+
+    <div
+      style="margin-top: 18px; background: #fff4eb; color: #d14e00; padding: 14px 20px; border-radius: 10px; font-size: 16px; border-left: 5px solid #d14e00;">
+      ⚠️ <strong>Note:</strong> These ultra-high point thresholds are designed to filter the most consistent and serious
+      learners.<br>
+      🔐 Rewards will be revealed on <strong>14 July, 12:00 AM</strong> — only those who grind hard will stand a chance
+      to unlock them.
+    </div>
+
+    <div class="info-box" style="background:#f7f7ff;">
+      <b>Need help or ready to unlock?</b><br>
+      Start a <a href="https://dcinfotech.org.in
+/live-chat" target="_blank" class="live-chat-link">live chat</a> with our team
+      for your next steps!
+    </div>
+
+    <div class="programs-section">
+      <h2 style="color:#5f2ded; text-align:center; margin-bottom:18px;">Available Google Cloud Training Programs by
+        <strong>DC Cloud Solutions </h2>
+      <div class="speakers__list">
+
+
+
+
+        <button class="speaker speaker--half" aria-label="Cloud Digital Leader">
+          <img src="https://images.credly.com/size/340x340/images/44994cda-b5b0-44cb-9a6d-d29b57163073/image.png"
+            alt="Cloud Digital Leader" class="speaker__avatar">
+          <h3 class="speaker__name">Cloud Digital Leader</h3>
+        </button>
+
+        <button class="speaker speaker--half" aria-label="Generative AI Leader">
+          <img src="https://www.cloudbabble.co.uk/assets/img/Generative-AI-Leader-Badge.jpg" alt="Generative AI Leader"
+            class="speaker__avatar">
+          <h3 class="speaker__name">Generative AI Leader</h3>
+        </button>
+
+        <button class="speaker speaker--half" aria-label="Cloud Engineer">
+          <img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*pjmEYyOqkEJqu9NtnEiZMg.png"
+            alt="Cloud Engineer" class="speaker__avatar">
+          <h3 class="speaker__name">Cloud Engineer</h3>
+        </button>
+
+        <button class="speaker speaker--half" aria-label="Cloud Architect">
+          <img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*dQoodELCCSnoMTO0Klhudw.png"
+            alt="Cloud Architect" class="speaker__avatar">
+          <h3 class="speaker__name">Cloud Architect</h3>
+        </button>
+
+        <button class="speaker speaker--half" aria-label="Cloud Developer">
+          <img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*xGr5ILR_5f4TTQObsSrvdw.png"
+            alt="Cloud Developer" class="speaker__avatar">
+          <h3 class="speaker__name">Cloud Developer</h3>
+        </button>
+
+        <button class="speaker speaker--half" aria-label="Cloud Database Engineer">
+          <img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*RJKxKbAtysHV0T3o1Y0zTA.png"
+            alt="Cloud Database Engineer" class="speaker__avatar">
+          <h3 class="speaker__name">Cloud Database Engineer</h3>
+        </button>
+
+        <button class="speaker speaker--half" aria-label="Data Engineer">
+          <img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*oBFKyM4M_1juUKVCsqkP1A.png"
+            alt="Data Engineer" class="speaker__avatar">
+          <h3 class="speaker__name">Data Engineer</h3>
+        </button>
+
+        <button class="speaker speaker--half" aria-label="Cloud DevOps Engineer">
+          <img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*HEvYt-yL78Oxg3fpP6EpqA.png"
+            alt="Cloud DevOps Engineer" class="speaker__avatar">
+          <h3 class="speaker__name">Cloud DevOps Engineer</h3>
+        </button>
+
+        <button class="speaker speaker--half" aria-label="Cloud Security Engineer">
+          <img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*thcqOLpyWfd31cdOLVXELA.png"
+            alt="Cloud Security Engineer" class="speaker__avatar">
+          <h3 class="speaker__name">Cloud Security Engineer</h3>
+        </button>
+
+        <button class="speaker speaker--half" aria-label="Cloud Network Engineer">
+          <img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*evXqiBiLf8rj5jsMg5x2Uw.png"
+            alt="Cloud Network Engineer" class="speaker__avatar">
+          <h3 class="speaker__name">Cloud Network Engineer</h3>
+        </button>
+
+        <button class="speaker speaker--half" aria-label="Machine Learning Engineer">
+          <img
+            src="https://img-c.udemycdn.com/open-badges/v2/badge-class/1742434996/30e3569d-09f5-492a-9a45-fd40d1884e873336750200572576164.png"
+            alt="Machine Learning Engineer" class="speaker__avatar">
+          <h3 class="speaker__name">Machine Learning Engineer</h3>
+        </button>
+
+        <button class="speaker speaker--half" aria-label="Google Workspace Administrator">
+          <img src="https://images.credly.com/images/2a0b01fd-ef7b-4b82-b4d3-395df951f389/blob"
+            alt="Google Workspace Administrator" class="speaker__avatar">
+          <h3 class="speaker__name">Google Workspace Administrator</h3>
+        </button>
+
+        <button class="speaker speaker--half" aria-label="Data Practitioner">
+          <img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*h45Z1kPnkP1zedZrimT4JA.jpeg"
+            alt="Data Practitioner" class="speaker__avatar">
+          <h3 class="speaker__name">Data Practitioner</h3>
+        </button>
+
+
+
+
+
+      </div>
+    </div>
+
+    <script>
+      async function fetchLeaderboard() {
+        try {
+          const res = await fetch("https://sheetdb.io/api/v1/e0v82873qbjp0");
+          const data = await res.json();
+          const uniqueScores = {};
+          data.forEach(entry => {
+            const email = entry.useremail;
+            const score = parseInt(entry.score);
+            if (!email || isNaN(score)) return;
+            if (!uniqueScores[email] || score > uniqueScores[email]) {
+              uniqueScores[email] = score;
+            }
+          });
+
+          const sortedPlayers = Object.entries(uniqueScores)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10);
+
+          const leaderboardList = document.getElementById("leaderboardList");
+          leaderboardList.innerHTML = sortedPlayers.map(([email, score], index) => `
+        <li style="margin-bottom: 6px;"><strong>#${index + 1}</strong> ${email} — <span style="color:#5f2ded; font-weight:bold;">${score} pts</span></li>
+      `).join("");
+        } catch (err) {
+          document.getElementById("leaderboardError").style.display = "block";
+          console.error("Leaderboard fetch error:", err);
+        }
+      }
+
+      fetchLeaderboard();
+      setInterval(fetchLeaderboard, 15000); // update every 15 seconds
+    </script>
+    <style>
+      #leaderboardList li {
+        background: #f1f0fa;
+        padding: 10px 14px;
+        border-radius: 6px;
+        margin-bottom: 8px;
+      }
+    </style>
+    <style>
+      .speakers__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px 60px;
+        justify-content: center;
+        margin: 40px 0 0 0;
+      }
+
+      .speaker {
+        background: #fff;
+        border: none;
+        outline: none;
+        box-shadow: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 180px;
+        cursor: pointer;
+        padding: 0;
+        transition: transform 0.15s;
+      }
+
+      .speaker:hover {
+        transform: translateY(-6px) scale(1.04);
+        box-shadow: 0 4px 24px rgba(95, 45, 237, 0.10);
+      }
+
+      .speaker__avatar {
+        width: 90px;
+        height: 90px;
+        margin-bottom: 10px;
+        border-radius: 50%;
+        background: #f7f7ff;
+        object-fit: contain;
+      }
+
+      .speaker__name {
+        font-size: 15px;
+        color: #222;
+        font-weight: 600;
+        margin: 0 0 2px 0;
+        text-align: center;
+      }
+
+      .speaker__company {
+        font-size: 13px;
+        color: #444;
+        text-align: center;
+        margin-bottom: 0;
+      }
+
+      @media (max-width: 900px) {
+        .speakers__list {
+          gap: 24px 10px;
+        }
+
+        .speaker {
+          width: 44vw;
+          min-width: 140px;
+        }
+
+        .speaker__avatar {
+          width: 60px;
+          height: 60px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .speakers__list {
+          gap: 12px 0;
+        }
+
+        .speaker {
+          width: 90vw;
+        }
+      }
+    </style>
+    <script src="js/tawkto.js"></script>
+
+</body>
+
+</html>
+<footer style="background:#f4f4f4; padding:20px 0; text-align:center; font-size:14px; color:#333; margin-top:40px;">
+  <p>Designed and Developed by <strong>DC Cloud Solutions</strong> | All Rights Reserved.</p>
+  <p>For more information, reach out to support at <a href="mailto:support@dcinfotech.me"
+      style="color:#5f2ded; text-decoration:none;">support@dcinfotech.me</a></p>
+</footer>

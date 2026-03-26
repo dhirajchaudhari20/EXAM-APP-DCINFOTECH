@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Feedback Reports | Admin Dashboard</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background: #f4f6f9;
+        }
+
+        .dashboard-container {
+            margin-top: 50px;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th {
+            font-weight: 600;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container dashboard-container">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-chart-bar text-primary me-2"></i>Intern Feedback Reports</h2>
+            <button class="btn btn-outline-primary" onclick="loadReports()"><i class="fas fa-sync-alt"></i>
+                Refresh</button>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white p-3">
+                    <h3>Total Reports</h3>
+                    <h1 id="total-count">0</h1>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success text-white p-3">
+                    <h3>This Week</h3>
+                    <h1 id="week-count">0</h1>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-info text-white p-3">
+                    <h3>Avg Satisfaction</h3>
+                    <h1 id="avg-score">-</h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Table -->
+        <div class="card p-4">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Intern Name</th>
+                        <th>Email</th>
+                        <th>Summary / Key Issues</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reports-table-body">
+                    <tr>
+                        <td colspan="5" class="text-center">Loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Details Modal -->
+    <div class="modal fade" id="detailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Feedback Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <!-- Details will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        async function loadReports() {
+            const tableBody = document.getElementById('reports-table-body');
+            tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Loading...</td></tr>';
+
+            try {
+                const response = await fetch('/.netlify/functions/get-reports');
+                const data = await response.json();
+
+                if (!data.reports || data.reports.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No reports found.</td></tr>';
+                    updateStats(0, 0, 0);
+                    return;
+                }
+
+                renderTable(data.reports);
+                updateStats(data.reports.length, data.reports.length, "N/A"); // Simplified stats for now
+
+            } catch (error) {
+                console.error("Error loading reports:", error);
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading data.</td></tr>';
+            }
+        }
+
+        function renderTable(reports) {
+            const tableBody = document.getElementById('reports-table-body');
+            tableBody.innerHTML = '';
+
+            reports.forEach((report, index) => {
+                const row = `
+                    <tr>
+                        <td>${new Date(report.timestamp).toLocaleDateString()}</td>
+                        <td>${report.internName}</td>
+                        <td>${report.internEmail}</td>
+                        <td>${report.summary || 'No summary available'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info text-white" onclick="viewDetails(${index})">View</button>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+
+            // Store reports globally for modal access
+            window.currentReports = reports;
+        }
+
+        function updateStats(total, weekly, score) {
+            document.getElementById('total-count').innerText = total;
+            document.getElementById('week-count').innerText = weekly;
+            document.getElementById('avg-score').innerText = score;
+        }
+
+        function viewDetails(index) {
+            const report = window.currentReports[index];
+            const modalBody = document.getElementById('modal-body');
+
+            let html = `<h4>${report.internName}</h4><p class="text-muted">${report.internEmail}</p><hr>`;
+            html += `<h5>Conversation:</h5><div class="bg-light p-3 rounded">`;
+
+            if (report.conversation) {
+                report.conversation.forEach(msg => {
+                    html += `<p><strong>${msg.role === 'agent' ? 'AI' : 'Intern'}:</strong> ${msg.content}</p>`;
+                });
+            } else {
+                html += `<p>No details.</p>`;
+            }
+
+            html += `</div>`;
+
+            modalBody.innerHTML = html;
+
+            const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+            modal.show();
+        }
+
+        // Initial Load
+        loadReports();
+    </script>
+</body>
+
+</html>

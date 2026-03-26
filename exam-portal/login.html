@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DC Connect | Exam Portal Login</title>
+  <link rel="icon" href="../favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #1557b0;
+      --accent: #34a853;
+      --danger: #ea4335;
+      --warn: #fbbc04;
+      --bg-dark: #0d1b2a;
+      --bg-mid: #142236;
+      --bg-card: rgba(255,255,255,0.06);
+      --border-glass: rgba(255,255,255,0.12);
+      --text-primary: #f0f4ff;
+      --text-secondary: rgba(240,244,255,0.65);
+      --input-bg: rgba(255,255,255,0.08);
+      --input-border: rgba(255,255,255,0.15);
+      --input-focus: #1a73e8;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── Animated background ── */
+    .bg-canvas {
+      position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse at 20% 20%, #1a3a5c 0%, transparent 55%),
+                  radial-gradient(ellipse at 80% 80%, #0d3b2d 0%, transparent 55%),
+                  linear-gradient(135deg, #0d1b2a 0%, #142236 100%);
+    }
+    .particles {
+      position: fixed; inset: 0; z-index: 0; overflow: hidden;
+    }
+    .particle {
+      position: absolute; border-radius: 50%;
+      background: rgba(26,115,232,0.25);
+      animation: floatParticle linear infinite;
+    }
+
+    @keyframes floatParticle {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { transform: translateY(-20px) scale(1); opacity: 0; }
+    }
+
+    /* ── Page layout ── */
+    .page {
+      position: relative; z-index: 10;
+      width: 100%; max-width: 900px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 560px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6),
+                  0 0 0 1px var(--border-glass);
+      margin: 20px;
+    }
+
+    /* ── Left branding panel ── */
+    .brand-panel {
+      background: linear-gradient(135deg, #1a3f6f 0%, #0d2b50 100%);
+      padding: 48px 40px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      position: relative; overflow: hidden;
+    }
+    .brand-panel::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .brand-logo { display: flex; align-items: center; gap: 12px; }
+    .brand-logo img { height: 40px; filter: brightness(0) invert(1); }
+    .brand-logo-text { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+
+    .brand-tagline { position: relative; }
+    .brand-tagline h1 {
+      font-size: 32px; font-weight: 800; line-height: 1.2;
+      margin-bottom: 16px; letter-spacing: -0.5px;
+    }
+    .brand-tagline h1 span { color: #34a853; }
+    .brand-tagline p {
+      font-size: 14px; color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+    }
+    .brand-features { display: flex; flex-direction: column; gap: 14px; }
+    .brand-feature {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 12px 16px;
+      font-size: 13px;
+    }
+    .brand-feature-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(26,115,232,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+
+    /* ── Right auth panel ── */
+    .auth-panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(24px);
+      padding: 48px 40px;
+      display: flex; flex-direction: column; justify-content: center;
+      border-left: 1px solid var(--border-glass);
+    }
+
+    /* ── Tabs ── */
+    .auth-tabs {
+      display: flex; gap: 0;
+      border-radius: 10px; overflow: hidden;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-glass);
+      margin-bottom: 28px;
+    }
+    .auth-tab {
+      flex: 1; padding: 10px 16px;
+      background: none; border: none; cursor: pointer;
+      color: var(--text-secondary); font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 500; letter-spacing: 0.3px;
+      transition: all 0.2s ease;
+    }
+    .auth-tab.active {
+      background: var(--primary);
+      color: #fff;
+      border-radius: 8px;
+    }
+
+    /* ── Forms ── */
+    .auth-form { display: none; flex-direction: column; gap: 0; }
+    .auth-form.active { display: flex; }
+
+    .form-title {
+      font-size: 22px; font-weight: 700;
+      margin-bottom: 6px; letter-spacing: -0.3px;
+    }
+    .form-subtitle {
+      font-size: 13px; color: var(--text-secondary);
+      margin-bottom: 24px; line-height: 1.6;
+    }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .field-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); letter-spacing: 0.4px; }
+    .field-input {
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 10px; padding: 12px 14px;
+      color: var(--text-primary); font-family: 'Inter', sans-serif;
+      font-size: 14px; outline: none; width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field-input::placeholder { color: rgba(240,244,255,0.3); }
+    .field-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26,115,232,0.2);
+    }
+    .field-input.error { border-color: var(--danger); }
+
+    .password-wrapper { position: relative; }
+    .password-wrapper .field-input { padding-right: 42px; }
+    .toggle-pw {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: var(--text-secondary);
+      font-size: 16px; padding: 4px; transition: color 0.2s;
+    }
+    .toggle-pw:hover { color: var(--text-primary); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #1557b0);
+      color: #fff; border: none; border-radius: 10px;
+      padding: 13px; font-family: 'Inter', sans-serif;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      width: 100%; margin-top: 6px;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-primary:hover { box-shadow: 0 6px 20px rgba(26,115,232,0.4); transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .form-link {
+      background: none; border: none; cursor: pointer;
+      color: var(--primary); font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 500; text-decoration: none;
+      display: inline; padding: 0; transition: color 0.2s;
+    }
+    .form-link:hover { color: #5a9cf5; text-decoration: underline; }
+
+    .form-footer {
+      margin-top: 16px; font-size: 12px;
+      color: var(--text-secondary); text-align: center;
+    }
+
+    /* ── Alert messages ── */
+    .alert {
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 13px; font-weight: 500; margin-bottom: 14px;
+      display: none; align-items: center; gap: 8px;
+    }
+    .alert.show { display: flex; }
+    .alert-success { background: rgba(52,168,83,0.15); border: 1px solid rgba(52,168,83,0.3); color: #34a853; }
+    .alert-error { background: rgba(234,67,53,0.15); border: 1px solid rgba(234,67,53,0.3); color: #f28b82; }
+    .alert-info { background: rgba(26,115,232,0.15); border: 1px solid rgba(26,115,232,0.3); color: #82b1ff; }
+
+    /* ── Spinner ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin 0.7s linear infinite; display: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      .page { grid-template-columns: 1fr; }
+      .brand-panel { display: none; }
+      .auth-panel { padding: 36px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-canvas"></div>
+<div class="particles" id="particles"></div>
+
+<div class="page">
+  <!-- LEFT: Brand Panel -->
+  <div class="brand-panel">
+    <div class="brand-logo">
+      <img src="../images/dc-logo.png" alt="DC Infotech" onerror="this.style.display='none'">
+      <span class="brand-logo-text">DC Infotech</span>
+    </div>
+    <div class="brand-tagline">
+      <h1>Your <span>Cloud Career</span> Starts Here</h1>
+      <p>Access the official DC Cloud Solutions exam portal to take certification exams, track your progress, and earn industry-recognized credentials.</p>
+    </div>
+    <div class="brand-features">
+      <div class="brand-feature">
+        <div class="brand-feature-icon">🛡️</div>
+        <div>
+          <div style="font-weight:600;font-size:13px;">AI-Proctored Exams</div>
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px;">Secure biometric verification</div>
+        </div>
+      </div>
+      <div class="brand-feature">
+        <div class="brand-feature-icon">🏆</div>
+        <div>
+          <div style="font-weight:600;font-size:13px;">Google Cloud Certified</div>
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px;">Industry-recognized credentials</div>
+        </div>
+      </div>
+      <div class="brand-feature">
+        <div class="brand-feature-icon">⚡</div>
+        <div>
+          <div style="font-weight:600;font-size:13px;">Instant Results</div>
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px;">Real-time score & certificate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Auth Panel -->
+  <div class="auth-panel">
+    <div class="auth-tabs" id="authTabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchTab('register')">Register</button>
+      <button class="auth-tab" onclick="switchTab('forgot')">Forgot Password</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div class="auth-form active" id="form-login">
+      <div class="form-title">Welcome back 👋</div>
+      <div class="form-subtitle">Sign in to access your exams and results.</div>
+
+      <div class="alert alert-error" id="login-error">❌ <span id="login-error-msg"></span></div>
+
+      <div class="field-group">
+        <label class="field-label">EMAIL ADDRESS</label>
+        <input class="field-input" id="login-email" type="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">PASSWORD</label>
+        <div class="password-wrapper">
+          <input class="field-input" id="login-password" type="password" placeholder="Enter your password" autocomplete="current-password" />
+          <button class="toggle-pw" onclick="togglePw('login-password', this)" tabindex="-1">👁</button>
+        </div>
+      </div>
+
+      <div style="text-align:right;margin-bottom:16px;margin-top:-8px;">
+        <button class="form-link" onclick="switchTab('forgot')">Forgot password?</button>
+      </div>
+
+      <button class="btn-primary" id="login-btn" onclick="handleLogin()">
+        <div class="spinner" id="login-spinner"></div>
+        <span id="login-btn-text">Sign In</span>
+      </button>
+
+      <div class="form-footer">
+        New to DC Connect? <button class="form-link" onclick="switchTab('register')">Create an account</button>
+      </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div class="auth-form" id="form-register">
+      <div class="form-title">Create Account ✨</div>
+      <div class="form-subtitle">Register with your DC-provided email to get started.</div>
+
+      <div class="alert alert-error" id="reg-error">❌ <span id="reg-error-msg"></span></div>
+      <div class="alert alert-success" id="reg-success">✅ <span id="reg-success-msg"></span></div>
+
+      <div class="field-group">
+        <label class="field-label">FULL NAME</label>
+        <input class="field-input" id="reg-name" type="text" placeholder="Your full name" autocomplete="name" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">EMAIL ADDRESS</label>
+        <input class="field-input" id="reg-email" type="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">PASSWORD</label>
+        <div class="password-wrapper">
+          <input class="field-input" id="reg-password" type="password" placeholder="At least 8 characters" autocomplete="new-password" />
+          <button class="toggle-pw" onclick="togglePw('reg-password', this)" tabindex="-1">👁</button>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="reg-btn" onclick="handleRegister()">
+        <div class="spinner" id="reg-spinner"></div>
+        <span id="reg-btn-text">Create Account</span>
+      </button>
+
+      <div class="form-footer">
+        Already registered? <button class="form-link" onclick="switchTab('login')">Sign in here</button>
+      </div>
+    </div>
+
+    <!-- FORGOT PASSWORD FORM -->
+    <div class="auth-form" id="form-forgot">
+      <div class="form-title">Reset Password 🔑</div>
+      <div class="form-subtitle">Enter your registered email and we'll send a reset link.</div>
+
+      <div class="alert alert-error" id="forgot-error">❌ <span id="forgot-error-msg"></span></div>
+      <div class="alert alert-success" id="forgot-success">
+        ✅ Password reset email sent! Check your inbox (and spam folder).
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">EMAIL ADDRESS</label>
+        <input class="field-input" id="forgot-email" type="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+
+      <button class="btn-primary" id="forgot-btn" onclick="handleForgotPassword()">
+        <div class="spinner" id="forgot-spinner"></div>
+        <span id="forgot-btn-text">Send Reset Link</span>
+      </button>
+
+      <div class="form-footer" style="margin-top:20px;">
+        Remember your password? <button class="form-link" onclick="switchTab('login')">Sign in</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    sendPasswordResetEmail,
+    updateProfile,
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getDatabase,
+    ref,
+    set,
+    get
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCohKlqNu0I1sXcLW4D_fv-OEw9x0S50q8",
+    authDomain: "dc-infotechpvt-1-d1a4b.firebaseapp.com",
+    databaseURL: "https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com",
+    projectId: "dc-infotechpvt-1-d1a4b",
+    storageBucket: "dc-infotechpvt-1-d1a4b.appspot.com",
+    messagingSenderId: "330752838328",
+    appId: "1:330752838328:web:1fe0ca04953934d4638703"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  await setPersistence(auth, browserLocalPersistence);
+
+  // Auto-redirect if already signed in
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      redirectToDashboard(user);
+    }
+  });
+
+  function redirectToDashboard(user) {
+    localStorage.setItem('cm_user', JSON.stringify({
+      email: user.email,
+      name: user.displayName || user.email.split('@')[0],
+      uid: user.uid
+    }));
+    window.location.href = 'dashboard.html';
+  }
+
+  // ── HELPERS ──
+  function setLoading(btnId, spinnerId, textId, loading, text) {
+    document.getElementById(btnId).disabled = loading;
+    document.getElementById(spinnerId).style.display = loading ? 'block' : 'none';
+    document.getElementById(textId).textContent = text;
+  }
+
+  function showAlert(alertId, msgId, message) {
+    const el = document.getElementById(alertId);
+    if (msgId) document.getElementById(msgId).textContent = message;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 6000);
+  }
+
+  function hideAlert(id) {
+    document.getElementById(id).classList.remove('show');
+  }
+
+  function getFriendlyError(code) {
+    const map = {
+      'auth/user-not-found': 'No account found with this email.',
+      'auth/wrong-password': 'Incorrect password. Please try again.',
+      'auth/invalid-email': 'Please enter a valid email address.',
+      'auth/email-already-in-use': 'This email is already registered. Sign in instead.',
+      'auth/weak-password': 'Password must be at least 8 characters.',
+      'auth/too-many-requests': 'Too many failed attempts. Please wait a few minutes.',
+      'auth/invalid-credential': 'Invalid email or password.',
+      'auth/network-request-failed': 'Network error. Check your connection.',
+    };
+    return map[code] || 'An unexpected error occurred. Please try again.';
+  }
+
+  // ── LOGIN ──
+  window.handleLogin = async function() {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    hideAlert('login-error');
+
+    if (!email || !password) {
+      showAlert('login-error', 'login-error-msg', 'Please enter both email and password.');
+      return;
+    }
+
+    setLoading('login-btn', 'login-spinner', 'login-btn-text', true, 'Signing in...');
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      redirectToDashboard(cred.user);
+    } catch (e) {
+      showAlert('login-error', 'login-error-msg', getFriendlyError(e.code));
+    } finally {
+      setLoading('login-btn', 'login-spinner', 'login-btn-text', false, 'Sign In');
+    }
+  };
+
+  // ── REGISTER ──
+  window.handleRegister = async function() {
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-password').value;
+    hideAlert('reg-error');
+    hideAlert('reg-success');
+
+    if (!name || !email || !password) {
+      showAlert('reg-error', 'reg-error-msg', 'Please fill in all fields.');
+      return;
+    }
+    if (password.length < 8) {
+      showAlert('reg-error', 'reg-error-msg', 'Password must be at least 8 characters.');
+      return;
+    }
+
+    setLoading('reg-btn', 'reg-spinner', 'reg-btn-text', true, 'Creating account...');
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(cred.user, { displayName: name });
+
+      // Save user profile to Firebase Realtime DB
+      await set(ref(db, `users/${cred.user.uid}`), {
+        name, email,
+        createdAt: new Date().toISOString(),
+        role: 'candidate'
+      });
+
+      showAlert('reg-success', null, `Welcome, ${name}! Your account has been created.`);
+      setTimeout(() => redirectToDashboard(cred.user), 1500);
+    } catch (e) {
+      showAlert('reg-error', 'reg-error-msg', getFriendlyError(e.code));
+    } finally {
+      setLoading('reg-btn', 'reg-spinner', 'reg-btn-text', false, 'Create Account');
+    }
+  };
+
+  // ── FORGOT PASSWORD ──
+  window.handleForgotPassword = async function() {
+    const email = document.getElementById('forgot-email').value.trim();
+    hideAlert('forgot-error');
+    hideAlert('forgot-success');
+
+    if (!email) {
+      showAlert('forgot-error', 'forgot-error-msg', 'Please enter your email address.');
+      return;
+    }
+
+    setLoading('forgot-btn', 'forgot-spinner', 'forgot-btn-text', true, 'Sending...');
+    try {
+      await sendPasswordResetEmail(auth, email);
+      document.getElementById('forgot-success').classList.add('show');
+      document.getElementById('forgot-email').value = '';
+    } catch (e) {
+      showAlert('forgot-error', 'forgot-error-msg', getFriendlyError(e.code));
+    } finally {
+      setLoading('forgot-btn', 'forgot-spinner', 'forgot-btn-text', false, 'Send Reset Link');
+    }
+  };
+
+  // Also expose Enter key support
+  document.getElementById('login-password').addEventListener('keydown', e => { if(e.key==='Enter') window.handleLogin(); });
+  document.getElementById('login-email').addEventListener('keydown', e => { if(e.key==='Enter') window.handleLogin(); });
+  document.getElementById('reg-password').addEventListener('keydown', e => { if(e.key==='Enter') window.handleRegister(); });
+  document.getElementById('forgot-email').addEventListener('keydown', e => { if(e.key==='Enter') window.handleForgotPassword(); });
+</script>
+
+<script>
+  // ── TAB SWITCHING ──
+  function switchTab(tab) {
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(`form-${tab}`).classList.add('active');
+    const tabs = ['login','register','forgot'];
+    document.querySelectorAll('.auth-tab')[tabs.indexOf(tab)].classList.add('active');
+  }
+
+  // ── TOGGLE PASSWORD VISIBILITY ──
+  function togglePw(inputId, btn) {
+    const inp = document.getElementById(inputId);
+    if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+    else { inp.type = 'password'; btn.textContent = '👁'; }
+  }
+
+  // ── PARTICLE GENERATOR ──
+  const particlesEl = document.getElementById('particles');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 6 + 3;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      animation-duration:${10+Math.random()*20}s;
+      animation-delay:${-Math.random()*20}s;
+      opacity:${0.2+Math.random()*0.4};
+    `;
+    particlesEl.appendChild(p);
+  }
+</script>
+</body>
+</html>

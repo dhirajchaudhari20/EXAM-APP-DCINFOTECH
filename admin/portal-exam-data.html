@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Exam Admin Dashboard — DC Cloud Solutions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Firebase SDK (v8) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      min-height: 100vh;
+      font-size: 14px;
+    }
+
+    /* ────── HEADER ────── */
+    .header {
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      height: 60px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-circle {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #6e40c9, #3d82f0);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .header h1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f0f6fc;
+    }
+
+    .header-sub {
+      font-size: 11px;
+      color: #8b949e;
+      margin-top: 1px;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(248, 81, 73, .12);
+      border: 1px solid rgba(248, 81, 73, .4);
+      color: #f85149;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #f85149;
+      animation: blink 1.4s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .2;
+      }
+    }
+
+    .hdr-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      background: #21262d;
+      color: #c9d1d9;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: .15s;
+    }
+
+    .hdr-btn:hover {
+      border-color: #6e40c9;
+      color: #f0f6fc;
+    }
+
+    /* ────── STATS ────── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 16px 24px;
+    }
+
+    .stat-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .si-live {
+      background: rgba(248, 81, 73, .15);
+    }
+
+    .si-sched {
+      background: rgba(79, 140, 255, .15);
+    }
+
+    .si-res {
+      background: rgba(63, 185, 80, .15);
+    }
+
+    .si-tot {
+      background: rgba(210, 153, 34, .15);
+    }
+
+    .stat-num {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f0f6fc;
+      line-height: 1;
+    }
+
+    .stat-lbl {
+      font-size: 11px;
+      color: #8b949e;
+      margin-top: 3px;
+    }
+
+    /* ────── TABS ────── */
+    .tabs-nav {
+      display: flex;
+      border-bottom: 1px solid #21262d;
+      padding: 0 24px;
+      background: #161b22;
+    }
+
+    .tab {
+      padding: 11px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #8b949e;
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      font-family: inherit;
+      transition: color .15s, border-color .15s;
+      white-space: nowrap;
+    }
+
+    .tab.on {
+      color: #4f8cff;
+      border-bottom-color: #4f8cff;
+    }
+
+    .tab:hover:not(.on) {
+      color: #c9d1d9;
+    }
+
+    /* ────── CONTROLS ────── */
+    .ctrl-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      flex-wrap: wrap;
+      background: #0d1117;
+    }
+
+    .ctrl-search {
+      flex: 1;
+      min-width: 200px;
+      max-width: 300px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+    }
+
+    .ctrl-search:focus {
+      outline: none;
+      border-color: #4f8cff;
+    }
+
+    .ctrl-select {
+      background: #161b22;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .ctrl-select:focus {
+      outline: none;
+      border-color: #4f8cff;
+    }
+
+    .ctrl-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #8b949e;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .ctrl-toggle input {
+      accent-color: #4f8cff;
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+
+    /* ────── TABLE ────── */
+    .tbl-wrap {
+      overflow-x: auto;
+      padding: 0 24px 24px;
+      position: relative;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+
+    thead th {
+      padding: 12px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: #8b949e;
+      background: #161b22;
+      border-top: 1px solid #21262d;
+      border-bottom: 2px solid #21262d;
+      white-space: nowrap;
+      position: sticky;
+      top: 60px;
+      z-index: 100;
+      vertical-align: bottom;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #21262d;
+      transition: background .1s;
+    }
+
+    tbody tr:hover {
+      background: #161b22;
+    }
+
+    tbody td {
+      padding: 11px 12px;
+      vertical-align: middle;
+    }
+
+    .empty-cell {
+      text-align: center;
+      color: #484f58;
+      padding: 50px !important;
+      font-size: 13px;
+    }
+
+    /* ────── BADGES ────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      white-space: nowrap;
+    }
+
+    .badge::before {
+      content: '●';
+      font-size: 7px;
+    }
+
+    .b-live {
+      background: rgba(248, 81, 73, .15);
+      color: #f85149;
+      border: 1px solid rgba(248, 81, 73, .3);
+    }
+
+    .b-pause {
+      background: rgba(210, 153, 34, .15);
+      color: #d29922;
+      border: 1px solid rgba(210, 153, 34, .3);
+    }
+
+    .b-sched {
+      background: rgba(79, 140, 255, .15);
+      color: #4f8cff;
+      border: 1px solid rgba(79, 140, 255, .3);
+    }
+
+    .b-term {
+      background: rgba(139, 148, 158, .15);
+      color: #8b949e;
+      border: 1px solid rgba(139, 148, 158, .3);
+    }
+
+    .b-pass {
+      background: rgba(63, 185, 80, .15);
+      color: #3fb950;
+      border: 1px solid rgba(63, 185, 80, .3);
+    }
+
+    .b-fail {
+      background: rgba(248, 81, 73, .15);
+      color: #f85149;
+      border: 1px solid rgba(248, 81, 73, .3);
+    }
+
+    /* ────── ACTION BUTTONS ────── */
+    .acts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .ab {
+      padding: 4px 10px;
+      border: 1px solid;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: opacity .15s;
+      background: transparent;
+    }
+
+    .ab:hover {
+      opacity: .75;
+    }
+
+    .ab-resume {
+      color: #3fb950;
+      border-color: rgba(63, 185, 80, .5);
+      background: rgba(63, 185, 80, .08);
+    }
+
+    .ab-pause {
+      color: #d29922;
+      border-color: rgba(210, 153, 34, .5);
+      background: rgba(210, 153, 34, .08);
+    }
+
+    .ab-meet {
+      color: #4f8cff;
+      border-color: rgba(79, 140, 255, .5);
+      background: rgba(79, 140, 255, .08);
+    }
+
+    .ab-stop {
+      color: #f85149;
+      border-color: rgba(248, 81, 73, .5);
+      background: rgba(248, 81, 73, .08);
+    }
+
+    .ab-edit {
+      color: #a371f7;
+      border-color: rgba(163, 113, 247, .5);
+      background: rgba(163, 113, 247, .08);
+    }
+
+    .ab-view {
+      color: #79c0ff;
+      border-color: rgba(121, 192, 255, .5);
+      background: rgba(121, 192, 255, .08);
+    }
+
+    .ab-del {
+      color: #f85149;
+      border-color: rgba(248, 81, 73, .5);
+      background: rgba(248, 81, 73, .08);
+    }
+
+    /* ────── PROGRESS BAR ────── */
+    .pct-wrap {
+      margin-top: 4px;
+      background: #21262d;
+      border-radius: 3px;
+      height: 5px;
+      overflow: hidden;
+    }
+
+    .pct-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .pct-p {
+      background: #3fb950;
+    }
+
+    .pct-f {
+      background: #f85149;
+    }
+
+    /* ────── CELL HELPERS ────── */
+    .cell-main {
+      font-weight: 600;
+      color: #f0f6fc;
+      font-size: 13px;
+    }
+
+    .cell-sub {
+      font-size: 11px;
+      color: #8b949e;
+      margin-top: 2px;
+    }
+
+    .cell-mono {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #79c0ff;
+    }
+
+    /* ────── SPINNER ────── */
+    .spinner-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 60px;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #21262d;
+      border-top-color: #4f8cff;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ────── MODAL ────── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(1, 4, 9, .8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+
+    .overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 24px;
+      width: 95%;
+      max-width: 560px;
+      max-height: 92vh;
+      overflow-y: auto;
+      transform: translateY(12px);
+      transition: transform .2s;
+    }
+
+    .overlay.open .modal {
+      transform: translateY(0);
+    }
+
+    .modal-hdr {
+      font-size: 15px;
+      font-weight: 700;
+      color: #f0f6fc;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #21262d;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-grid .span2 {
+      grid-column: span 2;
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .fg label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    .fg input,
+    .fg select,
+    .fg textarea {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+    }
+
+    .fg input:focus,
+    .fg select:focus {
+      outline: none;
+      border-color: #4f8cff;
+    }
+
+    .modal-foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .m-btn {
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      border: none;
+      transition: .15s;
+    }
+
+    .m-cancel {
+      background: #21262d;
+      color: #8b949e;
+      border: 1px solid #30363d;
+    }
+
+    .m-cancel:hover {
+      color: #c9d1d9;
+    }
+
+    .m-save {
+      background: #4f8cff;
+      color: #fff;
+    }
+
+    .m-save:hover {
+      background: #3d82f0;
+    }
+
+    /* ────── SNAPSHOT LIST ────── */
+    .snap-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .snap-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #0d1117;
+      border-radius: 5px;
+      padding: 6px 10px;
+      font-size: 11px;
+      color: #8b949e;
+    }
+
+    .snap-item a {
+      color: #79c0ff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .snap-item a:hover {
+      text-decoration: underline;
+    }
+
+    /* ────── SCROLLBAR ────── */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0d1117;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #30363d;
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #484f58;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ HEADER ══ -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo-circle">🎓</div>
+      <div>
+        <h1>Exam Admin Dashboard</h1>
+        <div class="header-sub">DC Cloud Solutions — Firebase Live Data</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="live-badge">
+        <div class="live-dot"></div><span id="liveBadge">0 Live</span>
+      </div>
+      <button class="hdr-btn" onclick="loadAll()">🔄 Refresh</button>
+    </div>
+  </div>
+
+  <!-- ══ STATS ══ -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-icon si-live">🔴</div>
+      <div>
+        <div class="stat-num" id="st-live">—</div>
+        <div class="stat-lbl">Live Now</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-sched">📅</div>
+      <div>
+        <div class="stat-num" id="st-sched">—</div>
+        <div class="stat-lbl">Scheduled</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-res">✅</div>
+      <div>
+        <div class="stat-num" id="st-res">—</div>
+        <div class="stat-lbl">Results In</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-tot">📊</div>
+      <div>
+        <div class="stat-num" id="st-tot">—</div>
+        <div class="stat-lbl">Total Schedules</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TABS ══ -->
+  <div class="tabs-nav">
+    <button class="tab on" onclick="switchTab('live')">⚡ Live &amp; Scheduled</button>
+    <button class="tab" onclick="switchTab('results')">📋 Exam Results</button>
+    <button class="tab" onclick="switchTab('all')">📁 All Schedules</button>
+  </div>
+
+  <!-- ══ TAB: LIVE ══ -->
+  <div id="pane-live">
+    <div class="ctrl-bar">
+      <input class="ctrl-search" id="src-live" placeholder="🔍  Search name, email, exam…" oninput="renderLive()">
+      <select class="ctrl-select" id="fil-status" onchange="renderLive()">
+        <option value="">All Statuses</option>
+        <option value="LIVE">🔴 Live</option>
+        <option value="PAUSED">⏸ Paused (User)</option>
+        <option value="PAUSED_BY_ADMIN">⏸ Paused (Admin)</option>
+        <option value="Scheduled">📅 Scheduled</option>
+        <option value="TERMINATED">🛑 Terminated</option>
+      </select>
+      <label class="ctrl-toggle"><input type="checkbox" id="tog-live" onchange="renderLive()"> Live Only</label>
+      <label class="ctrl-toggle"><input type="checkbox" id="tog-auto" onchange="toggleAuto()"> Auto-refresh (5s)</label>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:25%">Student / Email</th>
+            <th style="width:25%">Exam</th>
+            <th style="width:10%">Status</th>
+            <th style="width:15%">Scheduled Time</th>
+            <th style="width:10%">Voucher</th>
+            <th style="width:15%">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="body-live">
+          <tr>
+            <td class="empty-cell" colspan="6">
+              <div class="spinner-wrap">
+                <div class="spinner"></div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ TAB: RESULTS ══ -->
+  <div id="pane-results" style="display:none">
+    <div class="ctrl-bar">
+      <input class="ctrl-search" id="src-res" placeholder="🔍  Search name, email, exam…" oninput="renderResults()">
+      <select class="ctrl-select" id="fil-res-status" onchange="renderResults()">
+        <option value="">All Results</option>
+        <option value="PASS">✅ Pass</option>
+        <option value="FAIL">❌ Fail</option>
+        <option value="TERMINATED">🛑 Terminated</option>
+      </select>
+      <select class="ctrl-select" id="fil-res-exam" onchange="renderResults()">
+        <option value="">All Exams</option>
+      </select>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:20%">Student</th>
+            <th style="width:20%">Exam</th>
+            <th style="width:12%">Score</th>
+            <th style="width:10%">Result</th>
+            <th style="width:13%">Time Taken</th>
+            <th style="width:15%">Submitted At</th>
+            <th style="width:10%">Details</th>
+          </tr>
+        </thead>
+        <tbody id="body-results">
+          <tr>
+            <td class="empty-cell" colspan="7">
+              <div class="spinner-wrap">
+                <div class="spinner"></div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ TAB: ALL ══ -->
+  <div id="pane-all" style="display:none">
+    <div class="ctrl-bar">
+      <input class="ctrl-search" id="src-all" placeholder="🔍  Search…" oninput="renderAll()">
+      <select class="ctrl-select" id="fil-all-exam" onchange="renderAll()">
+        <option value="">All Exams</option>
+      </select>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:20%">Student / Email</th>
+            <th style="width:20%">Exam</th>
+            <th style="width:15%">Status</th>
+            <th style="width:20%">Date &amp; Time</th>
+            <th style="width:10%">Voucher</th>
+            <th style="width:15%">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="body-all">
+          <tr>
+            <td class="empty-cell" colspan="6">
+              <div class="spinner-wrap">
+                <div class="spinner"></div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ EDIT MODAL ══ -->
+  <div class="overlay" id="editOverlay">
+    <div class="modal">
+      <div class="modal-hdr">✏️ Edit Exam Schedule</div>
+      <input type="hidden" id="edit-id">
+      <div class="form-grid">
+        <div class="fg span2"><label>Gmail (Personal)</label><input id="edit-gmail" type="email"
+            placeholder="student@gmail.com"></div>
+        <div class="fg span2"><label>Login Email (userEmail)</label><input id="edit-useremail" type="email"
+            placeholder="login email"></div>
+        <div class="fg span2"><label>Exam Name</label>
+          <select id="edit-name">
+            <option>Associate Cloud Engineer</option>
+            <option>Professional Cloud Architect</option>
+            <option>Professional Data Engineer</option>
+            <option>Professional Cloud DevOps Engineer</option>
+            <option>Professional Cloud Database Engineer</option>
+            <option>Google Workspace Administrator</option>
+            <option>AWS Certified Solutions Architect - Associate</option>
+            <option>AWS Certified Solutions Architect - Professional</option>
+          </select>
+        </div>
+        <div class="fg"><label>Date &amp; Time</label><input id="edit-datetime" type="datetime-local"></div>
+        <div class="fg"><label>Voucher Code</label><input id="edit-voucher" placeholder="DC-INTERN-2026"></div>
+        <div class="fg span2"><label>Status</label>
+          <select id="edit-status">
+            <option value="Scheduled">📅 Scheduled</option>
+            <option value="LIVE">🔴 LIVE</option>
+            <option value="PAUSED">⏸ PAUSED (User)</option>
+            <option value="PAUSED_BY_ADMIN">⏸ PAUSED (Admin)</option>
+            <option value="TERMINATED">🛑 TERMINATED</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="m-btn m-cancel" onclick="closeOv('editOverlay')">Cancel</button>
+        <button class="m-btn m-save" onclick="saveEdit()">💾 Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RESULT DETAIL MODAL ══ -->
+  <div class="overlay" id="resOverlay">
+    <div class="modal">
+      <div class="modal-hdr" id="res-title">📋 Exam Result</div>
+      <div id="res-body"></div>
+      <div class="modal-foot">
+        <button class="m-btn m-cancel" onclick="closeOv('resOverlay')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ EDIT RESULT MODAL ══ -->
+  <div class="overlay" id="editResOverlay">
+    <div class="modal">
+      <div class="modal-hdr">✏️ Edit Exam Result</div>
+      <input type="hidden" id="edit-res-id">
+      <div class="form-grid">
+        <div class="fg span2"><label>Student Name</label><input id="edit-res-name"></div>
+        <div class="fg span2"><label>Email</label><input id="edit-res-email" type="email"></div>
+        <div class="fg span2"><label>Exam Name</label><input id="edit-res-exam"></div>
+        <div class="fg"><label>Score</label><input id="edit-res-score"></div>
+        <div class="fg"><label>Percentage</label><input id="edit-res-pct"></div>
+        <div class="fg"><label>Result Status</label>
+          <select id="edit-res-status">
+            <option value="PASS">✅ PASS</option>
+            <option value="FAIL">❌ FAIL</option>
+            <option value="TERMINATED">🛑 TERMINATED</option>
+            <option value="EXPIRED">⏳ EXPIRED</option>
+          </select>
+        </div>
+        <div class="fg span2"><label>Violation Reason</label><input id="edit-res-viol" placeholder="None (leave blank if ok)"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="m-btn m-cancel" onclick="closeOv('editResOverlay')">Cancel</button>
+        <button class="m-btn m-save" onclick="saveResEdit()">💾 Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCohKlqNu0I1sXcLW4D_fv-OEw9x0S50q8",
+        authDomain: "dc-infotechpvt-1-d1a4b.firebaseapp.com",
+        databaseURL: "https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com",
+        projectId: "dc-infotechpvt-1-d1a4b",
+        storageBucket: "dc-infotechpvt-1-d1a4b.firebasestorage.app",
+        messagingSenderId: "622552457680",
+        appId: "1:622552457680:web:4b80e21e14e2b8266f19d5"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let scheds = [];
+    let results = [];
+    let curTab = 'live';
+    let autoPoll = null;
+    let busy = false;
+
+    /* ── helpers ─────────────────────────────── */
+    function getTs(r) {
+      if (r.scheduledAt) { const t = new Date(r.scheduledAt).getTime(); if (!isNaN(t)) return t; }
+      if (r.dateTime) { const t = new Date(r.dateTime).getTime(); if (!isNaN(t)) return t; }
+      return parseInt(r._k, 10) || 0;
+    }
+
+    function fmtDate(s) {
+      if (!s) return '—';
+      const d = new Date(s);
+      return isNaN(d) ? s : d.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function badge(status) {
+      const u = (status || 'Scheduled').toUpperCase();
+      if (u === 'LIVE') return `<span class="badge b-live">LIVE</span>`;
+      if (u === 'PAUSED_BY_ADMIN') return `<span class="badge b-pause">PAUSED (ADMIN)</span>`;
+      if (u === 'PAUSED') return `<span class="badge b-pause">PAUSED (USER)</span>`;
+      if (u === 'TERMINATED') return `<span class="badge b-term">TERMINATED</span>`;
+      return `<span class="badge b-sched">SCHEDULED</span>`;
+    }
+
+    /* ── load ─────────────────────────────────── */
+    function loadAll() {
+      // Manual refresh triggers re-render, data is already live
+      if (scheds.length || results.length) {
+         render();
+      }
+    }
+
+    // Auto-sync Listeners
+    db.ref('exam_schedules').on('value', snap => {
+      const so = snap.val();
+      scheds = so ? Object.entries(so).map(([k, v]) => ({ ...v, _k: k })) : [];
+      scheds.sort((a, b) => getTs(b) - getTs(a));
+      updateStats(); populateDropdowns(); renderLive(); renderAll();
+    });
+
+    db.ref('exam_results').on('value', snap => {
+      const ro = snap.val();
+      results = ro ? Object.entries(ro).map(([k, v]) => ({ ...v, _k: k })) : [];
+      results.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
+      updateStats(); populateDropdowns(); renderResults();
+    });
+
+    function updateStats() {
+      const live = scheds.filter(r => (r.status || '').toUpperCase() === 'LIVE').length;
+      const sched = scheds.filter(r => (r.status || 'Scheduled').toUpperCase() === 'SCHEDULED').length;
+      document.getElementById('st-live').textContent = live;
+      document.getElementById('st-sched').textContent = sched;
+      document.getElementById('st-res').textContent = results.length;
+      document.getElementById('st-tot').textContent = scheds.length;
+      document.getElementById('liveBadge').textContent = `${live} Live`;
+    }
+
+    function populateDropdowns() {
+      const examNames = [...new Set(scheds.map(r => r.name).filter(Boolean))].sort();
+      const resExamNames = [...new Set(results.map(r => r.ExamName).filter(Boolean))].sort();
+
+      const allSel = document.getElementById('fil-all-exam');
+      const resSel = document.getElementById('fil-res-exam');
+      const av = allSel.value, rv = resSel.value;
+
+      allSel.innerHTML = '<option value="">All Exams</option>' + examNames.map(n => `<option>${n}</option>`).join('');
+      resSel.innerHTML = '<option value="">All Exams</option>' + resExamNames.map(n => `<option>${n}</option>`).join('');
+      allSel.value = av; resSel.value = rv;
+    }
+
+    function render() {
+      if (curTab === 'live') renderLive();
+      if (curTab === 'results') renderResults();
+      if (curTab === 'all') renderAll();
+    }
+
+    /* ── TAB: Live ───────────────────────────── */
+    function renderLive() {
+      const body = document.getElementById('body-live');
+      const q = document.getElementById('src-live').value.trim().toLowerCase();
+      const st = document.getElementById('fil-status').value;
+      const liveOnly = document.getElementById('tog-live').checked;
+      const liveSet = new Set(['LIVE', 'PAUSED', 'PAUSED_BY_ADMIN']);
+
+      const rows = scheds.filter(r => {
+        const s = (r.status || 'Scheduled');
+        if (liveOnly && !liveSet.has(s.toUpperCase())) return false;
+        if (st) {
+          const match = s.toUpperCase() === st.toUpperCase() || s === st;
+          if (!match) return false;
+        }
+        return `${r.name || ''} ${r.gmail || ''} ${r.userEmail || ''} ${r.voucherCode || ''}`.toLowerCase().includes(q);
+      });
+
+      if (!rows.length) {
+        body.innerHTML = `<tr><td class="empty-cell" colspan="6">No exams match the current filter.</td></tr>`;
+        return;
+      }
+
+      body.innerHTML = rows.map(r => {
+        const s = r.status || 'Scheduled';
+        const su = s.toUpperCase();
+        let acts = '';
+
+        if (su === 'PAUSED_BY_ADMIN' || su === 'PAUSED') {
+          acts += `<button class="ab ab-resume" onclick="doStatus('${r._k}','LIVE')">▶ Resume</button>`;
+        }
+        if (su !== 'TERMINATED') {
+          if (liveSet.has(su)) {
+            acts += `<button class="ab ab-pause" onclick="doStatus('${r._k}','PAUSED_BY_ADMIN')">⏸ Pause</button>`;
+          }
+          acts += `<button class="ab ab-meet" onclick="doMeet('${r._k}')">📹 Meet</button>`;
+          acts += `<button class="ab ab-stop" onclick="doStop('${r._k}','${(r.name || '').replace(/'/g, "\\'")}')">🛑 Stop</button>`;
+        }
+        acts += `<button class="ab ab-edit" onclick="openEdit('${r._k}')">✏️ Edit</button>`;
+
+        const email = r.gmail || r.userEmail || '—';
+        const sub2 = (r.gmail && r.userEmail && r.gmail !== r.userEmail)
+          ? `<div class="cell-sub">${r.userEmail}</div>` : '';
+
+        return `<tr>
+        <td>
+          <div class="cell-main">${email}</div>
+          ${sub2}
+          <div class="cell-sub">${r.id || r._k}</div>
+        </td>
+        <td>${r.name || '—'}</td>
+        <td id="sc-${r._k}">${badge(s)}</td>
+        <td>${fmtDate(r.dateTime)}</td>
+        <td><span class="cell-mono">${r.voucherCode || '—'}</span></td>
+        <td><div class="acts">${acts}</div></td>
+      </tr>`;
+      }).join('');
+    }
+
+    /* ── TAB: Results ───────────────────────── */
+    function renderResults() {
+      const body = document.getElementById('body-results');
+      const q = document.getElementById('src-res').value.trim().toLowerCase();
+      const st = document.getElementById('fil-res-status').value.toUpperCase();
+      const ex = document.getElementById('fil-res-exam').value;
+
+      const rows = results.filter(r => {
+        if (st && (r.Status || '').toUpperCase() !== st) return false;
+        if (ex && r.ExamName !== ex) return false;
+        return `${r.UserName || ''} ${r.UserEmail || ''} ${r.ExamName || ''}`.toLowerCase().includes(q);
+      });
+
+      if (!rows.length) {
+        body.innerHTML = `<tr><td class="empty-cell" colspan="7">No results found.</td></tr>`;
+        return;
+      }
+
+      body.innerHTML = rows.map(r => {
+        const pct = parseInt(r.Percentage) || 0;
+        const pass = (r.Status || '').toUpperCase() === 'PASS';
+        const rb = pass
+          ? `<span class="badge b-pass">PASS</span>`
+          : `<span class="badge b-fail">${(r.Status || 'FAIL').toUpperCase()}</span>`;
+
+        return `<tr>
+        <td>
+          <div class="cell-main">${r.UserName || '—'}</div>
+          <div class="cell-sub">${r.UserEmail || ''}</div>
+        </td>
+        <td style="font-size:13px;">${r.ExamName || '—'}</td>
+        <td>
+          <div style="font-weight:600;color:#f0f6fc;">${r.Score || '—'} <span style="color:#8b949e;font-size:11px;">(${r.Percentage || '—'})</span></div>
+          <div class="pct-wrap"><div class="pct-fill ${pass ? 'pct-p' : 'pct-f'}" style="width:${Math.min(pct, 100)}%"></div></div>
+        </td>
+        <td>${rb}</td>
+        <td style="font-size:12px;color:#8b949e;">${r.ExamTime || '—'}</td>
+        <td style="font-size:12px;color:#8b949e;">${fmtDate(r.Timestamp)}</td>
+        <td>
+           <div class="acts">
+             <button class="ab ab-view" onclick="viewResult('${r._k}')">🔍</button>
+             <button class="ab ab-edit" onclick="openResEdit('${r._k}')">✏️</button>
+             <button class="ab ab-del" onclick="doDelRes('${r._k}')">🗑</button>
+           </div>
+        </td>
+      </tr>`;
+      }).join('');
+    }
+
+    /* ── TAB: All ───────────────────────────── */
+    function renderAll() {
+      const body = document.getElementById('body-all');
+      const q = document.getElementById('src-all').value.trim().toLowerCase();
+      const ex = document.getElementById('fil-all-exam').value;
+
+      const rows = scheds.filter(r => {
+        if (ex && r.name !== ex) return false;
+        return `${r.name || ''} ${r.gmail || ''} ${r.userEmail || ''} ${r.voucherCode || ''} ${r.id || ''}`.toLowerCase().includes(q);
+      });
+
+      if (!rows.length) {
+        body.innerHTML = `<tr><td class="empty-cell" colspan="6">No schedules found.</td></tr>`;
+        return;
+      }
+
+      body.innerHTML = rows.map(r => {
+        const email = r.gmail || r.userEmail || '—';
+        const sub2 = (r.gmail && r.userEmail && r.gmail !== r.userEmail)
+          ? `<div class="cell-sub">${r.userEmail}</div>` : '';
+        return `<tr>
+        <td>
+          <div class="cell-main">${email}</div>${sub2}
+        </td>
+        <td style="font-size:13px;">${r.name || '—'}</td>
+        <td>${badge(r.status)}</td>
+        <td style="font-size:12px;">${fmtDate(r.dateTime)}</td>
+        <td><span class="cell-mono">${r.voucherCode || '—'}</span></td>
+        <td>
+          <div class="acts">
+            <button class="ab ab-edit" onclick="openEdit('${r._k}')">✏️ Edit</button>
+            <button class="ab ab-del"  onclick="doDel('${r._k}')">🗑 Delete</button>
+          </div>
+        </td>
+      </tr>`;
+      }).join('');
+    }
+
+    /* ── Actions ─────────────────────────────── */
+    async function doStatus(key, status, meetLink = null) {
+      busy = true;
+      const cell = document.getElementById(`sc-${key}`);
+      if (cell) cell.innerHTML = `<span class="badge b-sched">Updating…</span>`;
+
+      const payload = { status };
+      if (meetLink) payload.meetingLink = meetLink;
+
+      try {
+        await db.ref(`exam_schedules/${key}`).update(payload);
+        Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, timerProgressBar: true })
+          .fire({ icon: 'success', title: `Status → ${status}` });
+      } catch (e) {
+        Swal.fire('Error', 'Could not update status.', 'error');
+      } finally { busy = false; }
+    }
+
+    async function doMeet(key) {
+      busy = true;
+      const { value: url } = await Swal.fire({
+        title: '📹 Send Meeting Link',
+        text: 'The exam will be paused and the student will see this link.',
+        input: 'url', inputLabel: 'Google Meet URL', inputValue: 'https://meet.google.com/new',
+        showCancelButton: true, confirmButtonColor: '#4f8cff',
+        confirmButtonText: 'Send & Pause',
+        background: '#161b22', color: '#c9d1d9'
+      });
+      if (url) await doStatus(key, 'PAUSED_BY_ADMIN', url);
+      else busy = false;
+    }
+
+    function doStop(key, name) {
+      busy = true;
+      Swal.fire({
+        title: 'Stop Exam?', icon: 'warning',
+        text: `Terminate the exam for ${name}? This cannot be undone.`,
+        showCancelButton: true,
+        confirmButtonColor: '#f85149', cancelButtonColor: '#21262d',
+        confirmButtonText: 'Yes, Terminate',
+        background: '#161b22', color: '#c9d1d9'
+      }).then(r => { if (r.isConfirmed) doStatus(key, 'TERMINATED'); else busy = false; });
+    }
+
+    async function doDel(key) {
+      const r = await Swal.fire({
+        title: 'Delete Schedule?', icon: 'warning',
+        text: 'Permanently removes this record from Firebase.',
+        showCancelButton: true,
+        confirmButtonColor: '#f85149', cancelButtonColor: '#21262d',
+        confirmButtonText: 'Delete',
+        background: '#161b22', color: '#c9d1d9'
+      });
+      if (!r.isConfirmed) return;
+      try {
+        await db.ref(`exam_schedules/${key}`).remove();
+        Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 })
+          .fire({ icon: 'success', title: 'Deleted' });
+      } catch (e) { Swal.fire('Error', 'Could not delete.', 'error'); }
+    }
+
+    async function doDelRes(key) {
+      const r = await Swal.fire({
+        title: 'Delete Result?', icon: 'warning',
+        text: 'Permanently removes this exam result from Firebase.',
+        showCancelButton: true,
+        confirmButtonColor: '#f85149', cancelButtonColor: '#21262d',
+        confirmButtonText: 'Delete Result',
+        background: '#161b22', color: '#c9d1d9'
+      });
+      if (!r.isConfirmed) return;
+      try {
+        await db.ref(`exam_results/${key}`).remove();
+        Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 })
+          .fire({ icon: 'success', title: 'Result Deleted' });
+      } catch (e) { Swal.fire('Error', 'Could not delete result.', 'error'); }
+    }
+
+    /* ── Edit Modal ─────────────────────────── */
+    function openEdit(key) {
+      const r = scheds.find(x => x._k === key);
+      if (!r) return;
+      document.getElementById('edit-id').value = key;
+      document.getElementById('edit-gmail').value = r.gmail || '';
+      document.getElementById('edit-useremail').value = r.userEmail || '';
+      document.getElementById('edit-name').value = r.name || '';
+      document.getElementById('edit-voucher').value = r.voucherCode || '';
+      document.getElementById('edit-status').value = r.status || 'Scheduled';
+      let dt = '';
+      if (r.dateTime) { const d = new Date(r.dateTime); if (!isNaN(d)) dt = d.toISOString().slice(0, 16); }
+      document.getElementById('edit-datetime').value = dt;
+      document.getElementById('editOverlay').classList.add('open');
+    }
+
+    async function saveEdit() {
+      const key = document.getElementById('edit-id').value;
+      const payload = {
+        gmail: document.getElementById('edit-gmail').value.trim(),
+        userEmail: document.getElementById('edit-useremail').value.trim(),
+        name: document.getElementById('edit-name').value,
+        dateTime: document.getElementById('edit-datetime').value,
+        voucherCode: document.getElementById('edit-voucher').value.trim(),
+        status: document.getElementById('edit-status').value,
+      };
+      try {
+        await db.ref(`exam_schedules/${key}`).update(payload);
+        closeOv('editOverlay');
+        Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 })
+          .fire({ icon: 'success', title: 'Schedule updated!' });
+      } catch (e) { Swal.fire('Error', 'Could not save.', 'error'); }
+    }
+
+    function openResEdit(key) {
+      const r = results.find(x => x._k === key);
+      if (!r) return;
+      document.getElementById('edit-res-id').value = key;
+      document.getElementById('edit-res-name').value = r.UserName || '';
+      document.getElementById('edit-res-email').value = r.UserEmail || '';
+      document.getElementById('edit-res-exam').value = r.ExamName || '';
+      document.getElementById('edit-res-score').value = r.Score || '';
+      document.getElementById('edit-res-pct').value = r.Percentage || '';
+      document.getElementById('edit-res-status').value = (r.Status || 'FAIL').toUpperCase();
+      document.getElementById('edit-res-viol').value = r.ViolationReason || '';
+      document.getElementById('editResOverlay').classList.add('open');
+    }
+
+    async function saveResEdit() {
+      const key = document.getElementById('edit-res-id').value;
+      const payload = {
+        UserName: document.getElementById('edit-res-name').value.trim(),
+        UserEmail: document.getElementById('edit-res-email').value.trim(),
+        ExamName: document.getElementById('edit-res-exam').value.trim(),
+        Score: document.getElementById('edit-res-score').value.trim(),
+        Percentage: document.getElementById('edit-res-pct').value.trim(),
+        Status: document.getElementById('edit-res-status').value
+      };
+      const v = document.getElementById('edit-res-viol').value.trim();
+      if (v) payload.ViolationReason = v;
+      else payload.ViolationReason = null; // overwrite if empty
+      
+      try {
+        await db.ref(`exam_results/${key}`).update(payload);
+        closeOv('editResOverlay');
+        Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 })
+          .fire({ icon: 'success', title: 'Result updated!' });
+      } catch (e) { Swal.fire('Error', 'Could not save result.', 'error'); }
+    }
+
+    /* ── Result Detail ──────────────────────── */
+    function viewResult(key) {
+      const r = results.find(x => x._k === key);
+      if (!r) return;
+
+      let snapHtml = '<div style="color:#484f58;font-size:12px;">No snapshots recorded.</div>';
+      if (r.SnapshotURL) {
+        const lines = r.SnapshotURL.split('\n').filter(l => l.includes('http'));
+        if (lines.length) {
+          snapHtml = `<div class="snap-list">${lines.map(l => {
+            const tm = (l.match(/\[(.+?)\]/) || [])[1] || '';
+            const url = (l.match(/(https?:\/\/\S+)/) || [])[1] || '';
+            return `<div class="snap-item"><span style="min-width:90px;">${tm}</span><a href="${url}" target="_blank">View Snapshot →</a></div>`;
+          }).join('')}</div>`;
+        }
+      }
+
+      const pct = parseInt(r.Percentage) || 0;
+      const pass = (r.Status || '').toUpperCase() === 'PASS';
+
+      document.getElementById('res-title').textContent = `📋 ${r.ExamName || 'Exam Result'}`;
+      document.getElementById('res-body').innerHTML = `
+      <div class="form-grid" style="margin-bottom:12px;">
+        <div class="fg"><label>Student Name</label><input readonly value="${r.UserName || '—'}"></div>
+        <div class="fg"><label>Email</label><input readonly value="${r.UserEmail || '—'}"></div>
+        <div class="fg"><label>Score</label><input readonly value="${r.Score || '—'}"></div>
+        <div class="fg"><label>Percentage</label><input readonly value="${r.Percentage || '—'}"></div>
+        <div class="fg"><label>Result</label><input readonly value="${r.Status || '—'}" style="color:${pass ? '#3fb950' : '#f85149'};font-weight:700;"></div>
+        <div class="fg"><label>Time Taken</label><input readonly value="${r.ExamTime || '—'}"></div>
+        <div class="fg span2"><label>Submitted At</label><input readonly value="${fmtDate(r.Timestamp)}"></div>
+        <div class="fg span2"><label>Violation Reason</label><input readonly value="${r.ViolationReason || 'None'}"></div>
+      </div>
+      <div class="pct-wrap" style="height:8px;margin:0 0 14px;">
+        <div class="pct-fill ${pass ? 'pct-p' : 'pct-f'}" style="width:${Math.min(pct, 100)}%"></div>
+      </div>
+      <div class="fg">
+        <label>Proctor Snapshots (${r.SnapshotURL?.split('\n').filter(l => l.includes('http')).length || 0})</label>
+        ${snapHtml}
+      </div>`;
+      document.getElementById('resOverlay').classList.add('open');
+    }
+
+    /* ── Overlay / Tab helpers ──────────────── */
+    function closeOv(id) { document.getElementById(id).classList.remove('open'); }
+    document.querySelectorAll('.overlay').forEach(el =>
+      el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); })
+    );
+
+    function switchTab(t) {
+      curTab = t;
+      document.querySelectorAll('.tab').forEach((b, i) => {
+        b.classList.toggle('on', ['live', 'results', 'all'][i] === t);
+      });
+      ['live', 'results', 'all'].forEach(n => {
+        document.getElementById(`pane-${n}`).style.display = n === t ? '' : 'none';
+      });
+      render();
+    }
+
+    function toggleAuto() {
+      clearInterval(autoPoll);
+      if (document.getElementById('tog-auto').checked)
+        autoPoll = setInterval(() => { if (!document.hidden) loadAll(); }, 5000);
+    }
+
+    loadAll();
+  </script>
+</body>
+
+</html>

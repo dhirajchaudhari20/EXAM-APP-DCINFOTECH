@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Macro Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <header style="padding: 1rem 0; text-align: center; position: relative;">
+            <div class="header-top" style="left: 0; right: auto;">
+                <button id="profileBtn" class="icon-btn" title="Profile"><i class="fas fa-user-circle"
+                        style="font-size: 1.5rem;"></i></button>
+            </div>
+            <div class="header-top" style="right: 0; left: auto;">
+                <button id="weeklyReportBtn" class="icon-btn" title="Weekly AI Report" style="color: #8b5cf6;"><i
+                        class="fas fa-chart-pie" style="font-size: 1.5rem;"></i></button>
+            </div>
+            <h1
+                style="font-size: 1.25rem; font-weight: 700; margin: 0; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fas fa-leaf" style="color: var(--primary); font-size: 1.2rem;"></i> Macro<span
+                    style="color: var(--primary);">AI</span>
+                <!-- Goal 16: Streak Badge -->
+                <span id="streakBadge" class="hidden" title="Daily Logging Streak"
+                    style="background: #fffbeb; color: #f97316; font-size: 0.8rem; padding: 2px 8px; border-radius: 12px; border: 1px solid #fed7aa; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 5px rgba(249,115,22,0.15);">
+                    <i class="fas fa-fire"></i> <span id="streakCount">0</span>
+                </span>
+            </h1>
+        </header>
+
+        <main>
+            <!-- View: Dashboard -->
+            <div id="view-dashboard" class="view">
+                <!-- HealthifyMe Style Nutrition Card -->
+                <section class="glass-surface"
+                    style="border-radius: var(--border-radius-lg); padding: 1.5rem; margin-bottom: 2rem; overflow: hidden;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                        <div>
+                            <h3
+                                style="font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; color: var(--text-main);">
+                                Daily Nutrition</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">Fueling your fitness journey</p>
+                        </div>
+                        <i class="fas fa-info-circle" style="color: var(--text-light); cursor: pointer;"></i>
+                    </div>
+
+                    <div
+                        style="display: grid; grid-template-columns: 120px 1fr; gap: 2rem; align-items: center; margin-bottom: 2rem;">
+                        <!-- Calorie Progress Circle -->
+                        <div style="position: relative; width: 120px; height: 120px;">
+                            <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg);">
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none" stroke="#f1f5f9" stroke-width="2.5" />
+                                <path id="calorieProgressRing"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-dasharray="0, 100"
+                                    stroke-linecap="round" style="transition: stroke-dasharray 1s ease-out;" />
+                            </svg>
+                            <div
+                                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                                <div id="caloriesEaten"
+                                    style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">0</div>
+                                <div id="calorieLabel"
+                                    style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">
+                                    kcal eaten</div>
+                                <div id="calorieGoal"
+                                    style="font-size: 0.6rem; color: var(--primary); font-weight: 700; margin-top: 2px;">
+                                    Target: 2000</div>
+                            </div>
+                        </div>
+
+                        <div style="padding-right: 1rem;">
+                            <div
+                                style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">
+                                Good Morning!</div>
+                            <p id="dailyInsight" style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+                                Track your first meal to see your daily progress insight!</p>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Half: Horizontal Macro Bars -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem;">
+                        <!-- Protein -->
+                        <div>
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.4rem; font-weight: 600;">
+                                <span style="color: var(--text-muted);">Protein</span>
+                                <span id="proteinText" style="color: var(--text-main);">0g</span>
+                            </div>
+                            <div
+                                style="width: 100%; height: 6px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden;">
+                                <div id="proteinBar"
+                                    style="height: 100%; width: 0%; background: var(--protein-color); transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fats -->
+                        <div>
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.4rem; font-weight: 600;">
+                                <span style="color: var(--text-muted);">Fats</span>
+                                <span id="fatsText" style="color: var(--text-main);">0g</span>
+                            </div>
+                            <div
+                                style="width: 100%; height: 6px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden;">
+                                <div id="fatsBar"
+                                    style="height: 100%; width: 0%; background: var(--fats-color); transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Carbs -->
+                        <div>
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.4rem; font-weight: 600;">
+                                <span style="color: var(--text-muted);">Carbs</span>
+                                <span id="carbsText" style="color: var(--text-main);">0g</span>
+                            </div>
+                            <div
+                                style="width: 100%; height: 6px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden;">
+                                <div id="carbsBar"
+                                    style="height: 100%; width: 0%; background: var(--carbs-color); transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fiber -->
+                        <div>
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.4rem; font-weight: 600;">
+                                <span style="color: var(--text-muted);">Fiber</span>
+                                <span id="fiberText" style="color: var(--text-main);">0g</span>
+                            </div>
+                            <div
+                                style="width: 100%; height: 6px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden;">
+                                <div id="fiberBar"
+                                    style="height: 100%; width: 0%; background: #eab308; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Habits Checklist (Goal 31) -->
+                    <div id="habitChecklist"
+                        style="margin-top: 1.5rem; padding: 1.25rem; background: rgba(255,255,255,0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); box-shadow: var(--shadow-sm);">
+                        <h3
+                            style="font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-check-circle" style="color: var(--secondary);"></i> Daily Habits
+                        </h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="habit-item" data-habit="steps"
+                                style="display: flex; align-items: center; justify-content: space-between; background: white; padding: 12px; border-radius: 14px; border: 1px solid #f1f5f9; cursor: pointer; transition: all 0.2s;">
+                                <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-main);"><i
+                                        class="fas fa-shoe-prints"
+                                        style="color: var(--text-light); margin-right: 6px;"></i> 10k Steps</span>
+                                <i class="fas fa-circle-check status-icon" style="color: #f1f5f9;"></i>
+                            </div>
+                            <div class="habit-item" data-habit="sleep"
+                                style="display: flex; align-items: center; justify-content: space-between; background: white; padding: 12px; border-radius: 14px; border: 1px solid #f1f5f9; cursor: pointer; transition: all 0.2s;">
+                                <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-main);"><i
+                                        class="fas fa-moon" style="color: var(--text-light); margin-right: 6px;"></i>
+                                    7h+ Sleep</span>
+                                <i class="fas fa-circle-check status-icon" style="color: #f1f5f9;"></i>
+                            </div>
+                            <div class="habit-item" data-habit="protein"
+                                style="display: flex; align-items: center; justify-content: space-between; background: white; padding: 12px; border-radius: 14px; border: 1px solid #f1f5f9; cursor: pointer; transition: all 0.2s;">
+                                <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-main);"><i
+                                        class="fas fa-egg" style="color: var(--text-light); margin-right: 6px;"></i>
+                                    Protein</span>
+                                <i class="fas fa-circle-check status-icon" style="color: #f1f5f9;"></i>
+                            </div>
+                            <div class="habit-item" data-habit="vitamins"
+                                style="display: flex; align-items: center; justify-content: space-between; background: white; padding: 12px; border-radius: 14px; border: 1px solid #f1f5f9; cursor: pointer; transition: all 0.2s;">
+                                <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-main);"><i
+                                        class="fas fa-capsules"
+                                        style="color: var(--text-light); margin-right: 6px;"></i> Vitamins</span>
+                                <i class="fas fa-circle-check status-icon" style="color: #f1f5f9;"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Goal 12: AI Meal Suggestions -->
+                    <div style="margin-top: 1.5rem; text-align: center;">
+                        <button id="suggestMealsBtn" class="action-button"
+                            style="background: linear-gradient(135deg, #10b981, #059669); font-weight: 600; padding: 12px 20px; border-radius: 50px; border: none; font-size: 0.95rem; width: 100%; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);">
+                            <i class="fas fa-magic" style="margin-right: 8px;"></i> What should I eat?
+                        </button>
+                    </div>
+                </section>
+
+                <!-- AI Meal Suggestions Section -->
+                <section id="aiMealSuggestionsSection" class="hidden" style="margin-bottom: 2rem;">
+                    <div class="hm-card"
+                        style="background: #f8fafc; border: 1px solid #e2e8f0; position: relative; padding: 1.25rem;">
+                        <button id="closeSuggestionsBtn"
+                            style="position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 1.2rem; color: #94a3b8; cursor: pointer;"><i
+                                class="fas fa-times"></i></button>
+                        <h3
+                            style="color: #059669; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-utensils"></i> AI Meal Suggestions
+                        </h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Based on your
+                            remaining macros for today.</p>
+
+                        <div id="aiSuggestionsLoader" class="hidden" style="text-align: center; padding: 20px;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #10b981;"></i>
+                            <p style="margin-top: 10px; font-size: 0.9rem; color: #64748b;">Generating chef-curated
+                                meals...</p>
+                        </div>
+
+                        <div id="aiSuggestionsList" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Meal Tracker CTA Banner -->
+                <section class="meal-tracker-banner" style="margin-bottom: 2rem;">
+                    <h2>Meal Tracker</h2>
+                    <p>Track your meals and stay on top of your health goals instantly with AI Vision.</p>
+                    <button class="track-btn" id="trackNowBtn">TRACK NOW</button>
+                </section>
+                <!-- Voice / Manual Input Section (Kept hidden/below for manual entry if needed, but primary is the Orange + button) -->
+                <section class="glass-surface"
+                    style="border-radius: var(--border-radius-lg); padding: 1.5rem; margin-bottom: 2rem; overflow: hidden;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h2 style="font-size: 1.1rem; font-weight: 600; color: var(--text-main);">Quick Manual Add</h2>
+                        <div style="display: flex; gap: 8px;">
+                            <button id="scanBarcodeBtn"
+                                style="background: none; border: none; color: #10b981; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; padding: 4px 8px; border-radius: 6px;">
+                                <i class="fas fa-barcode"></i> Scan
+                            </button>
+                            <button id="uploadLabelBtn"
+                                style="background: none; border: none; color: #3b82f6; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; padding: 4px 8px; border-radius: 6px;">
+                                <i class="fas fa-file-upload"></i> Upload Label
+                            </button>
+                            <input type="file" id="labelUploadInput" class="hidden" accept="image/*">
+                        </div>
+                    </div>
+
+                    <!-- Goal 13: Barcode Reader UI -->
+                    <div id="barcodeReaderContainer" class="hidden"
+                        style="margin-bottom: 1rem; border-radius: 8px; overflow: hidden; border: 1px solid #e5e7eb; background: #000;">
+                        <div id="barcode-reader" style="width: 100%;"></div>
+                        <button id="closeScannerBtn"
+                            style="width: 100%; padding: 10px; background: #ef4444; color: white; border: none; font-weight: 600; cursor: pointer;">Cancel
+                            Scan</button>
+                    </div>
+
+                    <p id="statusText" class="status-text"
+                        style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;">Or tap the
+                        orange '+' above for AI Vision.</p>
+
+                    <!-- Manual Input -->
+                    <div class="manual-input-wrapper" style="position: relative; margin-top: 0;">
+                        <input type="text" id="manualInput" placeholder="e.g. 1 scoop whey" autocomplete="off" />
+                        <div id="autocompleteDropdown" class="autocomplete-dropdown hidden"
+                            style="position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid #e5e7eb; border-radius: 8px; margin-top: 5px; max-height: 200px; overflow-y: auto; z-index: 100; text-align: left; opacity: 0; pointer-events: none; transition: opacity 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                            <ul id="autocompleteList" style="list-style: none; padding: 0; margin: 0;"></ul>
+                        </div>
+                        <!-- Removed manual submit button to simplify UI, handled by autocomplete click -->
+                    </div>
+
+                    <div id="transcription" class="transcription-box hidden" style="margin-top: 1rem;"></div>
+
+                    <!-- Goal 39: Restaurant Search Trigger (NEW) -->
+                    <button id="openRestaurantSearchBtn"
+                        style="width: 100%; margin-top: 1rem; background: transparent; border: 1px dashed #3b82f6; color: #3b82f6; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <i class="fas fa-search-location"></i> Eating out? Search Restaurant Menus
+                    </button>
+                </section>
+
+                <!-- Real-time Analysis Result -->
+                <section id="resultSection" class="hm-card hidden" style="margin-bottom: 2rem;">
+                    <h2 style="font-size: 1.1rem; font-weight: 600; color: var(--text-main); margin-bottom: 1rem;">
+                        Analysis Result</h2>
+                    <div class="macro-cards">
+                        <div class="macro-card protein">
+                            <div class="icon"><i class="fas fa-drumstick-bite"></i></div>
+                            <div class="value" id="proteinValue">0g</div>
+                            <div class="label">Protein</div>
+                        </div>
+                        <div class="macro-card carbs">
+                            <div class="icon"><i class="fas fa-bread-slice"></i></div>
+                            <div class="value" id="carbsValue">0g</div>
+                            <div class="label">Carbs</div>
+                        </div>
+                        <div class="macro-card fats">
+                            <div class="icon"><i class="fas fa-cheese"></i></div>
+                            <div class="value" id="fatsValue">0g</div>
+                            <div class="label">Fats</div>
+                        </div>
+                        <div class="macro-card calories">
+                            <div class="icon"><i class="fas fa-fire"></i></div>
+                            <div class="value" id="caloriesValue">0</div>
+                            <div class="label">Calories</div>
+                        </div>
+                    </div>
+                    <div class="food-list" id="foodList"
+                        style="border-top: 1px solid #e5e7eb; padding-top: 1rem; margin-bottom: 1.5rem;"></div>
+                    <button id="saveButton" class="action-button"><i class="fas fa-save"></i> Save Meal</button>
+                </section>
+
+                <!-- Goal 14: Water Tracking UI -->
+                <section id="waterTrackingSection" style="margin-bottom: 2rem;">
+                    <div class="hm-card" style="padding: 1.25rem;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3
+                                style="color: #3b82f6; font-size: 1.05rem; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-tint"></i> Daily Hydration
+                            </h3>
+                            <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-main);"><span
+                                    id="waterCountCurrent">0</span> <span
+                                    style="color: var(--text-muted); font-size: 0.8rem;">/ 8 glasses</span></div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div
+                            style="width: 100%; height: 8px; background: #eff6ff; border-radius: 4px; overflow: hidden; margin-bottom: 1.25rem;">
+                            <div id="waterProgressBar"
+                                style="height: 100%; width: 0%; background: #3b82f6; border-radius: 4px; transition: width 0.5s ease-out;">
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <button id="waterMinusBtn"
+                                style="width: 40px; height: 40px; border-radius: 20px; border: 1px solid #bfdbfe; background: white; color: #3b82f6; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i
+                                    class="fas fa-minus"></i></button>
+
+                            <div id="waterAddLabel"
+                                style="background: #eff6ff; padding: 8px 16px; border-radius: 20px; font-weight: 600; color: #1d4ed8; font-size: 0.9rem; cursor: pointer;">
+                                <i class="fas fa-glass-water" style="margin-right: 5px;"></i> Add a glass
+                            </div>
+
+                            <button id="waterPlusBtn"
+                                style="width: 40px; height: 40px; border-radius: 20px; border: none; background: #3b82f6; color: white; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);"><i
+                                    class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Goal 35: Supplement Tracker (NEW) -->
+                <section id="supplementTrackingSection" style="margin-bottom: 2rem;">
+                    <div class="hm-card" style="padding: 1.25rem;">
+                        <h3
+                            style="color: #8b5cf6; font-size: 1.05rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-capsules"></i> Daily Supplements
+                        </h3>
+                        <div id="supplementList" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Goal 40: Wearable Sync UI (NEW) -->
+                <section id="wearableSyncSection" style="margin-bottom: 2rem;">
+                    <div class="hm-card" style="padding: 1.25rem;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3
+                                style="color: #10b981; font-size: 1.05rem; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-stopwatch-20"></i> Wearable Sync
+                            </h3>
+                            <button id="syncWearableBtn"
+                                style="font-size: 0.75rem; background: #f0fdf4; color: #10b981; border: 1px solid #bbf7d0; padding: 4px 10px; border-radius: 20px; font-weight: 600; cursor: pointer;">
+                                <i class="fas fa-sync-alt"></i> Sync Now
+                            </button>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px;">
+                            <div
+                                style="text-align: center; background: rgba(255,255,255,0.4); padding: 10px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.3);">
+                                <div
+                                    style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
+                                    Steps</div>
+                                <div id="wearableSteps"
+                                    style="font-size: 1rem; font-weight: 700; color: var(--text-main);">0</div>
+                            </div>
+                            <div
+                                style="text-align: center; background: rgba(255,255,255,0.4); padding: 10px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.3);">
+                                <div
+                                    style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
+                                    Active</div>
+                                <div id="wearableActiveCals" style="font-size: 1rem; font-weight: 700; color: #ef4444;">
+                                    0</div>
+                            </div>
+                            <div
+                                style="text-align: center; background: rgba(255,255,255,0.4); padding: 10px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.3);">
+                                <div
+                                    style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
+                                    BPM</div>
+                                <div id="wearableBPM" style="font-size: 1rem; font-weight: 700; color: #ec4899;">--
+                                </div>
+                            </div>
+                            <div
+                                style="text-align: center; background: rgba(255,255,255,0.4); padding: 10px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.3);">
+                                <div
+                                    style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
+                                    Sleep</div>
+                                <div id="wearableSleep" style="font-size: 1rem; font-weight: 700; color: #8b5cf6;">0h
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- My Trainer Link Section (Goal 11) -->
+                <section id="myTrainerLinkSection" style="margin-bottom: 1.5rem;">
+                    <div class="hm-card" style="padding: 1.25rem;">
+                        <h3
+                            style="color: var(--text-main); font-size: 1.05rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-link" style="color: #8b5cf6;"></i> My Trainer Connection
+                        </h3>
+
+                        <!-- Not Linked UI -->
+                        <div id="trainerNotLinkedUi">
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Link your
+                                account to your MacroAI Trainer to unlock real-time feedback and voice notes.</p>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="linkTrainerInput"
+                                    placeholder="Enter Trainer Code (Trainer UID)..."
+                                    style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 0.9rem; outline: none;">
+                                <button id="linkTrainerBtn" class="action-button"
+                                    style="padding: 0 15px; margin: 0; width: auto;"><i class="fas fa-plug"></i>
+                                    Link</button>
+                            </div>
+                        </div>
+
+                        <!-- Linked UI -->
+                        <div id="trainerLinkedUi" class="hidden">
+                            <div
+                                style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div
+                                        style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        Connected to Trainer</div>
+                                    <div id="connectedTrainerIdStr"
+                                        style="font-weight: 600; color: var(--text-main); margin-top: 2px;">Trainer-XYZ
+                                    </div>
+                                </div>
+                                <button id="unlinkTrainerBtn"
+                                    style="background: none; border: none; color: #ef4444; font-size: 1rem; cursor: pointer;"
+                                    title="Disconnect Trainer"><i class="fas fa-unlink"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Messages from Trainer -->
+                <section id="trainerMessagesSection" class="hidden" style="margin-bottom: 2rem;">
+                    <div class="hm-card"
+                        style="background: linear-gradient(to right, #f0fdfa, #f8fafc); border: 1px solid #ccfbf1; padding: 1.25rem;">
+                        <h3
+                            style="color: #0d9488; font-size: 1.05rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-comment-medical"></i> Notes from your Trainer
+                        </h3>
+                        <div id="trainerMessagesList"
+                            style="display:flex; flex-direction:column; gap:0.5rem; max-height: 300px; overflow-y: auto; padding-bottom: 10px;">
+                            <!-- Messages will be injected here -->
+                        </div>
+
+                        <!-- Goal 27: Two-Way Chat Inputs -->
+                        <div id="clientChatInputArea"
+                            style="margin-top: 15px; border-top: 1px solid #f1f5f9; padding-top: 15px;">
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <button id="clientImageUploadBtn"
+                                    style="padding: 10px; border-radius: 50%; border: none; background: #f1f5f9; color: #64748b; cursor: pointer;"><i
+                                        class="fas fa-image"></i></button>
+                                <input type="file" id="clientChatImageInput" class="hidden" accept="image/*">
+                                <textarea id="clientChatMessage" placeholder="Type a message..."
+                                    style="flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #e2e8f0; outline: none; font-size: 0.9rem; resize: none; height: 40px; font-family: inherit;"></textarea>
+                                <button id="clientVoiceMessageBtn"
+                                    style="padding: 10px; border-radius: 50%; border: none; background: #fee2e2; color: #ef4444; cursor: pointer;"><i
+                                        class="fas fa-microphone"></i></button>
+                                <button id="sendToTrainerBtn"
+                                    style="padding: 10px; border-radius: 50%; border: none; background: var(--primary); color: white; cursor: pointer;"><i
+                                        class="fas fa-paper-plane"></i></button>
+                            </div>
+                            <div id="clientChatStatus"
+                                style="font-size: 0.75rem; color: #ef4444; margin-top: 5px; font-weight: 600;"
+                                class="hidden">Recording... Tap to stop</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Meal Log Categories (HealthifyMe Style) -->
+                <section id="mealLogSection">
+                    <!-- Morning -->
+                    <div class="glass-surface" id="categoryMorning"
+                        style="border-radius: var(--border-radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+                        <h3
+                            style="color: var(--text-main); font-size: 1.05rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-sun" style="color: #fbbf24;"></i> Morning
+                        </h3>
+                        <div class="meal-list" style="display:flex; flex-direction:column; gap:0.5rem;"></div>
+                    </div>
+
+                    <!-- Evening -->
+                    <div class="glass-surface" id="categoryEvening"
+                        style="border-radius: var(--border-radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+                        <h3
+                            style="color: var(--text-main); font-size: 1.05rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-cloud-sun" style="color: #f97316;"></i> Afternoon / Evening
+                        </h3>
+                        <div class="meal-list" style="display:flex; flex-direction:column; gap:0.5rem;"></div>
+                    </div>
+
+                    <!-- Dinner -->
+                    <div class="glass-surface" id="categoryDinner"
+                        style="border-radius: var(--border-radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+                        <h3
+                            style="color: var(--text-main); font-size: 1.05rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-moon" style="color: #6366f1;"></i> Dinner
+                        </h3>
+                        <div class="meal-list" style="display:flex; flex-direction:column; gap:0.5rem;"></div>
+                    </div>
+                </section>
+        </main>
+    </div>
+
+    <!-- Onboarding / Profile Wizard Modal -->
+    <div id="onboardingModal" class="modal hidden">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto; padding-top: 3rem; text-align: left;">
+            <span class="close-modal hidden" id="closeOnboardingBtn">&times;</span>
+
+            <!-- Step 1: Profile & Goals -->
+            <div id="onboardingStep1">
+                <h2 style="margin-bottom: 0.5rem;">Your Fitness Profile</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Personalize your calorie
+                    and macro goals.</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="input-group">
+                        <label for="genderInput">Gender</label>
+                        <select id="genderInput"
+                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e5e7eb; background: white;">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="ageInput">Age (years)</label>
+                        <input type="number" id="ageInput" placeholder="e.g. 25" style="width: 100%;">
+                    </div>
+                    <div class="input-group">
+                        <label for="weightInput">Weight (kg)</label>
+                        <input type="number" id="weightInput" placeholder="e.g. 70" step="0.1" style="width: 100%;">
+                    </div>
+                    <div class="input-group">
+                        <label for="heightInput">Height (cm)</label>
+                        <input type="number" id="heightInput" placeholder="e.g. 175" style="width: 100%;">
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-top: 15px;">
+                    <label for="activityInput">Activity Level</label>
+                    <select id="activityInput"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e5e7eb; background: white;">
+                        <option value="1.2">Sedentary (Office job)</option>
+                        <option value="1.375">Light (1-2 days/week)</option>
+                        <option value="1.55">Moderate (3-5 days/week)</option>
+                        <option value="1.725">Active (6-7 days/week)</option>
+                        <option value="1.9">Extra Active (Athlete/Physical job)</option>
+                    </select>
+                </div>
+
+                <div class="input-group" style="margin-top: 15px;">
+                    <label for="goalInput">Primary Goal</label>
+                    <select id="goalInput"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e5e7eb; background: white;">
+                        <option value="lose">Weight Loss (-500 cal)</option>
+                        <option value="maintain">Maintenance (TDEE)</option>
+                        <option value="gain">Muscle Gain (+300 cal)</option>
+                    </select>
+                </div>
+
+                <!-- AI Body Analysis (Kept in Step 1) -->
+                <div
+                    style="margin: 2rem 0; padding: 1.5rem; background: #f9fafb; border-radius: 16px; border: 1px dashed #cbd5e1; text-align: center;">
+                    <h3 style="font-size: 0.95rem; margin-bottom: 0.5rem;"><i class="fas fa-magic"
+                            style="color: var(--primary);"></i> AI Body Analysis</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Upload a body photo
+                        (front/side) for AI to estimate body fat and suggest goals.</p>
+                    <input type="file" id="bodyAnalysisInput" accept="image/*" class="hidden">
+                    <button id="triggerBodyAiBtn" class="action-button"
+                        style="background: white; color: var(--primary); border: 1px solid var(--primary); width: auto; padding: 0.6rem 1.2rem;">
+                        <i class="fas fa-upload"></i> Upload & Analyze
+                    </button>
+                    <div id="bodyAiPreview" class="hidden"
+                        style="margin-top: 1rem; position: relative; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb;">
+                        <img id="bodyPreviewImg" src=""
+                            style="width: 100%; height: auto; max-height: 300px; object-fit: contain; background: #f3f4f6;">
+                        <div id="bodyAiStatus"
+                            style="padding: 10px; font-size: 0.75rem; font-weight: 600; color: var(--primary); background: white;">
+                            Analysis ready...</div>
+                    </div>
+                </div>
+
+                <button id="onboardingNextBtn1" class="action-button" style="margin-top: 1rem;">Continue <i
+                        class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <!-- Step 2: Journey Prompt -->
+            <div id="onboardingStep2" class="hidden" style="text-align: center; padding: 2rem 0;">
+                <i class="fas fa-rocket" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <h2 style="margin-bottom: 0.5rem;">Your Goal is Set!</h2>
+                <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 2rem;">When do you need to start
+                    your fitness journey?</p>
+
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <button id="startJourneyNowBtn" class="action-button"
+                        style="font-size: 1.1rem; padding: 1rem;">Start Right Now! 🚀</button>
+                    <button id="startJourneyLaterBtn" class="action-button"
+                        style="background: #f1f5f9; color: var(--text-main); font-size: 1.1rem; padding: 1rem;">I'll
+                        start later</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Week 1 Progress Entry -->
+            <div id="onboardingStep3" class="hidden">
+                <h2 style="margin-bottom: 0.5rem;">Week 1 Log</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Let's document your
+                    starting point right now so you can track your transformation.</p>
+
+                <div class="input-group">
+                    <label>Date</label>
+                    <input type="date" id="wizardCheckinDate" style="width:100%;">
+                </div>
+
+                <h3 style="margin-top: 1.5rem; font-size:1rem; border-bottom:1px solid #e5e7eb; padding-bottom:0.5rem;">
+                    Photos (Required)</h3>
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top:1rem;">
+                    <div class="input-group" style="margin: 0;">
+                        <label style="font-size:0.8rem">Front</label>
+                        <input type="file" id="wizardPhotoFront" accept="image/*"
+                            style="width:100%; font-size: 0.7rem;">
+                    </div>
+                    <div class="input-group" style="margin: 0;">
+                        <label style="font-size:0.8rem">Back</label>
+                        <input type="file" id="wizardPhotoBack" accept="image/*" style="width:100%; font-size: 0.7rem;">
+                    </div>
+                    <div class="input-group" style="margin: 0;">
+                        <label style="font-size:0.8rem">Side</label>
+                        <input type="file" id="wizardPhotoSide" accept="image/*" style="width:100%; font-size: 0.7rem;">
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 1.5rem; font-size:1rem; border-bottom:1px solid #e5e7eb; padding-bottom:0.5rem;">
+                    Measurements (inches)</h3>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:1rem;">
+                    <div class="input-group" style="margin: 0;">
+                        <label style="font-size:0.8rem">Chest</label>
+                        <input type="number" id="wizardMeasureChest" style="width:100%;">
+                    </div>
+                    <div class="input-group" style="margin: 0;">
+                        <label style="font-size:0.8rem">Waist</label>
+                        <input type="number" id="wizardMeasureWaist" style="width:100%;">
+                    </div>
+                    <div class="input-group" style="margin: 0;">
+                        <label style="font-size:0.8rem">L. Bicep</label>
+                        <input type="number" id="wizardMeasureLBicep" style="width:100%;">
+                    </div>
+                    <div class="input-group" style="margin: 0;">
+                        <label style="font-size:0.8rem">R. Bicep</label>
+                        <input type="number" id="wizardMeasureRBicep" style="width:100%;">
+                    </div>
+                </div>
+
+                <button id="finishOnboardingBtn" class="action-button" style="margin-top: 2rem;">Finish & Save Entry <i
+                        class="fas fa-check"></i></button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- AI Camera Modal -->
+    <div id="aiCameraModal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px; text-align: center;">
+            <span id="closeCameraBtn" class="close-modal">&times;</span>
+            <h2><i class="fas fa-camera"></i> AI Vision Log</h2>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Hold your food to the
+                camera, tap record, and describe the portion sizes exactly.</p>
+
+            <div
+                style="position: relative; border-radius: 12px; overflow: hidden; background: #000; height: 300px; margin-bottom: 1rem;">
+                <video id="cameraStream" autoplay playsinline
+                    style="width: 100%; height: 100%; object-fit: cover;"></video>
+                <div id="recordingIndicator" class="hidden"
+                    style="position: absolute; top: 10px; right: 10px; color: #ff4757; font-weight: bold; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 20px;">
+                    <i class="fas fa-circle" style="animation: pulse 1s infinite alternate;"></i> Recording
+                </div>
+            </div>
+            <canvas id="cameraCanvas" style="display: none;"></canvas>
+
+            <div style="display: flex; justify-content: center; gap: 1rem;">
+                <button id="startAiLogBtn" class="action-button" style="background: #ff4757;"><i
+                        class="fas fa-microphone"></i> Hold to Speak & Snap</button>
+            </div>
+            <p id="aiLogStatus" style="margin-top: 1rem; font-size: 0.9rem;"></p>
+        </div>
+    </div>
+    <!-- Manual Log Modal (Goal 34) -->
+    <div id="manualLogModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 style="color: var(--primary); font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;"><i
+                    class="fas fa-utensils"></i> Add Planned Meal</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Enter the details for your
+                planned meal.</p>
+
+            <div class="input-group">
+                <label>Meal Name</label>
+                <input type="text" id="planMealName" placeholder="e.g. Grilled Chicken Salad" style="width:100%;">
+            </div>
+
+            <div class="input-group">
+                <label>Category</label>
+                <select id="planMealCategory"
+                    style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 1rem;">
+                    <option value="Morning">Breakfast / Morning</option>
+                    <option value="Evening">Lunch / Evening</option>
+                    <option value="Dinner">Dinner</option>
+                </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem;">
+                <div class="input-group">
+                    <label>Calories</label>
+                    <input type="number" id="planMealCalories" placeholder="0" style="width:100%;">
+                </div>
+                <div class="input-group">
+                    <label>Protein (g)</label>
+                    <input type="number" id="planMealProtein" placeholder="0" style="width:100%;">
+                </div>
+                <div class="input-group">
+                    <label>Carbs (g)</label>
+                    <input type="number" id="planMealCarbs" placeholder="0" style="width:100%;">
+                </div>
+                <div class="input-group">
+                    <label>Fats (g)</label>
+                    <input type="number" id="planMealFats" placeholder="0" style="width:100%;">
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; gap: 10px;">
+                <button id="savePlanBtn" class="action-button" style="flex: 1; margin: 0;"><i class="fas fa-save"></i>
+                    Save to Plan</button>
+                <button id="cancelPlanBtn"
+                    style="flex: 1; background: #f1f5f9; color: var(--text-main); border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shopping List Modal (Goal 36) -->
+    <div id="shoppingListModal" class="modal hidden">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
+            <h2 style="color: #10b981; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem;"><i
+                    class="fas fa-shopping-basket"></i> Smart Shopping List</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">AI-generated list based on
+                your 7-day meal plan.</p>
+
+            <div id="shoppingListLoader" class="hidden" style="text-align: center; padding: 2rem;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #10b981;"></i>
+                <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);">Compiling your plan and
+                    calculating ingredients...</p>
+            </div>
+
+            <div id="shoppingListResult"
+                style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 1.25rem; border-radius: 12px; font-size: 0.95rem; line-height: 1.6; color: #065f46; white-space: pre-wrap; display: none;">
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; gap: 10px;">
+                <button id="copyShoppingListBtn" class="action-button"
+                    style="flex: 1; margin: 0; background: #059669;"><i class="fas fa-copy"></i> Copy to
+                    Clipboard</button>
+                <button id="closeShoppingListBtn"
+                    style="flex: 1; background: #f1f5f9; color: var(--text-main); border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View: History -->
+    <!-- Goal 39: Restaurant Search Modal (NEW) -->
+    <div id="restaurantSearchModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 style="color: #3b82f6; font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;"><i
+                    class="fas fa-utensils"></i> Restaurant Search</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Estimate macros for dishes
+                at popular outlets.</p>
+
+            <div class="input-group">
+                <label>Restaurant Name</label>
+                <input type="text" id="restaurantNameInput" placeholder="e.g. Starbucks, McDonald's"
+                    style="width:100%;">
+            </div>
+            <div class="input-group">
+                <label>What dish are you having?</label>
+                <input type="text" id="restaurantDishInput" placeholder="e.g. Caramel Macchiato" style="width:100%;">
+            </div>
+
+            <div id="restaurantSearchLoader" class="hidden" style="text-align: center; padding: 1rem;">
+                <i class="fas fa-spinner fa-spin" style="color: #3b82f6;"></i> Finding nutritional value...
+            </div>
+
+            <div id="restaurantSearchResult" class="hidden"
+                style="margin-top: 1rem; background: #eff6ff; padding: 1rem; border-radius: 12px; border: 1px solid #bfdbfe;">
+                <!-- Results go here -->
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; gap: 10px;">
+                <button id="logRestaurantDishBtn" class="action-button hidden" style="flex: 1; margin: 0;"><i
+                        class="fas fa-plus"></i> Log This Dish</button>
+                <button id="searchRestaurantBtn" class="action-button"
+                    style="flex: 1; margin: 0; background: #3b82f6;"><i class="fas fa-search"></i> Search</button>
+                <button id="closeRestaurantSearchBtn"
+                    style="padding: 0 15px; background: #f1f5f9; color: var(--text-main); border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View: History -->
+    <div id="view-history" class="view hidden">
+        <header style="margin-bottom: 1.5rem; text-align: left;">
+            <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">Meal <span
+                    style="color: var(--primary);">History</span></h1>
+            <p class="subtitle">Your recent logs</p>
+        </header>
+
+        <div id="loading" class="status-text" style="text-align:center;">Loading history...</div>
+        <div id="historyList" class="history-list" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Items injected here -->
+        </div>
+    </div>
+
+    <!-- View: Progress -->
+    <div id="view-progress" class="view hidden">
+        <header style="margin-bottom: 1.5rem; text-align: left;">
+            <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">Transformation <span
+                    style="color: var(--primary);">Tracker</span></h1>
+            <p class="subtitle">Document your journey.</p>
+            <button id="addCheckinBtn" class="action-button"
+                style="margin-top: 1rem; width: 100%; border-radius: 12px;"><i class="fas fa-camera"></i> Add
+                Check-in</button>
+
+            <!-- Weight Trend Graph (Goal 31) -->
+            <div
+                style="margin-top: 1.5rem; background: white; padding: 1rem; border-radius: 16px; border: 1px solid #f1f5f9;">
+                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; color: #1e293b;"><i
+                        class="fas fa-chart-line" style="color: #3b82f6;"></i> Weight Trend</h3>
+                <div style="height: 200px; width: 100%;">
+                    <canvas id="weightChart"></canvas>
+                </div>
+            </div>
+        </header>
+
+        <div id="analysisResult" class="analysis-result hidden"
+            style="background: rgba(108, 92, 231, 0.1); border: 1px solid var(--primary); padding: 1.5rem; border-radius: 16px; margin-top: 1rem;">
+            <h3><i class="fas fa-magic"></i> AI Analysis</h3>
+            <p id="analysisText">Analyzing differences...</p>
+        </div>
+
+        <div id="progressGrid" class="progress-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; margin-top: 1rem;">
+            <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-muted);">
+                <i class="fas fa-spinner fa-spin"></i> Loading photos...
+            </div>
+        </div>
+
+        <!-- Workout Tracking Section -->
+        <header style="margin-top: 2.5rem; margin-bottom: 1.5rem; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--text-main);">My <span
+                        style="color: var(--primary);">Workouts</span></h2>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem;">
+                <button id="addWorkoutBtn" class="action-button"
+                    style="margin: 0; width: 100%; border-radius: 12px; background: #3b82f6;"><i
+                        class="fas fa-dumbbell"></i> Log Workout</button>
+                <button id="generateRoutineBtn" class="action-button"
+                    style="margin: 0; width: 100%; border-radius: 12px; background: linear-gradient(135deg, #10b981, #059669); border: none;"><i
+                        class="fas fa-magic"></i> AI Routine</button>
+            </div>
+        </header>
+
+        <div id="workoutList" class="history-list" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                No workouts logged yet.
+            </div>
+        </div>
+    </div>
+
+    <!-- View: Planner (Goal 34) -->
+    <div id="view-planner" class="view hidden">
+        <header style="margin-bottom: 1.5rem; text-align: left;">
+            <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">Meal <span
+                    style="color: var(--primary);">Planner</span></h1>
+            <p class="subtitle">Plan ahead to stay on track.</p>
+        </header>
+
+        <div id="plannerDateSelector"
+            style="display: flex; overflow-x: auto; gap: 10px; margin-bottom: 1.5rem; padding-bottom: 5px; -webkit-overflow-scrolling: touch;">
+            <!-- Populate with next 7 days -->
+        </div>
+
+        <div class="hm-card" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 id="plannerDateLabel" style="font-size: 1rem; font-weight: 700; color: var(--text-main);">Today</h3>
+                <button id="planMealBtn" class="icon-btn"
+                    style="background: var(--primary); color: white; border-radius: 50%; width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border: none;">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div id="plannedMealsList" style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="text-align: center; padding: 2rem; color: var(--text-muted);">Select a date to see your
+                    plan.</div>
+            </div>
+        </div>
+
+        <button id="generateShoppingListBtn" class="action-button"
+            style="margin-top: 1.5rem; background: #10b981; border: none;">
+            <i class="fas fa-shopping-cart"></i> Generate Shopping List
+        </button>
+    </div>
+
+    <!-- View: AI Coach Chat (Goal 37) -->
+    <div id="view-ai-coach" class="view hidden">
+        <header style="margin-bottom: 1.5rem; text-align: left;">
+            <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">AI <span
+                    style="color: #8b5cf6;">Coach</span></h1>
+            <p class="subtitle">Your 24/7 fitness mentor.</p>
+        </header>
+
+        <div id="aiCoachChatContainer" class="hm-card"
+            style="height: 60vh; display: flex; flex-direction: column; overflow: hidden; position: relative;">
+            <div id="aiCoachMessages"
+                style="flex-grow: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem;">
+                <div class="message ai-message"
+                    style="background: #f1f5f9; padding: 12px 16px; border-radius: 12px 12px 12px 2px; max-width: 85%; align-self: flex-start; font-size: 0.95rem;">
+                    Hello! I'm your AI Coach. Ask me anything about your diet, workouts, or how to stay on track today!
+                </div>
+            </div>
+
+            <div style="padding: 1rem; border-top: 1px solid #f1f5f9; display: flex; gap: 8px; align-items: center;">
+                <textarea id="aiCoachInput" placeholder="Ask your coach..."
+                    style="flex-grow: 1; border: 1px solid #e2e8f0; border-radius: 20px; padding: 10px 18px; outline: none; font-size: 0.95rem; resize: none; height: 42px;"></textarea>
+                <button id="sendAiCoachMsgBtn" class="icon-btn"
+                    style="background: #8b5cf6; color: white; border-radius: 50%; width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: none;">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    </main>
+
+    <!-- Extra Modals -->
+    <!-- Profile Modal (Duplicate removed, leaving one from earlier) -->
+
+    <!-- Comparison Action Bar (Progress) -->
+    <div id="comparisonBar" class="comparison-bar hidden"
+        style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--card-bg); padding: 1rem 2rem; border-radius: 50px; border: 1px solid var(--primary); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); display: flex; gap: 1rem; align-items: center; z-index: 900;">
+        <span style="font-weight: 600;"><span id="selectedCount">0</span> selected</span>
+        <button id="compareBtn" class="action-button"
+            style="padding: 0.5rem 1rem; border-radius: 8px; width: auto;">Compare with AI</button>
+        <button id="deleteSelectedBtn" class="icon-btn"
+            style="width: 40px; height: 40px; border-radius: 50%; background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; display: none; align-items: center; justify-content: center;"
+            title="Delete Selected">
+            <i class="fas fa-trash"></i>
+        </button>
+        <button id="cancelSelectionBtn" class="icon-btn"
+            style="width: auto; padding: 0.5rem 1rem; border-radius: 8px; background: transparent; font-weight: 600;">Cancel</button>
+    </div>
+
+    <!-- Progress Detail Modal (Goal 33) -->
+    <div id="checkinDetailsModal" class="modal hidden">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="margin:0;"><i class="fas fa-eye"></i> Check-in Details</h2>
+                <button class="close-modal" id="closeCheckinDetailsBtn"
+                    style="position:static; margin:0;">&times;</button>
+            </div>
+
+            <div id="detailsPhotoView"
+                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem;">
+                <div style="text-align: center;">
+                    <div class="preview-box" id="detailsFront" style="height: 150px; border-radius: 12px;"></div>
+                    <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600;">Front</span>
+                </div>
+                <div style="text-align: center;">
+                    <div class="preview-box" id="detailsBack" style="height: 150px; border-radius: 12px;"></div>
+                    <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600;">Back</span>
+                </div>
+                <div style="text-align: center;">
+                    <div class="preview-box" id="detailsSide" style="height: 150px; border-radius: 12px;"></div>
+                    <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600;">Side</span>
+                </div>
+            </div>
+
+            <div id="detailsStats"
+                style="background: #f8fafc; padding: 1rem; border-radius: 16px; border: 1px solid #f1f5f9; margin-bottom: 1.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px 15px; font-size: 0.9rem;">
+                    <div><span style="color:var(--text-muted);">Weight:</span> <strong id="detWeight">0</strong> kg
+                    </div>
+                    <div><span style="color:var(--text-muted);">Chest:</span> <strong id="detChest">0</strong> in</div>
+                    <div><span style="color:var(--text-muted);">Biceps:</span> <strong id="detArms">0</strong> in</div>
+                    <div><span style="color:var(--text-muted);">Waist:</span> <strong id="detWaist">0</strong> in</div>
+                    <div><span style="color:var(--text-muted);">Belly:</span> <strong id="detAbs">0</strong> in</div>
+                </div>
+                <hr style="margin: 12px 0; border: none; border-top: 1px solid #e2e8f0;">
+                <div style="font-size: 0.85rem; color: var(--text-main); line-height: 1.4;">
+                    <span style="color:var(--text-muted); font-weight: 600;">Notes:</span> <span
+                        id="detNotes">None</span>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button id="deleteCheckinBtn" class="action-button" style="background: #ef4444; border: none;"><i
+                        class="fas fa-trash"></i> Delete Entry</button>
+                <button id="selectForCompareBtn" class="action-button" style="background: var(--primary);"><i
+                        class="fas fa-check-circle"></i> Compare</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Meal Modal -->
+    <div id="editMealModal" class="modal hidden">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
+            <h2><i class="fas fa-edit"></i> Edit Meal</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Adjust the macros or
+                description for this entry.</p>
+
+            <input type="hidden" id="editMealId">
+
+            <div class="input-group">
+                <label>Food Items</label>
+                <textarea id="editFoodItems" placeholder="e.g., 2 eggs, 1 toast"
+                    style="width:100%; padding:10px; border-radius:12px; border:1px solid #e5e7eb; outline:none; font-family:inherit; min-height: 60px;"></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="input-group" style="margin-top:0;">
+                    <label>Calories (kcal)</label>
+                    <input type="number" id="editCalories" style="width:100%;">
+                </div>
+                <div class="input-group" style="margin-top:0;">
+                    <label>Protein (g)</label>
+                    <input type="number" id="editProtein" style="width:100%;">
+                </div>
+                <div class="input-group" style="margin-top:0;">
+                    <label>Carbs (g)</label>
+                    <input type="number" id="editCarbs" style="width:100%;">
+                </div>
+                <div class="input-group" style="margin-top:0;">
+                    <label>Fats (g)</label>
+                    <input type="number" id="editFats" style="width:100%;">
+                </div>
+            </div>
+
+            <!-- Goal 25: Ingredient Breakdown in Edit Modal -->
+            <div id="editIngredientBreakdown" style="margin-top: 1rem;"></div>
+
+            <div style="display:flex; gap:10px; justify-content:flex-end; margin-top: 1.5rem;">
+                <button class="icon-btn" style="width: auto; padding: 0.5rem 1rem; border-radius: 8px;"
+                    onclick="closeEditMealModal()">Cancel</button>
+                <button class="action-button"
+                    style="width: auto; padding: 0.5rem 1rem; border-radius: 8px; background: #3b82f6;"
+                    onclick="saveEditedMeal()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Workout Modal -->
+    <div id="workoutModal" class="modal hidden">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
+            <h2><i class="fas fa-dumbbell"></i> Log Workout</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Describe your workout (e.g.,
+                "3 sets of bench press 135lbs, 30 min treadmill walk") and AI will format it.</p>
+
+            <div class="input-group">
+                <label>Date</label>
+                <input type="date" id="workoutDate" style="width:100%;">
+            </div>
+
+            <div class="input-group">
+                <label>Workout Description</label>
+                <textarea id="workoutNotes" placeholder="What did you do today?"
+                    style="width:100%; padding:10px; border-radius:12px; border:1px solid #e5e7eb; outline:none; font-family:inherit; min-height: 100px;"></textarea>
+            </div>
+
+            <p id="workoutStatusText"
+                style="color: var(--primary); font-size: 0.85rem; margin-bottom: 1rem; min-height: 1rem;"></p>
+
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button id="closeWorkoutModalBtn" class="icon-btn"
+                    style="width: auto; padding: 0.5rem 1rem; border-radius: 8px;">Cancel</button>
+                <button id="saveWorkoutBtn" class="action-button"
+                    style="width: auto; padding: 0.5rem 1rem; border-radius: 8px; background: #3b82f6;">Log
+                    Workout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goal 17: Generate AI Routine Modal -->
+    <div id="generateRoutineModal" class="modal hidden">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
+            <h2 style="color: #059669; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem;"><i
+                    class="fas fa-magic"></i> AI Routine</h2>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">Select your equipment and
+                target muscle group to generate a custom routine instantly.</p>
+
+            <div class="input-group">
+                <label style="font-weight: 600;">Equipment Available</label>
+                <select id="routineEquipment"
+                    style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 1rem;">
+                    <option value="Full Gym">Full Gym Equipment</option>
+                    <option value="Dumbbells Only">Dumbbells Only</option>
+                    <option value="Bodyweight/Home">Bodyweight/No Equipment</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label style="font-weight: 600;">Target Muscle Group</label>
+                <select id="routineMuscle"
+                    style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 1rem;">
+                    <option value="Full Body">Full Body</option>
+                    <option value="Upper Body (Push)">Upper Body (Chest/Shoulders/Triceps)</option>
+                    <option value="Upper Body (Pull)">Upper Body (Back/Biceps)</option>
+                    <option value="Lower Body (Legs)">Lower Body (Legs & Glutes)</option>
+                    <option value="Core and Abs">Core & Abs</option>
+                </select>
+            </div>
+
+            <div id="routineLoader" class="hidden" style="text-align: center; padding: 20px;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #10b981;"></i>
+                <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);">Crafting your perfect
+                    routine...</p>
+            </div>
+
+            <div id="routineResultContent"
+                style="margin-top: 1.5rem; margin-bottom: 1.5rem; font-size: 0.95rem; line-height: 1.5; color: var(--text-main); white-space: pre-wrap; display: none;">
+            </div>
+
+            <div style="display:flex; gap:10px; justify-content:flex-end; margin-top: 1rem;">
+                <button id="closeRoutineModalBtn" class="icon-btn"
+                    style="width: auto; padding: 0.5rem 1rem; border-radius: 8px;">Close</button>
+                <button id="buildRoutineActionBtn" class="action-button"
+                    style="width: auto; padding: 0.5rem 1rem; border-radius: 8px; background: #059669; border: none;">Generate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Progress Modal -->
+    <div id="uploadModal" class="modal hidden">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
+            <h2>Add Progress Entry</h2>
+            <div id="checkinWeekLabel"
+                style="font-size:0.9rem; color:var(--primary); margin-bottom: 1rem; font-weight:600;">Day 1 Entry</div>
+
+            <div class="input-group">
+                <label>Date</label>
+                <input type="date" id="checkinDate" style="width:100%;">
+            </div>
+
+            <h3 style="margin-top: 1.5rem; font-size:1rem; border-bottom:1px solid #e5e7eb; padding-bottom:0.5rem;">
+                Photos (Required)</h3>
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top:1rem;">
+                <div class="input-group" style="margin: 0;">
+                    <label style="font-size:0.8rem">Front</label>
+                    <input type="file" id="checkinPhotoFront" accept="image/*" style="width:100%; font-size: 0.7rem;">
+                    <div id="photoPreviewFront"
+                        style="margin-top:5px; height:80px; background:#f3f4f6; display:none; background-size:cover; background-position:center; border-radius:4px;">
+                    </div>
+                </div>
+                <div class="input-group" style="margin: 0;">
+                    <label style="font-size:0.8rem">Back</label>
+                    <input type="file" id="checkinPhotoBack" accept="image/*" style="width:100%; font-size: 0.7rem;">
+                    <div id="photoPreviewBack"
+                        style="margin-top:5px; height:80px; background:#f3f4f6; display:none; background-size:cover; background-position:center; border-radius:4px;">
+                    </div>
+                </div>
+                <div class="input-group" style="margin: 0;">
+                    <label style="font-size:0.8rem">Side</label>
+                    <input type="file" id="checkinPhotoSide" accept="image/*" style="width:100%; font-size: 0.7rem;">
+                    <div id="photoPreviewSide"
+                        style="margin-top:5px; height:80px; background:#f3f4f6; display:none; background-size:cover; background-position:center; border-radius:4px;">
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem; font-size:1rem; border-bottom:1px solid #e5e7eb; padding-bottom:0.5rem;">
+                Measurements (inches)</h3>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:1rem;">
+                <div class="input-group" style="margin: 0;">
+                    <label style="font-size:0.8rem">Weight (kg/lbs)</label>
+                    <input type="number" id="checkinWeight" placeholder="e.g. 75.5" style="width:100%;">
+                </div>
+                <div class="input-group" style="margin: 0;">
+                    <label style="font-size:0.8rem">Biceps</label>
+                    <input type="number" id="checkinArms" placeholder="Inches" style="width:100%;">
+                </div>
+                <div class="input-group" style="margin: 0;">
+                    <label style="font-size:0.8rem">Chest</label>
+                    <input type="number" id="checkinChest" placeholder="Inches" style="width:100%;">
+                </div>
+                <div class="input-group" style="margin: 0;">
+                    <label style="font-size:0.8rem">Waist</label>
+                    <input type="number" id="checkinWaist" placeholder="Inches" style="width:100%;">
+                </div>
+                <div class="input-group" style="margin: 0;">
+                    <label style="font-size:0.8rem">Belly Area</label>
+                    <input type="number" id="checkinAbs" placeholder="Inches" style="width:100%;">
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-top:1rem;">
+                <label>Notes</label>
+                <textarea id="checkinNotes" placeholder="How was this week?"
+                    style="width:100%; padding:10px; border-radius:12px; border:1px solid #e5e7eb; outline:none; font-family:inherit; min-height: 80px;"></textarea>
+            </div>
+
+            <div style="margin-top:1.5rem; display:flex; gap:10px; justify-content:flex-end;">
+                <button id="closeUploadModalBtn" class="icon-btn"
+                    style="width: auto; padding: 0.5rem 1rem; border-radius: 8px;">Cancel</button>
+                <button id="saveCheckinBtn" class="action-button"
+                    style="width: auto; padding: 0.5rem 1rem; border-radius: 8px;">Save Check-in</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goal 15: Weekly Report Modal -->
+    <div id="weeklyReportModal" class="modal hidden">
+        <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h2
+                    style="font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 8px; color: #8b5cf6;">
+                    <i class="fas fa-chart-line"></i> Weekly AI Insights
+                </h2>
+                <button class="icon-btn close-modal" id="closeWeeklyReportBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div style="margin-top: 1rem;">
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">Generate an AI-powered
+                    adherence and trend analysis based on your last 7 days of activity.</p>
+                <div id="weeklyReportContent"
+                    style="margin-bottom: 1.5rem; font-size: 0.95rem; line-height: 1.5; color: var(--text-main); white-space: pre-wrap; display: none;">
+                </div>
+                <div id="weeklyReportLoader" class="hidden" style="text-align: center; padding: 20px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #8b5cf6;"></i>
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);">Analyzing 7 days of
+                        telemetry. This may take a moment...</p>
+                </div>
+                <button id="generateReportBtn" class="action-button"
+                    style="background: #8b5cf6; width: 100%; border: none;"><i class="fas fa-bolt"></i> Generate Report
+                    Now</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Bottom Navigation for Mobile -->
+    <nav class="bottom-nav">
+        <a href="#" class="bottom-nav-item active" data-view="dashboard"><i class="fas fa-home"></i> Home</a>
+        <a href="#" class="bottom-nav-item" data-view="history"><i class="fas fa-history"></i> History</a>
+        <a href="#" class="bottom-nav-item" data-view="progress"><i class="fas fa-chart-line"></i> Progress</a>
+    </nav>
+
+    <!-- Goal 20: Creator Footer & Version -->
+    <footer class="app-footer">
+        <p>Designed & Developed by <strong>Dhiraj Chaudhari</strong></p>
+        <p id="app-version-display">v1.0.0</p>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- External Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="dashboard.js"></script>
+    <script type="module" src="history.js"></script>
+    <script type="module" src="progress.js"></script>
+</body>
+
+</html>

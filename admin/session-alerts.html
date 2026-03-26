@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Email Alerts - Admin - DC Cloud Solutions</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="components/layout.css">
+    <style>
+        :root {
+            --primary: #0044cc;
+            --primary-hover: #0033aa;
+            --bg-color: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        .alert-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .email-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .email-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .email-item:last-child {
+            border-bottom: none;
+        }
+
+        .email-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .email-address {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .email-status {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .status-toggle {
+            cursor: pointer;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #ecfdf5;
+            color: var(--success);
+        }
+
+        .status-inactive {
+            background: #fef2f2;
+            color: var(--danger);
+        }
+
+        .delete-btn {
+            color: var(--danger);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .delete-btn:hover {
+            background: #fee2e2;
+        }
+    </style>
+</head>
+<body>
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1 class="admin-header-title">
+                <i class="fas fa-bell"></i> Session Email Alerts
+            </h1>
+        </header>
+
+        <div class="admin-content">
+            <div class="alert-card">
+                <h3>Add Alert Recipients</h3>
+                <p class="text-muted">Enter emails separated by commas or newlines. Duplicate and invalid emails will be filtered.</p>
+                <form id="addEmailForm">
+                    <textarea id="emailInput" placeholder="recipient1@example.com, recipient2@example.com..." 
+                              style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; margin-bottom: 12px; min-height: 80px;"></textarea>
+                    <div style="display: flex; justify-content: flex-end;">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Add Emails
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="alert-card">
+                <h3>Manual Alert Trigger</h3>
+                <p class="text-muted">Send an immediate reminder for the next upcoming session to all active recipients.</p>
+                <div id="nextSessionInfo" style="margin-bottom: 20px; padding: 15px; background: #f1f5f9; border-radius: 8px; border-left: 4px solid var(--primary);">
+                    <div id="loadingNextSession">Checking for upcoming sessions...</div>
+                    <div id="sessionPreview" style="display: none;">
+                        <div style="font-weight: 700; color: var(--primary);" id="previewTitle"></div>
+                        <div style="font-size: 0.9rem; color: var(--text-muted);" id="previewTime"></div>
+                        <div style="font-size: 0.85rem; margin-top: 4px;" id="previewBatch"></div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                    <button id="refreshBtn" class="btn btn-outline" onclick="findNextSession()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button id="manualTriggerBtn" class="btn btn-primary" onclick="sendManualReminder()" disabled>
+                        <i class="fas fa-paper-plane"></i> Send Reminder Now
+                    </button>
+                </div>
+            </div>
+
+            <div class="alert-card">
+                <h3>Recipients List</h3>
+                <ul id="emailList" class="email-list">
+                    <!-- Emails will be loaded here -->
+                </ul>
+                <div id="noEmails" style="display: none; text-align: center; padding: 40px; color: var(--text-muted);">
+                    <i class="fas fa-envelope-open" style="font-size: 3rem; margin-bottom: 16px; opacity: 0.3;"></i>
+                    <p>No recipients configured yet.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="components/sidebar.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCohKlqNu0I1sXcLW4D_fv-OEw9x0S50q8",
+            authDomain: "dc-infotechpvt-1-d1a4b.firebaseapp.com",
+            databaseURL: "https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com",
+            projectId: "dc-infotechpvt-1-d1a4b",
+            storageBucket: "dc-infotechpvt-1-d1a4b.firebasestorage.app",
+            messagingSenderId: "622552457680",
+            appId: "1:622552457680:web:4b80e21e14e2b8266f19d5"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+
+        const form = document.getElementById('addEmailForm');
+        const emailInput = document.getElementById('emailInput');
+        const emailListEl = document.getElementById('emailList');
+        const noEmailsEl = document.getElementById('noEmails');
+
+        // Load Emails
+        db.ref('settings/alert_emails').on('value', snapshot => {
+            const data = snapshot.val();
+            emailListEl.innerHTML = '';
+            
+            if (!data) {
+                noEmailsEl.style.display = 'block';
+                return;
+            }
+            
+            noEmailsEl.style.display = 'none';
+            Object.keys(data).forEach(id => {
+                const item = data[id];
+                const li = document.createElement('li');
+                li.className = 'email-item';
+                li.innerHTML = `
+                    <div class="email-info">
+                        <span class="email-address">${item.email}</span>
+                        <span class="email-status">Added on: ${new Date(item.addedAt).toLocaleDateString()}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <span class="status-toggle ${item.active ? 'status-active' : 'status-inactive'}" 
+                              onclick="toggleStatus('${id}', ${item.active})">
+                            ${item.active ? 'Active' : 'Inactive'}
+                        </span>
+                        <i class="fas fa-trash delete-btn" onclick="deleteEmail('${id}')"></i>
+                    </div>
+                `;
+                emailListEl.appendChild(li);
+            });
+        });
+
+        // Add Email
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const rawInput = emailInput.value.trim();
+            if (!rawInput) return;
+
+            // Parse emails: split by comma, semicolon, or newline
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const emails = rawInput.split(/[\n,;]+/)
+                .map(e => e.trim())
+                .filter(e => emailRegex.test(e));
+
+            if (emails.length === 0) {
+                alert('No valid emails found.');
+                return;
+            }
+
+            // Get existing emails to prevent duplicates
+            db.ref('settings/alert_emails').once('value').then(snapshot => {
+                const existingData = snapshot.val() || {};
+                const existingEmails = Object.values(existingData).map(item => item.email.toLowerCase());
+                
+                let addedCount = 0;
+                let duplicateCount = 0;
+
+                emails.forEach(email => {
+                    const normalizedEmail = email.toLowerCase();
+                    if (!existingEmails.includes(normalizedEmail)) {
+                        const newRef = db.ref('settings/alert_emails').push();
+                        newRef.set({
+                            email: email,
+                            active: true,
+                            addedAt: firebase.database.ServerValue.TIMESTAMP
+                        });
+                        addedCount++;
+                    } else {
+                        duplicateCount++;
+                    }
+                });
+
+                emailInput.value = '';
+                
+                let msg = `${addedCount} email(s) added successfully.`;
+                if (duplicateCount > 0) msg += ` (${duplicateCount} duplicates skipped)`;
+                alert(msg);
+            });
+        });
+
+        // Toggle Status
+        window.toggleStatus = (id, currentStatus) => {
+            db.ref(`settings/alert_emails/${id}`).update({
+                active: !currentStatus
+            });
+        };
+
+        // Delete Email
+        window.deleteEmail = (id) => {
+            if (confirm('Are you sure you want to remove this recipient?')) {
+                db.ref(`settings/alert_emails/${id}`).remove();
+            }
+        };
+
+        // --- Manual Trigger Logic ---
+        let nextSession = null;
+        let nextBatch = null;
+
+        async function findNextSession() {
+            const previewEl = document.getElementById('sessionPreview');
+            const loadingEl = document.getElementById('loadingNextSession');
+            const triggerBtn = document.getElementById('manualTriggerBtn');
+            
+            loadingEl.style.display = 'block';
+            previewEl.style.display = 'none';
+            triggerBtn.disabled = true;
+
+            try {
+                const snapshot = await db.ref('agendas').once('value');
+                const data = snapshot.val();
+                if (!data) {
+                    loadingEl.innerText = 'No schedules found.';
+                    return;
+                }
+
+                const now = new Date();
+                let closestSession = null;
+                let closestDiff = Infinity;
+                let closestBatch = null;
+
+                Object.keys(data).forEach(batchId => {
+                    const sessions = data[batchId] ? Object.values(data[batchId]) : [];
+                    sessions.forEach(sess => {
+                        if (!sess.time || sess.time === 'TBA') return;
+                        try {
+                            const [startStrRaw] = sess.time.split(' - ');
+                            const startStr = startStrRaw.trim().replace(/\s+GMT.*$/, "") + " GMT+0530";
+                            const sessionStart = new Date(`${sess.day} ${startStr}`);
+                            
+                            const diff = sessionStart - now;
+                            if (diff > 0 && diff < closestDiff) {
+                                closestDiff = diff;
+                                closestSession = sess;
+                                closestBatch = batchId;
+                            }
+                        } catch (e) {}
+                    });
+                });
+
+                if (closestSession) {
+                    nextSession = closestSession;
+                    nextBatch = closestBatch;
+                    document.getElementById('previewTitle').innerText = nextSession.description;
+                    document.getElementById('previewTime').innerText = `${nextSession.day} | ${nextSession.time}`;
+                    document.getElementById('previewBatch').innerText = `Batch: ${nextBatch}`;
+                    
+                    loadingEl.style.display = 'none';
+                    previewEl.style.display = 'block';
+                    triggerBtn.disabled = false;
+                } else {
+                    loadingEl.innerText = 'No upcoming sessions found.';
+                }
+            } catch (err) {
+                loadingEl.innerText = 'Error loading sessions: ' + err.message;
+            }
+        }
+
+        async function sendManualReminder() {
+            if (!nextSession) return;
+            
+            if (!confirm(`Send an immediate reminder for "${nextSession.description}" to all recipients?`)) return;
+
+            const triggerBtn = document.getElementById('manualTriggerBtn');
+            triggerBtn.disabled = true;
+            triggerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+            try {
+                // Call the Netlify Background Function (Returns 202 immediately)
+                const response = await fetch('/.netlify/functions/manual-alert-background', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        session: nextSession,
+                        batch: 'All Batches' 
+                    })
+                });
+
+                if (response.status === 202) {
+                    alert(`✅ Alert sequence started in the background.\n\nNOTE: It may take 1-2 minutes to process all recipients. Check Netlify Function logs for real-time status.`);
+                } else {
+                    const result = await response.json().catch(() => ({ error: 'Server error' }));
+                    throw new Error(result.error || 'Failed to start background task.');
+                }
+            } catch (err) {
+                console.error("Manual alert error:", err);
+                alert(`❌ Manual reminder failed to start: ${err.message || 'Unknown error'}\n\n1. Check if Netlify environment variables are set.\n2. Check Netlify function logs for 'manual-alert-background'.`);
+            } finally {
+                triggerBtn.disabled = false;
+                triggerBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Reminder Now';
+            }
+        }
+
+        // Initialize session lookup
+        setTimeout(findNextSession, 1000);
+    </script>
+</body>
+</html>

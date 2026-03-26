@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Homepage - Highest Priority -->
+  <url>
+    <loc>https://www.dcinfotech.org.in/</loc>
+    <lastmod>2025-12-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- About Page -->
+  <url>
+    <loc>https://www.dcinfotech.org.in/about</loc>
+    <lastmod>2025-12-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Contact Page -->
+  <url>
+    <loc>https://www.dcinfotech.org.in/contact</loc>
+    <lastmod>2025-12-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Google Cloud Certifications -->
+  <url>
+    <loc>https://www.dcinfotech.org.in/google-cloud-certifications</loc>
+    <lastmod>2025-12-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Services Pages -->
+  <url>
+    <loc>https://www.dcinfotech.org.in/services</loc>
+    <lastmod>2025-12-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Cloud Training -->
+  <url>
+    <loc>https://www.dcinfotech.org.in/cloud-training</loc>
+    <lastmod>2025-12-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+</urlset>

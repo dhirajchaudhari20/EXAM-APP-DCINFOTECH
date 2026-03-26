@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submission Records</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f7fa;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 26px;
+      font-weight: 700;
+      color: #222;
+    }
+    #controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    #searchBox {
+      flex: 1;
+      max-width: 400px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    #downloadPDF {
+      background: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #downloadPDF:hover {
+      background: #0056b3;
+    }
+    #loader {
+      display: none;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #007bff;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .record {
+      background: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .field {
+      font-size: 14px;
+      background: #f9fafc;
+      padding: 8px;
+      border-radius: 6px;
+    }
+    .field strong {
+      color: #333;
+      display: block;
+      margin-bottom: 3px;
+    }
+    pre {
+      font-family: monospace;
+      font-size: 12px;
+      background: #1e1e1e;
+      color: #f5f5f5;
+      padding: 10px;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📑 All Submissions</h1>
+
+  <div id="controls">
+    <input type="text" id="searchBox" placeholder="Search by name, lab, or status...">
+    <button id="downloadPDF">⬇️ Download as PDF</button>
+  </div>
+
+  <div id="loader"><div class="spinner"></div><p>Loading...</p></div>
+  <div id="records"></div>
+
+  <script>
+    let allData = [];
+    let filteredData = [];
+
+    async function fetchRecords() {
+      showLoader(true);
+      try {
+        const res = await fetch("https://sheetdb.io/api/v1/8i0tiy8shvld7");
+        if (!res.ok) throw new Error("Failed to fetch data");
+        allData = await res.json();
+        filteredData = allData;
+        renderRecords(filteredData);
+      } catch (err) {
+        Swal.fire("Error", "Unable to fetch records!", "error");
+        console.error(err);
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    function showLoader(show) {
+      document.getElementById("loader").style.display = show ? "block" : "none";
+    }
+
+    function renderRecords(data) {
+      const container = document.getElementById("records");
+      container.innerHTML = "";
+
+      if (data.length === 0) {
+        container.innerHTML = "<p style='text-align:center;'>No records found.</p>";
+        return;
+      }
+
+      data.forEach(entry => {
+        const card = document.createElement("div");
+        card.classList.add("record");
+
+        card.innerHTML = `
+          <div class="field"><strong>Full Name</strong> ${entry["Full Name"] || "-"}</div>
+          <div class="field"><strong>Lab Name</strong> ${entry["Lab Name"] || "-"}</div>
+          <div class="field"><strong>SkillBoost</strong> ${entry["SkillBoost Profile URL"] || "-"}</div>
+          <div class="field"><strong>Submission Type</strong> ${entry["Submission Type"] || "-"}</div>
+          <div class="field"><strong>PDF Link</strong> ${entry["PDF File Link"] || "-"}</div>
+          <div class="field"><strong>Video URL</strong> ${entry["Video URL"] || "-"}</div>
+          <div class="field"><strong>Date</strong> ${entry["Submission Date"] || "-"}</div>
+          <div class="field"><strong>Status</strong> ${entry["Status"] || "-"}</div>
+          <div class="field"><strong>Remarks</strong> ${entry["Remarks"] || "-"}</div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    document.getElementById("searchBox").addEventListener("input", function() {
+      const term = this.value.toLowerCase();
+      showLoader(true);
+
+      setTimeout(() => {
+        filteredData = allData.filter(entry =>
+          JSON.stringify(entry).toLowerCase().includes(term)
+        );
+        renderRecords(filteredData);
+        showLoader(false);
+      }, 500); // simulate delay for loader
+    });
+
+    document.getElementById("downloadPDF").addEventListener("click", function() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: "pt", format: "a4" });
+      let y = 20;
+
+      filteredData.forEach((entry, idx) => {
+        const jsonStr = JSON.stringify(entry, null, 2);
+        const split = doc.splitTextToSize(jsonStr, 550);
+        doc.text(`Submission ${idx+1}`, 20, y);
+        y += 16;
+        doc.setFont("courier", "normal");
+        split.forEach(line => {
+          doc.text(line, 20, y);
+          y += 14;
+          if (y > 780) { // new page
+            doc.addPage();
+            y = 20;
+          }
+        });
+        y += 10;
+      });
+
+      doc.save("submissions_pre_format.pdf");
+    });
+
+    fetchRecords();
+  </script>
+</body>
+</html>

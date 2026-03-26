@@ -1,0 +1,237 @@
+/* modern-login.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --text-main: #1f2937;
+    --text-secondary: #6b7280;
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+body {
+    font-family: 'Inter', sans-serif !important;
+    background: var(--bg-gradient) !important;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+/* Hide default angular loader background if needed */
+.app-loader {
+    background: transparent !important;
+}
+
+alpine-testing-root,
+cm-loader {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Main Container Override */
+.cp-view,
+.cp-view--public,
+main,
+section {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: auto !important;
+    min-height: auto !important;
+}
+
+/* Central Card */
+.entry__container {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37) !important;
+    padding: 40px !important;
+    width: 100%;
+    max-width: 420px !important;
+    margin: 20px auto;
+    transform: translateY(0);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.entry__container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45) !important;
+}
+
+/* Branding */
+.entry__branding {
+    background: transparent !important;
+    padding: 0 0 20px 0 !important;
+    text-align: center;
+    border: none !important;
+}
+
+.entry__branding img {
+    max-height: 60px;
+    width: auto;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* Content Area */
+.entry__content {
+    padding: 0 !important;
+}
+
+/* Text & Messages */
+.entry__message {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 12px !important;
+    padding: 15px !important;
+    margin-bottom: 20px !important;
+    border-left: 4px solid var(--primary-color) !important;
+    box-shadow: var(--shadow-lg) !important;
+    font-size: 0.9rem !important;
+    line-height: 1.5;
+}
+
+.entry__message strong {
+    color: var(--primary-color);
+}
+
+/* Inputs (Material Override) */
+.mat-mdc-form-field {
+    width: 100% !important;
+    margin-bottom: 16px !important;
+    display: block !important;
+}
+
+.mat-mdc-text-field-wrapper {
+    background-color: #f3f4f6 !important;
+    border-radius: 12px !important;
+    /* Rounded corners */
+    padding: 0 12px !important;
+    height: 56px !important;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.mat-mdc-text-field-wrapper:hover {
+    background-color: #e5e7eb !important;
+}
+
+.mat-focused .mat-mdc-text-field-wrapper {
+    background-color: #fff !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+/* Remove default underliness */
+.mdc-line-ripple {
+    display: none !important;
+}
+
+.mat-mdc-input-element {
+    color: var(--text-main) !important;
+    font-weight: 500 !important;
+}
+
+/* Floating Label */
+.mdc-floating-label {
+    color: var(--text-secondary) !important;
+    font-weight: 500 !important;
+}
+
+.mat-focused .mdc-floating-label {
+    color: var(--primary-color) !important;
+}
+
+
+/* Buttons */
+.login__form-actions {
+    margin-top: 24px;
+}
+
+button[type="submit"] {
+    background: linear-gradient(to right, var(--primary-color), var(--primary-hover)) !important;
+    color: white !important;
+    height: 48px !important;
+    border-radius: 12px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    width: 100% !important;
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2), 0 2px 4px -1px rgba(79, 70, 229, 0.1) !important;
+    transition: all 0.3s ease !important;
+    border: none !important;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px -2px rgba(79, 70, 229, 0.3) !important;
+}
+
+button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+/* Secondary Buttons */
+.cm-mini-button {
+    color: var(--text-secondary) !important;
+    font-weight: 500 !important;
+    font-size: 0.875rem !important;
+    margin-top: 12px !important;
+    background: transparent !important;
+    transition: color 0.2s;
+}
+
+.cm-mini-button:hover {
+    color: var(--primary-color) !important;
+    background: transparent !important;
+    text-decoration: none !important;
+}
+
+/* Footer */
+.cp-footer {
+    background: transparent !important;
+    border-top: none !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 40px !important;
+}
+
+.cp-footer a {
+    color: white !important;
+    text-decoration: underline;
+    opacity: 0.9;
+}
+
+.cp-footer a:hover {
+    opacity: 1;
+}
+
+.cp-footer__copyright {
+    display: block;
+    margin-top: 10px;
+    opacity: 0.7;
+}
+
+/* Loader customization */
+#cm-preloader {
+    background: var(--bg-gradient) !important;
+}
+
+/* Hide unwanted elements */
+.cp-view__environment,
+.mdc-notched-outline {
+    display: none !important;
+}

@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"liveServer.settings.CustomBrowser": "chrome",
+		"editor.folding": false,
+		"editor.foldingHighlight": false,
+		"editor.showFoldingControls": "never",
+		"notebook.showFoldingControls": "never",
+		"workbench.tree.renderIndentGuides": "none",
+		"editor.guides.indentation": false,
+		"liveServer.settings.port": 5501
+	}
+}

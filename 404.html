@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404: Lost in the Cloud? | DC Cloud Solutions</title>
+    <meta name="description"
+        content="Oops! The page you're looking for seems to have drifted away. Let's get you back on track with DC Cloud Solutions.">
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- STYLESHEETS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        :root {
+            --google-blue: #4285F4;
+            --google-red: #EA4335;
+            --google-yellow: #FBBC05;
+            --google-green: #34A853;
+            --premium-dark: #202124;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #ffffff;
+            color: var(--premium-dark);
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        #header-placeholder {
+            width: 100%;
+        }
+
+        .error-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            position: relative;
+        }
+
+        .error-container {
+            max-width: 800px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .glitch-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .error-code {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(8rem, 20vw, 15rem);
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(45deg, var(--google-blue), var(--google-red), var(--google-yellow), var(--google-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .cloud-illustration {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+
+        .cloud {
+            position: absolute;
+            background: #f1f3f4;
+            border-radius: 100px;
+            animation: moveClouds var(--duration) linear infinite;
+        }
+
+        @keyframes moveClouds {
+            from {
+                left: -200px;
+            }
+
+            to {
+                left: 110%;
+            }
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #5f6368;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .btn-group-404 {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-premium {
+            padding: 15px 40px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary-404 {
+            background-color: var(--google-blue);
+            color: white;
+            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
+        }
+
+        .btn-primary-404:hover {
+            background-color: #3367d6;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(66, 133, 244, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-outline-404 {
+            border: 2px solid #dadce0;
+            color: #3c4043;
+        }
+
+        .btn-outline-404:hover {
+            border-color: var(--google-blue);
+            color: var(--google-blue);
+            background: rgba(66, 133, 244, 0.05);
+            transform: translateY(-5px);
+            text-decoration: none;
+        }
+
+        /* BG Decorations */
+        .dot-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: 1;
+            opacity: 0.5;
+        }
+
+        /* Loader Styles from main site */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-loader {
+            width: 120px;
+            height: auto;
+        }
+
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 8rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Loader -->
+    <div class="loader">
+        <div class="loader-content">
+            <img src="images/dcintro.gif" alt="Loader" class="loader-loader" />
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- 404 Content -->
+    <section class="error-section">
+        <div class="dot-pattern"></div>
+        <div class="cloud-illustration" id="clouds"></div>
+
+        <div class="container error-container">
+            <div class="glitch-container">
+                <h1 class="error-code">404</h1>
+            </div>
+            <h1>Lost in the Cloud?</h1>
+            <p>We couldn't find the page you're looking for. It might have been moved, deleted, or never existed in the
+                first place.</p>
+
+            <div class="btn-group-404">
+                <a href="/" class="btn-premium btn-primary-404">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+                <a href="/contact" class="btn-premium btn-outline-404">
+                    <i class="fas fa-envelope"></i> Contact Support
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer placeholder (if applicable) -->
+    <div id="footer-placeholder"></div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Load Header & Footer (Using site's pattern)
+        async function loadTemplate(id, file) {
+            try {
+                const response = await fetch(file);
+                if (response.ok) {
+                    const content = await response.text();
+                    document.getElementById(id).innerHTML = content;
+                }
+            } catch (error) {
+                console.error(`Error loading ${file}:`, error);
+            }
+        }
+
+        loadTemplate('header-placeholder', 'template/header.html');
+        // Footers are usually in a separate placeholder or at bottom
+        loadTemplate('footer-placeholder', 'template/footer.html');
+
+        // Loader Logic
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                document.querySelector('.loader').classList.add('hidden');
+            }, 1000); // Quick loader for 404
+        });
+
+        // Dynamic Clouds Animation
+        const cloudsContainer = document.getElementById('clouds');
+        for (let i = 0; i < 15; i++) {
+            const cloud = document.createElement('div');
+            cloud.className = 'cloud';
+            const width = Math.random() * 100 + 50;
+            const height = width * 0.4;
+            cloud.style.width = width + 'px';
+            cloud.style.height = height + 'px';
+            cloud.style.top = Math.random() * 100 + '%';
+            cloud.style.setProperty('--duration', (Math.random() * 20 + 20) + 's');
+            cloud.style.left = Math.random() * 100 + '%';
+            cloud.style.opacity = Math.random() * 0.5;
+            cloudsContainer.appendChild(cloud);
+        }
+    </script>
+
+</body>
+
+</html>

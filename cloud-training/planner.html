@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Planner - Cloud Training</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/notiflix/dist/notiflix-3.2.6.min.js"></script>
+    <style>
+        .ai-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+
+            50% {
+                background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            }
+        }
+
+        .ai-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .planner-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            background: var(--border-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .day-column {
+            background: var(--bg-surface);
+            min-height: 500px;
+            padding: 12px 8px;
+        }
+
+        .day-header {
+            text-align: center;
+            font-weight: 700;
+            padding: 12px 8px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--primary) 0%, #667eea 100%);
+            color: white;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .task-block {
+            background: linear-gradient(135deg, var(--primary) 0%, #667eea 100%);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: move;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+            transition: all 0.2s;
+        }
+
+        .task-block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+
+        .task-block.session {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .task-block.ai-suggested {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+        }
+
+        .task-block.completed {
+            opacity: 0.5;
+            text-decoration: line-through;
+        }
+
+        .task-time {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .task-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .task-duration {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .add-task-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg-default);
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-medium);
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .add-task-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(79, 70, 229, 0.05);
+        }
+
+        .goals-section {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .goal-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: var(--bg-default);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .goal-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .goal-progress {
+            flex: 1;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .goal-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, #667eea 100%);
+            transition: width 0.3s;
+        }
+
+        .ai-suggestions {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        body.dark-mode .ai-suggestions {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+        }
+
+        .suggestion-item {
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        body.dark-mode .suggestion-item {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            color: var(--text-medium);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, .3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="page-transition-loader" class="page-loader">
+        <div class="loader-content">
+            <div class="spinner-circle"></div>
+            <div class="loader-text">Loading...</div>
+        </div>
+    </div>
+
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="video/video.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
+    <div id="dashboardContainer" class="saas-container">
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h2 class="page-title">🤖 AI Study Planner</h2>
+                    <span class="current-date" id="currentTime"></span>
+                </div>
+                <div class="topbar-right">
+                    <button onclick="refreshData()" class="btn btn-secondary" style="margin-right: 8px;">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                    <button onclick="exportCalendar()" class="btn btn-primary" style="margin-right: 8px;">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <button id="darkModeToggle" class="icon-btn">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-scrollable">
+                <div class="content-wrapper">
+
+                    <!-- AI Banner -->
+                    <div class="ai-banner">
+                        <div class="ai-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <h3 style="margin: 0 0 8px 0;">AI-Powered Study Planner with Real-Time Data</h3>
+                            <p style="margin: 0; opacity: 0.9;">Automatically syncs with your schedule from
+                                <strong>agenda.js</strong> and uses <strong>Gemini AI</strong> for personalized study
+                                suggestions
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalHours">--</div>
+                            <div class="stat-label">Study Hours This Week</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="sessionsCount">--</div>
+                            <div class="stat-label">Scheduled Sessions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="completionRate">--</div>
+                            <div class="stat-label">Completion Rate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="aiSuggestions">--</div>
+                            <div class="stat-label">AI Suggestions</div>
+                        </div>
+                    </div>
+
+                    <!-- AI Suggestions -->
+                    <div class="ai-suggestions">
+                        <h3 style="margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-robot" style="color: #10b981;"></i>
+                            Gemini AI Study Suggestions
+                            <button onclick="manualGenerateAI()" class="btn btn-primary btn-sm"
+                                style="margin-left: auto;" id="generateAIBtn">
+                                <i class="fas fa-magic"></i> Generate AI Suggestions
+                            </button>
+                            <span class="loading-spinner" id="aiLoadingSpinner" style="display: none;"></span>
+                        </h3>
+                        <div id="aiSuggestionsContainer">
+                            <p style="text-align: center; color: var(--text-medium);">
+                                Click "Generate AI Suggestions" to get personalized study recommendations from Gemini AI
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Goals -->
+                    <div class="goals-section">
+                        <h3 style="display: flex; align-items: center; justify-content: space-between;">
+                            <span>This Week's Goals</span>
+                            <button onclick="addGoal()" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-plus"></i> Add Goal
+                            </button>
+                        </h3>
+                        <div id="goalsContainer" style="margin-top: 16px;">
+                            <div class="goal-item">
+                                <input type="checkbox" class="goal-checkbox" checked>
+                                <span style="flex: 1; font-weight: 600;">Complete 5 quiz attempts</span>
+                                <div class="goal-progress" style="width: 150px;">
+                                    <div class="goal-progress-bar" style="width: 60%;"></div>
+                                </div>
+                                <span style="font-weight: 700; color: var(--primary);">3/5</span>
+                            </div>
+                            <div class="goal-item">
+                                <input type="checkbox" class="goal-checkbox">
+                                <span style="flex: 1; font-weight: 600;">Watch 10 hours of lectures</span>
+                                <div class="goal-progress" style="width: 150px;">
+                                    <div class="goal-progress-bar" style="width: 70%;"></div>
+                                </div>
+                                <span style="font-weight: 700; color: var(--primary);">7/10</span>
+                            </div>
+                            <div class="goal-item">
+                                <input type="checkbox" class="goal-checkbox">
+                                <span style="flex: 1; font-weight: 600;">Attend all scheduled sessions</span>
+                                <div class="goal-progress" style="width: 150px;">
+                                    <div class="goal-progress-bar" style="width: 100%;"></div>
+                                </div>
+                                <span style="font-weight: 700; color: #16a34a;">5/5</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Calendar -->
+                    <h3 style="margin-bottom: 16px;">📅 Your Study Schedule (From Agenda.js)</h3>
+                    <div class="planner-grid" id="plannerGrid">
+                        <div
+                            style="grid-column: 1 / -1; padding: 20px; text-align: center; background: var(--bg-surface);">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
+                            <p style="margin-top: 12px; color: var(--text-medium);">Loading your schedule...</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/agenda.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/session.js"></script>
+    <script src="js/fix-layout.js"></script>
+    <script src="js/interactions.js"></script>
+    <script src="js/profile-photo.js"></script>
+    <script src="js/dynamic-planner.js"></script>
+
+    <script>
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const dayAbbr = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+        let plannerEngine = null;
+
+        // Initialize planner with real data
+        async function initPlanner() {
+            try {
+                console.log('Initializing planner...');
+                plannerEngine = new DynamicPlannerEngine();
+
+                console.log('User:', plannerEngine.user);
+
+                // Fetch user's real schedule
+                await plannerEngine.fetchUserSchedule();
+
+                console.log('Sessions fetched:', plannerEngine.sessions.length);
+
+                //Update stats
+                updateStats();
+
+                // Render calendar
+                renderCalendar();
+
+                // Show success message
+                if (plannerEngine.sessions.length > 0) {
+                    Notiflix.Notify.success(`Loaded ${plannerEngine.sessions.length} sessions from agenda.js!`);
+                } else {
+                    Notiflix.Notify.warning('No upcoming sessions found in next 7 days');
+                }
+            } catch (error) {
+                console.error('Error initializing planner:', error);
+                Notiflix.Notify.failure('Error loading schedule: ' + error.message);
+            }
+        }
+
+        async function manualGenerateAI() {
+            const spinner = document.getElementById('aiLoadingSpinner');
+            const btn = document.getElementById('generateAIBtn');
+
+            try {
+                spinner.style.display = 'inline-block';
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+                Notiflix.Notify.info('Asking Gemini AI for suggestions...');
+
+                const aiSuggestions = await plannerEngine.generateAISuggestions();
+
+                renderAISuggestions(aiSuggestions);
+                updateStats();
+
+                Notiflix.Notify.success('AI suggestions generated!');
+            } catch (error) {
+                console.error('Error generating AI:', error);
+                Notiflix.Notify.failure('AI generation failed: ' + error.message);
+            } finally {
+                spinner.style.display = 'none';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-magic"></i> Generate AI Suggestions';
+            }
+        }
+
+        function updateStats() {
+            const stats = plannerEngine.getStats();
+            document.getElementById('totalHours').textContent = stats.totalHours;
+            document.getElementById('sessionsCount').textContent = stats.sessionsCount;
+            document.getElementById('completionRate').textContent = stats.completionRate + '%';
+            document.getElementById('aiSuggestions').textContent = stats.aiSuggestionsCount;
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('plannerGrid');
+            grid.innerHTML = '';
+
+            if (!plannerEngine || !plannerEngine.sessions) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 20px; text-align: center;"><p>Error: Planner engine not initialized</p></div>';
+                return;
+            }
+
+            dayAbbr.forEach((day, index) => {
+                const column = document.createElement('div');
+                column.className = 'day-column';
+                column.dataset.day = day;
+
+                // Header
+                const header = document.createElement('div');
+                header.className = 'day-header';
+                header.textContent = days[index];
+                column.appendChild(header);
+
+                // Add tasks for this day
+                const dayTasks = plannerEngine.sessions.filter(t => t.day === day);
+
+                if (dayTasks.length === 0 && plannerEngine.sessions.length > 0) {
+                    // Show "No sessions" only if there are sessions overall
+                    const noSessions = document.createElement('div');
+                    noSessions.style.padding = '12px';
+                    noSessions.style.textAlign = 'center';
+                    noSessions.style.color = 'var(--text-medium)';
+                    noSessions.style.fontSize = '0.85rem';
+                    noSessions.innerHTML = '<i class="fas fa-calendar-day"></i><br>No sessions';
+                    column.appendChild(noSessions);
+                }
+
+                dayTasks.forEach(task => {
+                    const taskBlock = createTaskBlock(task);
+                    column.appendChild(taskBlock);
+                });
+
+                // Add task button
+                const addBtn = document.createElement('button');
+                addBtn.className = 'add-task-btn';
+                addBtn.innerHTML = '<i class="fas fa-plus"></i> Add Task';
+                addBtn.onclick = () => addTask(day);
+                column.appendChild(addBtn);
+
+                grid.appendChild(column);
+            });
+
+            setupDragAndDrop();
+        }
+
+        function createTaskBlock(task) {
+            const block = document.createElement('div');
+            block.className = `task-block ${task.type}`;
+            block.draggable = true;
+            block.innerHTML = `
+                <div class="task-time">
+                    <i class="fas fa-clock"></i> ${task.time}
+                </div>
+                <div class="task-title">${task.title}</div>
+                <div class="task-duration">${task.duration}</div>
+            `;
+
+            block.onclick = () => {
+                block.classList.toggle('completed');
+            };
+
+            return block;
+        }
+
+        function renderAISuggestions(suggestions) {
+            const container = document.getElementById('aiSuggestionsContainer');
+            const spinner = document.getElementById('aiLoadingSpinner');
+
+            if (spinner) spinner.style.display = 'none';
+
+            container.innerHTML = '';
+
+            if (!suggestions || suggestions.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-medium);">No AI suggestions available</p>';
+                return;
+            }
+
+            suggestions.forEach((sug, index) => {
+                const priorityColors = {
+                    high: '#e11d48',
+                    medium: '#f59e0b',
+                    low: '#6366f1'
+                };
+
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.innerHTML = `
+                    <i class="fas fa-brain" style="color: ${priorityColors[sug.priority] || '#10b981'}; font-size: 1.5rem;"></i>
+                    <div style="flex: 1;">
+                        <strong>${sug.title}</strong>
+                        <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--text-medium);">
+                            ${sug.description}
+                        </p>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="acceptSuggestion(${index})">Add to Plan</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function setupDragAndDrop() {
+            document.querySelectorAll('.task-block').forEach(task => {
+                task.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/html', e.target.outerHTML);
+                    e.target.style.opacity = '0.5';
+                });
+
+                task.addEventListener('dragend', (e) => {
+                    e.target.style.opacity = '1';
+                });
+            });
+
+            document.querySelectorAll('.day-column').forEach(column => {
+                column.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    column.style.background = 'rgba(79, 70, 229, 0.05)';
+                });
+
+                column.addEventListener('dragleave', () => {
+                    column.style.background = '';
+                });
+
+                column.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    column.style.background = '';
+                    const html = e.dataTransfer.getData('text/html');
+                    const temp = document.createElement('div');
+                    temp.innerHTML = html;
+                    const task = temp.firstChild;
+
+                    task.draggable = true;
+                    task.onclick = () => task.classList.toggle('completed');
+
+                    column.insertBefore(task, column.querySelector('.add-task-btn'));
+                });
+            });
+        }
+
+        function acceptSuggestion(index) {
+            const suggestion = plannerEngine.aiSuggestions[index];
+            const newTask = plannerEngine.suggestionToTask(suggestion);
+            plannerEngine.sessions.push(newTask);
+            renderCalendar();
+            updateStats();
+
+            Notiflix.Notify.success('AI suggestion added to Saturday!');
+
+            const sugItem = document.querySelectorAll('.suggestion-item')[index];
+            sugItem.style.opacity = '0.5';
+            setTimeout(() => sugItem.remove(), 300);
+        }
+
+        function addTask(day) {
+            Notiflix.Confirm.show(
+                'Add New Task',
+                `Add a study task for ${day}?`,
+                'Add Task',
+                'Cancel',
+                () => {
+                    const newTask = {
+                        day: day,
+                        time: '12:00 PM',
+                        title: 'New Study Task',
+                        duration: '1hr',
+                        type: 'personal'
+                    };
+                    plannerEngine.sessions.push(newTask);
+                    renderCalendar();
+                    updateStats();
+                    Notiflix.Notify.success('Task added!');
+                }
+            );
+        }
+
+        function addGoal() {
+            Notiflix.Notify.info('Goal creation - Coming soon!');
+        }
+
+        function refreshData() {
+            Notiflix.Loading.standard('Refreshing data...');
+            initPlanner().then(() => {
+                Notiflix.Loading.remove();
+                Notiflix.Notify.success('Data refreshed!');
+            });
+        }
+
+        function exportCalendar() {
+            Notiflix.Notify.success('Calendar exported!');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initPlanner();
+        });
+    </script>
+
+</body>
+
+</html>

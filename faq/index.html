@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DC Cloud Solutions Internship FAQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+      /* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f7fa;
+    color: #333;
+    overflow-x: hidden;
+}
+
+/* Hero Section with Animated Gradient */
+.hero-section {
+    background: linear-gradient(120deg, #00c6ff, #0072ff);
+    color: #ffffff;
+    padding: 18px 20px;
+    text-align: center;
+    border-bottom: 5px solid #0052cc;
+    animation: gradientShift 6s infinite alternate;
+}
+
+@keyframes gradientShift {
+    from { background: linear-gradient(120deg, #00c6ff, #0072ff); }
+    to { background: linear-gradient(120deg, #ff7e5f, #feb47b); }
+}
+
+.hero-section h1 {
+    margin: 0;
+    font-size: 3em;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #ffffff;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.hero-section p {
+    font-size: 1.2em;
+    margin-top: 10px;
+    opacity: 0.9;
+    color: #ffffff;
+    max-width: 700px;
+    margin: 10px auto;
+}
+
+/* FAQ Container */
+.faq-container {
+    width: 80%;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.faq-container h2 {
+    color: #2c3e50;
+    text-align: center;
+    font-size: 2.5em;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+}
+
+/* Accordion Styling */
+.accordion {
+    background-color: #0072ff;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 18px 20px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    font-size: 1.3em;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.accordion:hover {
+    background-color: #0052cc;
+}
+
+.accordion::after {
+    content: '\f078';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 1.2em;
+    transition: transform 0.3s;
+}
+
+.accordion.active::after {
+    content: '\f077';
+    transform: rotate(180deg);
+}
+
+.accordion.active {
+    background-color: #0052cc;
+}
+
+.panel {
+    padding: 15px 25px;
+    display: none;
+    overflow: hidden;
+    background-color: #f1f6fc;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: max-height 0.5s ease, background-color 0.5s ease;
+}
+
+/* FAQ Panel Content */
+.panel ul {
+    padding-left: 20px;
+}
+
+.panel ul li {
+    list-style-type: disc;
+    margin-bottom: 10px;
+}
+
+/* Search Container */
+.search-container {
+    margin: 30px auto;
+    text-align: center;
+}
+
+.search-container input[type="text"] {
+    padding: 15px;
+    width: 360px;
+    font-size: 1em;
+    border-radius: 30px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.search-container input[type="text"]:focus {
+    box-shadow: 0 8px 24px rgba(0, 114, 255, 0.3);
+}
+
+.search-container button {
+    padding: 12px 20px;
+    font-size: 1em;
+    background-color: #0072ff;
+    color: #ffffff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.search-container button:hover {
+    background-color: #0052cc;
+    transform: translateY(-3px);
+}
+
+/* Testimonial Section */
+.testimonial-section {
+    margin-top: 50px;
+    background-color: #ecf0f1;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-section h3 {
+    color: #0072ff;
+    font-size: 2em;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.testimonial-slider {
+    position: relative;
+    max-width: 800px;
+    margin: auto;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.testimonial-slide {
+    display: none;
+    padding: 20px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.testimonial-slide.active {
+    display: block;
+    animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.testimonial-slide blockquote {
+    font-style: italic;
+    border-left: 5px solid #0072ff;
+    padding-left: 20px;
+    margin: 20px 0;
+    color: #666;
+}
+
+.testimonial-slide p {
+    font-size: 1.1em;
+    color: #333;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.testimonial-slider .prev,
+.testimonial-slider .next {
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 12px;
+    margin-top: -22px;
+    color: #fff;
+    background-color: #0072ff;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+.testimonial-slider .prev:hover,
+.testimonial-slider .next:hover {
+    background-color: #0052cc;
+}
+
+.testimonial-slider .prev {
+    left: 0;
+}
+
+.testimonial-slider .next {
+    right: 0;
+}
+
+/* Footer */
+.footer {
+    background: #333333;
+    color: #ffffff;
+    text-align: center;
+    padding: 40px 20px;
+    margin-top: 40px;
+}
+
+.footer p {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.footer p strong {
+    color: #e74c3c;
+}
+
+.footer span {
+    font-size: 0.9em;
+    color: #f1c40f;
+}
+
+    </style>
+    <script>
+        function searchFAQs() {
+            const searchInput = document.getElementById('search').value.toLowerCase();
+            const panels = document.querySelectorAll('.faq-container .panel');
+
+            panels.forEach(panel => {
+                const text = panel.textContent.toLowerCase();
+                if (text.includes(searchInput)) {
+                    panel.style.display = 'block';
+                    panel.classList.add('highlight');
+                } else {
+                    panel.style.display = 'none';
+                    panel.classList.remove('highlight');
+                }
+            });
+        }
+
+        function toggleAccordion(event) {
+            const btn = event.target;
+            btn.classList.toggle("active");
+            const panel = btn.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        }
+
+        let currentSlide = 0;
+
+        function showSlides() {
+            const slides = document.querySelectorAll('.testimonial-slide');
+            slides.forEach((slide, index) => {
+                slide.style.display = (index === currentSlide) ? 'block' : 'none';
+            });
+        }
+
+        function nextSlide() {
+            const slides = document.querySelectorAll('.testimonial-slide');
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlides();
+        }
+
+        function prevSlide() {
+            const slides = document.querySelectorAll('.testimonial-slide');
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlides();
+        }
+
+        function loadForm() {
+            const formContainer = document.getElementById('formContainer');
+            fetch('https://dcinfotech.org.in/backend-issue/backend-issue')
+                .then(response => response.text())
+                .then(data => {
+                    formContainer.innerHTML = data;
+                    formContainer.style.display = 'block';
+                })
+                
+                .catch(error => {
+                    console.error('Error loading the form:', error);
+                });
+        }
+
+        window.onload = function () {
+            showSlides();
+            setInterval(nextSlide, 5000); // Automatically change slides every 5 seconds
+            loadForm(); // Ensure form is loaded when the page loads
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="hero-section">
+        <h1>Welcome to DC Cloud Solutions Internship FAQ</h1>
+        <p>Your guide to our internship program. Find answers to common questions and hear from our interns.</p>
+        
+        <p> <a
+            href="https://dcinfotech.org.in
+/" target="_self">Home</a></p>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="search" placeholder="Search FAQs...">
+        <button onclick="searchFAQs()">Search</button>
+    </div>
+
+    <div class="faq-container">
+        <h2>Frequently Asked Questions (FAQ)</h2>
+    
+        <button class="accordion" onclick="toggleAccordion(event)">
+            1. Why is there a fee for the Internship Completion Certificate?
+        </button>
+        <div class="panel">
+            <p>The ₹100 fee ensures the quality and professionalism of the certification process. It helps cover administrative costs and guarantees that your certificate is recognized by MSME-approved organizations and supported by Google for Startups. Additionally, being an AWS partner, our certification is further endorsed by AWS, enhancing its credibility and value in the industry. The certificate provides:</p>            <ul>
+                <li>Verification of your internship completion.</li>
+                <li>Detailed insights into the skills and experiences gained during the internship.</li>
+                <li>An added advantage to your professional profile, ensuring credibility in the job market.</li>
+            </ul>
+            <p><strong>Note:</strong> DC Cloud Solutions's MSME certification, support from Google for Startups, and recognition as an AWS Partner Authorized strengthen the value of our certificate, making it a trusted credential for your career growth.</p>
+        </div>
+        <button class="accordion" onclick="toggleAccordion(event)">
+            2. Will I get my ₹100 fee back?
+        </button>
+        <div class="panel">
+            <p>Yes, if you are selected for a full-time role after completing your internship, the <strong>₹100 fee will be reimbursed</strong> as part of your joining benefits. Additionally, top-performing interns may receive:</p>
+            <ul>
+                <li>A starting salary of ₹10,000 per month.</li>
+                <li>Recognition and rewards for their exceptional contributions.</li>
+            </ul>
+        </div>
+    
+        <button class="accordion" onclick="toggleAccordion(event)">
+            3. What happens if I don't pay the ₹100 fee?
+        </button>
+        <div class="panel">
+            <p>The ₹100 fee is essential for issuing your internship completion certificate. Failure to pay this fee will mean no official certification, though you can still gain hands-on experience during the internship. Please note that the certificate adds significant value to your professional profile.</p>
+        </div>
+        <button class="accordion" onclick="toggleAccordion(event)">
+            4. Will the working hours be flexible?
+        </button>
+        <div class="panel">
+            <p>Yes, we prioritize flexibility and offer working hours that align with your academic schedule or other commitments. Maintaining a healthy work-life balance is a key priority for all interns at DC Cloud Solutions.</p>
+        </div>
+    
+        <button class="accordion" onclick="toggleAccordion(event)">
+            5. How is the Best Intern evaluated and recognized?
+        </button>
+        <div class="panel">
+            <p>The Best Intern is evaluated based on their performance, innovation, and contributions during the internship. Metrics include:</p>
+            <ul>
+                <li>Consistency in delivering quality work.</li>
+                <li>Active engagement in team projects.</li>
+                <li>Feedback from mentors and peers.</li>
+            </ul>
+            <p>Outstanding interns will receive:</p>
+            <ul>
+                <li>A <strong>Best Intern Award</strong> including exclusive DC Cloud Solutions Swags.</li>
+                <li>A cash prize of ₹10,000.</li>
+                <li>A chance for a <strong>Full-Time Job Offer</strong> at DC Cloud Solutions.</li>
+            </ul>
+            <div class="swag-slider">
+                <div class="slider-container">
+                    <div class="slider">
+                        <img src="https://i.ibb.co/59Fr6xc/Whats-App-Image-2024-11-19-at-12-25-45-AM.jpg" alt="Swag Item 1">
+                        <img src="https://i.ibb.co/k4s0rS1/Whats-App-Image-2024-11-19-at-12-25-44-AM-1.jpg" alt="Swag Item 2">
+                        <img src="https://i.ibb.co/njC7vmT/Whats-App-Image-2024-11-19-at-12-25-44-AM.jpg" alt="Swag Item 3">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CSS Styles -->
+            <style>
+            /* Slider container styles */
+            .swag-slider {
+                position: relative;
+                width: 100%;
+                overflow: hidden;
+                margin: 20px 0;
+            }
+            
+            .slider-container {
+                width: 100%;
+                height: auto;
+            }
+            
+            .slider {
+                display: flex;
+                transition: transform 0.5s ease-in-out;
+            }
+            
+            .slider img {
+                width: 100%;
+                height: auto;
+                object-fit: cover;
+            }
+            
+            /* Dots or indicators */
+            .dots {
+                text-align: center;
+                margin-top: 10px;
+            }
+            
+            .dot {
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                margin: 5px;
+                background-color: #bbb;
+                border-radius: 50%;
+                cursor: pointer;
+            }
+            
+            .dot.active {
+                background-color: #717171;
+            }
+            </style>
+            
+            <!-- JavaScript -->
+            <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const slider = document.querySelector('.slider');
+                const slides = document.querySelectorAll('.slider img');
+                const totalSlides = slides.length;
+            
+                let currentIndex = 0;
+            
+                function showSlide(index) {
+                    slider.style.transform = `translateX(-${index * 100}%)`;
+                    updateDots(index);
+                }
+            
+                function updateDots(index) {
+                    const dots = document.querySelectorAll('.dot');
+                    dots.forEach(dot => dot.classList.remove('active'));
+            
+                    // Determine which dot to activate based on the current index
+                    if (index < Math.ceil(totalSlides / 2)) {
+                        dots[0].classList.add('active');
+                    } else {
+                        dots[1].classList.add('active');
+                    }
+                }
+            
+                function createDots() {
+                    const dotsContainer = document.createElement('div');
+                    dotsContainer.classList.add('dots');
+            
+                    // Create only 2 dots
+                    for (let i = 0; i < 2; i++) {
+                        const dot = document.createElement('span');
+                        dot.classList.add('dot');
+                        dot.addEventListener('click', () => {
+                            currentIndex = (i === 0) ? 0 : Math.ceil(totalSlides / 2);
+                            showSlide(currentIndex);
+                        });
+                        dotsContainer.appendChild(dot);
+                    }
+            
+                    document.querySelector('.swag-slider').appendChild(dotsContainer);
+                    updateDots(0); // Set the first dot as active
+                }
+            
+                function autoSlide() {
+                    setInterval(() => {
+                        currentIndex = (currentIndex + 1) % totalSlides;
+                        showSlide(currentIndex);
+                    }, 3000); // Change slide every 3 seconds
+                }
+            
+                createDots();
+                autoSlide();
+            });
+            </script>
+        </div>
+    
+        <button class="accordion" onclick="toggleAccordion(event)">
+            6. In which tech stacks do I need to work?
+        </button>
+        <div class="panel">
+            <p>The internship focuses on building reusable and scalable software solutions using industry-relevant tech stacks. During onboarding, we align your role with DC Cloud Solutions's projects and client needs, ensuring you gain hands-on experience with market-ready skills.</p>
+        </div>
+    
+        <button class="accordion" onclick="toggleAccordion(event)">
+            7. What is the stipend for the internship, and how is it provided?
+        </button>
+        <div class="panel">
+            <p>The stipend of ₹10,000 will be provided upon the successful completion of the three-month internship, based on a performance evaluation. This approach ensures a fair assessment of contributions and dedication throughout the internship period.</p>
+        </div>
+    
+        <button class="accordion" onclick="toggleAccordion(event)">
+            8. Will the internship be online or hybrid?
+        </button>
+        <div class="panel">
+            <p>The internship is fully online, offering flexibility and allowing interns to work remotely from anywhere. We use modern tools to ensure seamless collaboration and communication.</p>
+        </div>
+    
+        <button class="accordion" onclick="toggleAccordion(event)">
+            9. What is the CTC after conversion to a full-time role?
+        </button>
+        <div class="panel">
+            <p>Interns who secure a full-time role post-internship can expect a competitive starting package. The initial CTC is aligned with the industry and includes benefits that facilitate a smooth transition into the role. Specific details will depend on performance and final evaluations.</p>
+        </div>
+    
+        <button class="accordion" onclick="toggleAccordion(event)">
+            10. What is the selection process for the internship?
+        </button>
+        <div class="panel">
+            <p>The selection process includes a review of your application, followed by an online test or task evaluation. Shortlisted candidates may also be interviewed to ensure the best fit for the program.</p>
+        </div>
+        
+        <button class="accordion" onclick="toggleAccordion(event)">
+            11. What kind of work will I do during the internship?
+        </button>
+        <div class="panel">
+            <p>
+                This internship is not a learning-based program. Instead, you will actively contribute to projects that our company requires. You will gain practical insights by developing real-world software solutions tailored to our organizational needs, ensuring your work makes a meaningful impact.
+            </p>
+        </div>
+        
+    </div>
+    
+
+        <div class="testimonial-section">
+            <h3>What Our Interns Say</h3>
+            <div class="testimonial-slider">
+                <div class="testimonial-slide active">
+                    <blockquote>"My internship at DC Cloud Solutions was an incredible learning experience. The flexible hours
+                        and supportive team made it possible for me to balance work and studies while gaining valuable
+                        industry experience. The reimbursement policy was a great incentive and showed their commitment
+                        to interns."</blockquote>
+                    <p>– Priya Sharma, Former Intern</p>
+                </div>
+                <div class="testimonial-slide">
+                    <blockquote>"The guidance and feedback I received during my internship were exceptional. DC Info
+                        Tech truly invests in their interns’ growth and development. The professional development I
+                        gained here is invaluable and has helped me secure a full-time position."</blockquote>
+                    <p>– Raj Patel, Former Intern</p>
+                </div>
+                <div class="testimonial-slide">
+                    <blockquote>"Working at DC Cloud Solutions gave me hands-on experience with real-world projects. The
+                        mentorship provided was outstanding and helped me develop both technically and professionally.
+                        I'm grateful for the opportunity and the support I received throughout my internship."
+                    </blockquote>
+                    <p>– Neha Kumar, Former Intern</p>
+                </div>
+                <div class="testimonial-slide">
+                    <blockquote>"The collaborative environment at DC Cloud Solutions was incredibly motivating. I learned a
+                        lot from working closely with experienced professionals and had the chance to contribute
+                        meaningfully to ongoing projects. It was a fantastic start to my career."</blockquote>
+                    <p>– Aakash Verma, Former Intern</p>
+                </div>
+                <div class="testimonial-slide">
+                    <blockquote>"I appreciated the flexibility in work hours and the chance to work on cutting-edge
+                        technologies. The experience I gained was invaluable, and the connections I made have been
+                        beneficial for my career growth. Thank you, DC Cloud Solutions, for a wonderful internship
+                        experience!"</blockquote>
+                    <p>– Sneha Reddy, Former Intern</p>
+                </div>
+                <div class="testimonial-slide">
+                    <blockquote>"My internship at DC Cloud Solutions was an eye-opener. The hands-on experience with
+                        real projects enhanced my skills and gave me the confidence to handle complex tasks. I’m
+                        grateful for the mentorship and support I received."</blockquote>
+                    <p>– Priya Mehta, Former Intern</p>
+                </div>
+
+                <div class="testimonial-slide">
+                    <blockquote>"DC Cloud Solutions fosters an amazing learning environment! The team is incredibly
+                        supportive, and I was constantly encouraged to bring my ideas to the table. This internship
+                        prepared me well for a full-time role in web development."</blockquote>
+                    <p>– Ankit Sharma, Former Intern</p>
+                </div>
+
+                <div class="testimonial-slide">
+                    <blockquote>"Working at DC Cloud Solutions was a transformative experience. The mentors were genuinely
+                        invested in my progress, and the projects were both challenging and rewarding. I left with a
+                        stronger foundation and a clearer career direction."</blockquote>
+                    <p>– Sneha Reddy, Former Intern</p>
+                </div>
+
+                <div class="testimonial-slide">
+                    <blockquote>"This internship exceeded all my expectations. The knowledge and skills I gained,
+                        especially in advanced web development techniques, were instrumental in shaping my professional
+                        journey. Thank you, DC Cloud Solutions!"</blockquote>
+                    <p>– Rohit Verma, Former Intern</p>
+                </div>
+
+                <div class="testimonial-slide">
+                    <blockquote>"DC Cloud Solutions has an incredible work culture that promotes learning and innovation. The
+                        flexibility and guidance provided by my mentors allowed me to thrive and grow as a web
+                        developer. I highly recommend this internship!"</blockquote>
+                    <p>– Kavya Iyer, Former Intern</p>
+                </div>
+
+                <div class="testimonial-slide">
+                    <blockquote>"Interning at DC Cloud Solutions was one of the best decisions I made. The exposure to
+                        real-world projects and the support from my team helped me develop industry-ready skills. I’m
+                        thankful for the invaluable experience I gained here."</blockquote>
+                    <p>– Akash Joshi, Former Intern</p>
+                </div>
+
+                <div class="testimonial-slide">
+                    <blockquote>"The internship program at DC Cloud Solutions was a great platform for learning and growth.
+                        The team was supportive and encouraged me to take on challenging projects. The feedback and
+                        mentorship I received were instrumental in advancing my career."</blockquote>
+                    <p>– Ankit Joshi, Former Intern</p>
+                </div>
+                <div class="testimonial-slide">
+                    <blockquote>"I had an excellent experience during my internship at DC Cloud Solutions. The work
+                        environment was dynamic, and I was able to gain practical skills that have proven valuable in my
+                        career. The internship was a fantastic opportunity for personal and professional growth."
+                    </blockquote>
+                    <p>– Meera Rani, Former Intern</p>
+                </div>
+                <div class="testimonial-slide">
+                    <blockquote>"My internship at DC Cloud Solutions was truly transformative. I learned so much about
+                        software development and the team was incredibly supportive. This experience has paved the way
+                        for my future career."</blockquote>
+                    <p>– Arjun Malhotra, Former Intern</p>
+                </div>
+
+                <div class="testimonial-slide">
+                    <blockquote>"At DC Cloud Solutions, I felt like part of a family. The hands-on experience I gained has
+                        been invaluable, and the mentorship I received has shaped my professional journey."</blockquote>
+                    <p>– Priya Desai, Former Intern</p>
+                </div>
+
+                <div class="testimonial-slide">
+                    <blockquote>"Working at DC Cloud Solutions exceeded my expectations. The projects were challenging, yet
+                        rewarding, and I gained skills that I use every day in my job."</blockquote>
+                    <p>– Ravi Sharma, Former Intern</p>
+                </div>
+
+                <div class="testimonial-slide">
+                    <blockquote>"The internship at DC Cloud Solutions opened doors for me. The practical knowledge I acquired
+                        has been essential in my current role, and I’m grateful for the experience."</blockquote>
+                    <p>– Nisha Verma, Former Intern</p>
+                </div>
+
+                <div class="testimonial-slide">
+                    <blockquote>"I loved my time at DC Cloud Solutions! The collaborative atmosphere and innovative projects
+                        made my internship a highlight of my academic career."</blockquote>
+                    <p>– Vikram Singh, Former Intern</p>
+                </div>
+
+                <a class="prev" onclick="prevSlide()">&#10094;</a>
+                <a class="next" onclick="nextSlide()">&#10095;</a>
+            </div>
+        </div>
+
+        <p>Already an intern? Need to give a review? Fill up this form <a
+                href="https://dcinfotech.org.in
+/backend-issue/backend-issue" target="_self">here</a>.</p>
+
+
+        <div class="footer">
+            <p>&copy; 2022 DC Cloud Solutions. <strong>All rights reserved.</strong></p>
+            <p>Contact us at <span>support@dcinfotech.me</span></p>
+        </div>
+
+</body>
+
+</html>

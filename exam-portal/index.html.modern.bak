@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate" />
+  <title>Login | DC Infotech Exam Portal (v2)</title>
+  <!-- Load local users file -->
+  <script src="js/users.js"></script>
+  <!-- Single login handling script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.querySelector(".login__form");
+      if (!form) return;
+      const email = document.getElementById("credential");
+      const pwd = document.getElementById("password");
+
+      // Inject small CSS (placeholder hide + float helper)
+      const css = `
+        .mat-mdc-input-element::placeholder{ color:#5f6368; opacity:1; transition:opacity .15s; }
+        .mat-mdc-input-element:not(:placeholder-shown)::placeholder{ opacity:0; }
+        .mat-form-field-should-float .mat-mdc-floating-label{ transform: translateY(-1.5em) scale(.75) !important; }
+        .login-error{ color:#d93025; font-size:13px; margin-top:8px; }
+      `;
+      const style = document.createElement("style");
+      style.textContent = css;
+      document.head.appendChild(style);
+
+      // Load users from js/users.js (with fallback)
+      let users = [];
+      if (window.USERS && Array.isArray(window.USERS)) {
+        users = window.USERS;
+        console.log("Loaded users from users.js:", users); // Debug log
+      } else {
+        users = [{ email: "test@example.com", password: "password123" }];
+        console.warn(
+          "Fallback to default user - users.js not loaded properly"
+        );
+      }
+
+      function nearestField(el) {
+        return (
+          el &&
+          (el.closest("mat-form-field") ||
+            el.closest(".mat-mdc-form-field") ||
+            el.parentElement)
+        );
+      }
+
+      function updateInputState(input) {
+        if (!input) return;
+        const ff = nearestField(input);
+        if (input.value && input.value.trim().length) {
+          input.setAttribute("data-has-content", "1");
+          if (ff) ff.classList.add("mat-form-field-should-float");
+        } else {
+          input.removeAttribute("data-has-content");
+          if (ff) ff.classList.remove("mat-form-field-should-float");
+        }
+      }
+
+      [email, pwd].forEach((inp) => {
+        if (!inp) return;
+        setTimeout(() => updateInputState(inp), 60);
+        inp.addEventListener("input", () => updateInputState(inp));
+        inp.addEventListener("focus", () => {
+          const ff = nearestField(inp);
+          if (ff) ff.classList.add("mat-focused");
+        });
+        inp.addEventListener("blur", () => {
+          const ff = nearestField(inp);
+          if (ff) ff.classList.remove("mat-focused");
+          updateInputState(inp);
+        });
+      });
+
+      function showError(msg) {
+        let el = form.querySelector(".login-error");
+        if (!el) {
+          el = document.createElement("div");
+          el.className = "login-error";
+          form
+            .querySelector(".login__form-actions")
+            .insertAdjacentElement("afterend", el);
+        }
+        el.textContent = msg;
+      }
+
+      form.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        const loginButton = form.querySelector('button[type="submit"]');
+        const originalButtonHTML = loginButton.innerHTML;
+
+        // Show spinner and disable button
+        loginButton.disabled = true;
+        loginButton.innerHTML = `
+     
+          <style>
+
+            @keyframes spin { to { transform: rotate(360deg); } }
+            .spinner {
+              display: inline-block;
+              width: 20px;
+              height: 20px;
+              border: 3px solid rgba(255,255,255,0.3);
+              border-radius: 50%;
+              border-top-color: #fff;
+              animation: spin 1s ease-in-out infinite;
+            }
+          </style>
+          <span class="spinner"></span>
+        `;
+
+        const e = (email.value || "").trim().toLowerCase();
+        const p = pwd.value || "";
+
+        // Simulate network delay and then check credentials
+        setTimeout(() => {
+          if (!e || !p) {
+            showError("Enter email and password");
+            loginButton.disabled = false;
+            loginButton.innerHTML = originalButtonHTML;
+            return;
+          }
+
+          const match = users.find(
+            (u) =>
+              (u.email || "").toLowerCase() === e && (u.password || "") === p
+          );
+          if (match) {
+            localStorage.setItem(
+              "cm_user",
+              JSON.stringify({ email: match.email, name: match.name })
+            );
+            window.location.href = "exam-portal/dashboard.html";
+          } else {
+            showError("Invalid email or password");
+            loginButton.disabled = false;
+            loginButton.innerHTML = originalButtonHTML;
+          }
+        }, 1000); // 1-second delay
+      });
+    }); // In your login form submit handler, update the localStorage line to:
+    if (match) {
+      // Store both email and name
+      localStorage.setItem(
+        "cm_user",
+        JSON.stringify({
+          email: match.email,
+          name: match.name,
+        })
+      );
+
+      // Redirect to dashboard
+      window.location.href = "exam-portal/dashboard.html";
+    }
+  </script>
+  <!-- ...existing code... -->
+  <!-- ...existing code... -->
+  <base href="./" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="stylesheet" href="css/modern-login.css?v=2">
+</head>
+
+<body id="certmetrics" class="theme-default theme-google" dir="ltr">
+  <alpine-testing-root ng-version="19.2.13" _nghost-ng-c531839789=""><!----><cm-loader _ngcontent-ng-c531839789=""
+      _nghost-ng-c1756319493="">
+      <div _ngcontent-ng-c1756319493="" class="app-loader">
+        <span _ngcontent-ng-c1756319493="" class="app-loader__container"><cm-loading-icon _ngcontent-ng-c1756319493=""
+            _nghost-ng-c1646962292=""><svg _ngcontent-ng-c1646962292="" xmlns="http://www.w3.org/2000/svg"
+              stroke="currentColor" class="cm-loading-icon" width="45" height="45" viewBox="0 0 45 45">
+              <g _ngcontent-ng-c1646962292="" fill="none" fill-rule="evenodd" transform="translate(1 1)"
+                stroke-width="2">
+                <circle _ngcontent-ng-c1646962292="" stroke-opacity="0" cx="22.5" cy="22.5" r="8">
+                  <animate _ngcontent-ng-c1646962292="" attributeName="r" begin="1.5s" dur="3s" calcMode="linear"
+                    repeatCount="indefinite" values="6;22"></animate>
+                  <animate _ngcontent-ng-c1646962292="" attributeName="stroke-opacity" begin="1.5s" dur="3s"
+                    values="1;0" calcMode="linear" repeatCount="indefinite"></animate>
+                  <animate _ngcontent-ng-c1646962292="" attributeName="stroke-width" begin="1.5s" dur="3s" values="1;0"
+                    calcMode="linear" repeatCount="indefinite"></animate>
+                </circle>
+                <circle _ngcontent-ng-c1646962292="" stroke-opacity="0" cx="22.5" cy="22.5" r="8">
+                  <animate _ngcontent-ng-c1646962292="" attributeName="r" begin="3s" dur="3s" calcMode="linear"
+                    repeatCount="indefinite" values="6;22"></animate>
+                  <animate _ngcontent-ng-c1646962292="" attributeName="stroke-opacity" begin="3s" dur="3s" values="1;0"
+                    calcMode="linear" repeatCount="indefinite"></animate>
+                  <animate _ngcontent-ng-c1646962292="" attributeName="stroke-width" begin="3s" dur="3s" values="1;0"
+                    calcMode="linear" repeatCount="indefinite"></animate>
+                </circle>
+                <circle _ngcontent-ng-c1646962292="" cx="22.5" cy="22.5" r="10">
+                  <animate _ngcontent-ng-c1646962292="" attributeName="r" begin="0s" dur="1.5s" calcMode="linear"
+                    repeatCount="indefinite" values="6;1;2;3;4;5;6"></animate>
+                </circle>
+                <!---->
+              </g>
+            </svg></cm-loading-icon></span>
+      </div>
+    </cm-loader>
+    <div _ngcontent-ng-c531839789="" atsoverlaycontainer="">
+      <div style="pointer-events: none"></div>
+    </div>
+    <rtl-support _ngcontent-ng-c531839789=""></rtl-support><router-outlet
+      _ngcontent-ng-c531839789=""></router-outlet><cp-view _nghost-ng-c3770715812=""><!---->
+      <div _ngcontent-ng-c3770715812="" role="region" class="cp-view cp-view--public"
+        aria-label="Navigation and Settings">
+        <!----><!---->
+        <main _ngcontent-ng-c3770715812="" cm-view-outlet="">
+          <section _ngcontent-ng-c3770715812="">
+            <cp-page-description _ngcontent-ng-c3770715812=""><!----></cp-page-description>
+            <div _ngcontent-ng-c3770715812="" class="cp-view__content">
+              <router-outlet _ngcontent-ng-c3770715812=""></router-outlet><cp-login
+                _nghost-ng-c1245302123=""><cp-entry-ui _ngcontent-ng-c1245302123="" _nghost-ng-c3128372195="">
+                  <div _ngcontent-ng-c3128372195="" class="entry entry--cp">
+                    <cm-localize _ngcontent-ng-c3128372195="" class="entry__message">
+                      <div class="cm-localized-content" data-loc="CPLoginCustomMessage">
+
+                        <p style="text-align: center">
+                          <strong>DC InfoTech Examination Portal</strong>
+                        </p>
+                        <p style="text-align: center">
+                          <br />
+                          <em>
+                            If you're trying to log into the
+                            <strong>DC InfoTech Exam Portal</strong>, you're
+                            in the right place! We’ve simplified things with a
+                            single sign-on. Log into your
+                            <strong>DC Connect</strong> account here using the
+                            <strong>email ID and password provided to you by the
+                              company via email</strong>
+                            (the same credentials you received for your
+                            internship or exam access). You’ll still attend
+                            your assessments and submit your project
+                            evaluations through forms, but you’ll now access
+                            everything directly from your
+                            <strong>DC Connect account</strong>. <br /><br />
+                            This portal will be used exclusively for
+                            <strong>giving exams and managing your internship
+                              evaluations</strong>.
+                          </em>
+                        </p>
+
+                        <ul>
+                          <li style="text-align: left">
+                            <em>
+                              If you’ve <strong>already logged in</strong> to
+                              DC Connect and/or created an account, use those
+                              same login credentials.
+                            </em>
+                          </li>
+
+                          <li style="text-align: left">
+                            <em>
+                              <strong>If you are new to DC Connect,</strong>
+                              follow the instructions for “Never Logged in
+                              Before” and use the
+                              <strong>email and password provided to you</strong>
+                              by DC InfoTech (for example, the one that
+                              received your internship or exam notification).
+                              If you face any login issues, please
+                              <strong>connect with our support team</strong>
+                              for assistance.
+                            </em>
+                          </li>
+
+                          <li style="text-align: left">
+                            <em>
+                              <strong>If you are new to DC InfoTech and DC
+                                Connect,</strong>
+                              follow the instructions for “New Candidate
+                              Register” to create your account and begin the
+                              process. You can also contact
+                              <strong>support</strong> if you need help
+                              completing your registration.
+                            </em>
+                          </li>
+
+                          <li style="text-align: left">
+                            <em>
+                              <strong>If you no longer have access to the email
+                                address</strong>
+                              you used previously, register as a new candidate
+                              and use the
+                              <strong>Request Merge</strong> option so our
+                              support team can help you recover access and
+                              merge your previous records.
+                            </em>
+                          </li>
+                        </ul>
+                      </div>
+                      <!----><!----><!----><!----><!----><!----><!----><!---->
+                    </cm-localize>
+                    <section _ngcontent-ng-c3128372195="" class="entry__container">
+                      <header _ngcontent-ng-c3128372195="" class="entry__header">
+                        <div _ngcontent-ng-c3128372195="" class="entry__branding">
+                          <img _ngcontent-ng-c3128372195="" src="https://dcinfotech.org.in/images/dcintro.gif"
+                            alt="Company Logo" /><!---->
+                        </div>
+                        <!---->
+                      </header>
+                      <div _ngcontent-ng-c3128372195="" class="entry__content">
+                        <form _ngcontent-ng-c1245302123="" novalidate=""
+                          class="login__form ng-untouched ng-pristine ng-invalid">
+                          <mat-form-field _ngcontent-ng-c1245302123=""
+                            class="mat-mdc-form-field mb-16 mat-mdc-form-field-type-mat-select mat-form-field-appearance-fill mat-primary ng-untouched ng-pristine ng-valid mat-form-field-animations-enabled"><!---->
+                            <div class="mat-mdc-text-field-wrapper mdc-text-field mdc-text-field--filled">
+                              <div class="mat-mdc-form-field-focus-overlay"></div>
+                              <!---->
+                              <div class="mat-mdc-form-field-flex">
+                                <!----><!----><!---->
+                                <div class="mat-mdc-form-field-infix">
+                                  <label matformfieldfloatinglabel=""
+                                    class="mdc-floating-label mat-mdc-floating-label mdc-floating-label--float-above"
+                                    id="mat-mdc-form-field-label-2"><mat-label _ngcontent-ng-c1245302123=""><cm-localize
+                                        _ngcontent-ng-c1245302123=""><!----><span data-loc="CPLoginMethodLabel">Log in
+                                          using</span><!----><!----><!----><!----><!----><!----><!----></cm-localize></mat-label><span
+                                      aria-hidden="true"
+                                      class="mat-mdc-form-field-required-marker mdc-floating-label--required"></span><!----></label><!----><!----><!----><mat-select
+                                    _ngcontent-ng-c1245302123="" role="combobox" aria-haspopup="listbox"
+                                    formcontrolname="method"
+                                    class="mat-mdc-select mat-mdc-select-required ng-untouched ng-pristine ng-valid"
+                                    aria-labelledby="mat-mdc-form-field-label-2" id="mat-select-0" tabindex="0"
+                                    aria-expanded="false" aria-required="true" aria-disabled="false"
+                                    aria-invalid="false">
+                                    <div cdk-overlay-origin="" class="mat-mdc-select-trigger">
+                                      <div class="mat-mdc-select-value" id="mat-select-value-0">
+                                        <!----><span class="mat-mdc-select-value-text"><!----><span
+                                            class="mat-mdc-select-min-line">Email</span><!----></span><!---->
+                                      </div>
+                                      <div class="mat-mdc-select-arrow-wrapper">
+                                        <div class="mat-mdc-select-arrow">
+                                          <svg viewBox="0 0 24 24" width="24px" height="24px" focusable="false"
+                                            aria-hidden="true">
+                                            <path d="M7 10l5 5 5-5z"></path>
+                                          </svg>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!---->
+                                  </mat-select>
+                                </div>
+                                <!----><!---->
+                              </div>
+                              <div matformfieldlineripple="" class="mdc-line-ripple mdc-line-ripple--deactivating">
+                              </div>
+                              <!---->
+                            </div>
+                            <div
+                              class="mat-mdc-form-field-subscript-wrapper mat-mdc-form-field-bottom-align mat-mdc-form-field-subscript-dynamic-size">
+                              <div aria-atomic="true" aria-live="polite" class="mat-mdc-form-field-hint-wrapper">
+                                <!----><!---->
+                                <div class="mat-mdc-form-field-hint-spacer"></div>
+                                <!---->
+                              </div>
+                            </div>
+                          </mat-form-field><!----><mat-form-field _ngcontent-ng-c1245302123=""
+                            class="mat-mdc-form-field mb-16 mat-mdc-form-field-type-mat-input mat-form-field-appearance-fill mat-form-field-hide-placeholder mat-primary ng-untouched ng-pristine ng-invalid mat-form-field-animations-enabled"><!---->
+                            <div class="mat-mdc-text-field-wrapper mdc-text-field mdc-text-field--filled">
+                              <div class="mat-mdc-form-field-focus-overlay"></div>
+                              <!---->
+                              <div class="mat-mdc-form-field-flex">
+                                <!----><!----><!---->
+                                <div class="mat-mdc-form-field-infix">
+                                  <label matformfieldfloatinglabel="" class="mdc-floating-label mat-mdc-floating-label"
+                                    id="mat-mdc-form-field-label-1" for="credential"><mat-label
+                                      _ngcontent-ng-c1245302123=""><!----><span
+                                        _ngcontent-ng-c1245302123=""><cm-localize
+                                          _ngcontent-ng-c1245302123=""><!----><span
+                                            data-loc="CPLoginEmailLabel">Email</span><!----><!----><!----><!----><!----><!----><!----></cm-localize></span><!----><!----></mat-label><span
+                                      aria-hidden="true"
+                                      class="mat-mdc-form-field-required-marker mdc-floating-label--required"></span><!----></label><!----><!----><!----><input
+                                    _ngcontent-ng-c1245302123="" matinput="" required="" id="credential"
+                                    formcontrolname="credential"
+                                    class="mat-mdc-input-element ng-untouched ng-pristine ng-invalid mat-mdc-form-field-input-control mdc-text-field__input cdk-text-field-autofill-monitored"
+                                    placeholder="example@example.com" aria-required="true" />
+                                </div>
+                                <!----><!---->
+                              </div>
+                              <div matformfieldlineripple="" class="mdc-line-ripple mdc-line-ripple--deactivating">
+                              </div>
+                              <!---->
+                            </div>
+                            <div
+                              class="mat-mdc-form-field-subscript-wrapper mat-mdc-form-field-bottom-align mat-mdc-form-field-subscript-dynamic-size">
+                              <div aria-atomic="true" aria-live="polite" class="mat-mdc-form-field-hint-wrapper">
+                                <!----><!---->
+                                <div class="mat-mdc-form-field-hint-spacer"></div>
+                                <!---->
+                              </div>
+                            </div>
+                          </mat-form-field><!----><!----><!----><mat-form-field _ngcontent-ng-c1245302123=""
+                            class="mat-mdc-form-field mb-16 mat-mdc-form-field-type-mat-input mat-form-field-appearance-fill mat-form-field-hide-placeholder mat-primary ng-untouched ng-pristine ng-invalid mat-form-field-animations-enabled"><!---->
+                            <div class="mat-mdc-text-field-wrapper mdc-text-field mdc-text-field--filled">
+                              <div class="mat-mdc-form-field-focus-overlay"></div>
+                              <!---->
+                              <div class="mat-mdc-form-field-flex">
+                                <!----><!----><!---->
+                                <div class="mat-mdc-form-field-infix">
+                                  <label matformfieldfloatinglabel="" class="mdc-floating-label mat-mdc-floating-label"
+                                    id="mat-mdc-form-field-label-0" for="password"><mat-label
+                                      _ngcontent-ng-c1245302123=""><cm-localize
+                                        _ngcontent-ng-c1245302123=""><!----><span
+                                          data-loc="CPLoginPasswordLabel">Password</span><!----><!----><!----><!----><!----><!----><!----></cm-localize></mat-label><span
+                                      aria-hidden="true"
+                                      class="mat-mdc-form-field-required-marker mdc-floating-label--required"></span><!----></label><!----><!----><!----><input
+                                    _ngcontent-ng-c1245302123="" type="password" matinput="" required="" id="password"
+                                    formcontrolname="password" spellcheck="false"
+                                    class="mat-mdc-input-element ng-untouched ng-pristine ng-invalid mat-mdc-form-field-input-control mdc-text-field__input cdk-text-field-autofill-monitored"
+                                    aria-required="true" />
+                                </div>
+                                <!----><!---->
+                              </div>
+                              <div matformfieldlineripple="" class="mdc-line-ripple mdc-line-ripple--deactivating">
+                              </div>
+                              <!---->
+                            </div>
+                            <div
+                              class="mat-mdc-form-field-subscript-wrapper mat-mdc-form-field-bottom-align mat-mdc-form-field-subscript-dynamic-size">
+                              <div aria-atomic="true" aria-live="polite" class="mat-mdc-form-field-hint-wrapper">
+                                <!----><!---->
+                                <div class="mat-mdc-form-field-hint-spacer"></div>
+                                <!---->
+                              </div>
+                            </div>
+                          </mat-form-field><!---->
+
+                          <script></script>
+                          <div _ngcontent-ng-c1245302123="" class="login__form-actions">
+                            <button _ngcontent-ng-c1245302123="" type="submit" color="primary" mat-raised-button=""
+                              mat-ripple-loader-class-name="mat-mdc-button-ripple"
+                              class="mdc-button mdc-button--raised mat-mdc-raised-button mat-primary mat-mdc-button-base">
+                              <span class="mat-mdc-button-persistent-ripple mdc-button__ripple"></span><span
+                                class="mdc-button__label"><cm-localize _ngcontent-ng-c1245302123=""><!----><span
+                                    data-loc="CPLoginSubmitButton">Log
+                                    In</span><!----><!----><!----><!----><!----><!----><!----></cm-localize></span><span
+                                class="mat-focus-indicator"></span><span
+                                class="mat-mdc-button-touch-target"></span><span
+                                class="mat-ripple mat-mdc-button-ripple"></span></button><button
+                              _ngcontent-ng-c1245302123="" type="button" mat-button="" cm-mini-button=""
+                              class="mt-16 mdc-button mat-mdc-button mat-unthemed mat-mdc-button-base cm-mini-button"
+                              mat-ripple-loader-uninitialized="" mat-ripple-loader-class-name="mat-mdc-button-ripple"
+                              tabindex="0">
+                              <span class="mat-mdc-button-persistent-ripple mdc-button__ripple"></span><span
+                                class="mdc-button__label"><cm-localize _ngcontent-ng-c1245302123=""><!----><span
+                                    data-loc="CPLoginForgotPasswordButton">Forgot
+                                    password?</span><!----><!----><!----><!----><!----><!----><!----></cm-localize></span><span
+                                class="mat-focus-indicator"></span><span
+                                class="mat-mdc-button-touch-target"></span></button><button type="button" mat-button=""
+                              cm-mini-button=""
+                              class="mt-16 mdc-button mat-mdc-button mat-unthemed mat-mdc-button-base cm-mini-button"
+                              tabindex="0" onclick="document.getElementById('custom-login-modal').style.display='flex'">
+                              <span class="mdc-button__label">Never logged in before?</span>
+                            </button>
+
+                            <div id="custom-login-modal"
+                              style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:99999; justify-content:center; align-items:center;">
+                              <div
+                                style="background:white; padding:2rem; border-radius:8px; max-width:400px; text-align:center; position:relative; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+                                <p style="margin-bottom:1.5rem; color:#333; line-height:1.5;">
+                                  Use your <strong>DC Infotech email ID</strong> and the <strong>default
+                                    password</strong> which was provided in the email.<br><br>
+                                  For more support contact <a href="mailto:support@dcinfotech.org.in"
+                                    style="color:#0056b3; text-decoration:underline;">support@dcinfotech.org.in</a>
+                                </p>
+                                <button onclick="document.getElementById('custom-login-modal').style.display='none'"
+                                  style="background:#0056b3; color:white; border:none; padding:10px 20px; border-radius:4px; cursor:pointer; font-weight:bold;">Close</button>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                        <!---->
+                      </div>
+                      <footer _ngcontent-ng-c3128372195="" class="entry__footer">
+                        <cm-select-supported-lang _ngcontent-ng-c1245302123=""><button mat-button="" cm-mini-button=""
+                            class="mat-mdc-menu-trigger mdc-button mat-mdc-button mat-unthemed mat-mdc-button-base cm-mini-button"
+                            mat-ripple-loader-uninitialized="" mat-ripple-loader-class-name="mat-mdc-button-ripple"
+                            aria-haspopup="menu" aria-expanded="false">
+                            <span class="mat-mdc-button-persistent-ripple mdc-button__ripple"></span><span
+                              class="mdc-button__label"><span> English </span><ats-icon name="arrow-down"
+                                _nghost-ng-c1228902328="" aria-label="" role="presentation"><svg
+                                  _ngcontent-ng-c1228902328="" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                  version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                  xmlns:svgjs="http://svgjs.com/svgjs" viewBox="0 0 14 14" height="14" width="14"
+                                  style="width: 14px; height: 14px">
+                                  <!---->
+                                  <g _ngcontent-ng-c1228902328=""
+                                    transform="matrix(0.5833333333333334,0,0,0.5833333333333334,0,0)">
+                                    <path
+                                      d="M 23.25,7.311L12.53,18.03c-0.292,0.293-0.767,0.293-1.059,0.001c0,0-0.001-0.001-0.001-0.001L0.75,7.311"
+                                      stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"
+                                      stroke-linejoin="round"></path>
+                                  </g>
+                                </svg><!----></ats-icon></span><span class="mat-focus-indicator"></span><span
+                              class="mat-mdc-button-touch-target"></span></button><!----><!----><mat-menu><!----></mat-menu><!----><!----></cm-select-supported-lang>
+                      </footer>
+                    </section>
+                  </div>
+                </cp-entry-ui></cp-login><!---->
+            </div>
+            <cp-view-footer _ngcontent-ng-c3770715812="" _nghost-ng-c4213031196="">
+              <footer _ngcontent-ng-c4213031196="" class="cp-footer">
+                <div _ngcontent-ng-c4213031196="" class="cp-footer__full-width-html">
+                  <span _ngcontent-ng-c4213031196=""
+                    cmlocalize="CandidateAccess/_View.PageFooter.Content.LocalizableHtml"
+                    class="cm-localized-content"><span _ngcontent-ng-c4213031196="">
+                      <div>
+                        <p>
+                          Visit
+                          <a href="https://dcinfotech.org.in/live-chat"
+                            target="_blank">https://dcinfotech.org.in/live-chat</a>
+                          for answers to frequently asked questions or contact
+                          our support team at
+                          <a href="https://dcinfotech.org.in/contact"
+                            target="_blank">https://dcinfotech.org.in/contact</a>.
+                        </p>
+                      </div>
+                    </span></span>
+                </div>
+                <span _ngcontent-ng-c4213031196="" class="cp-footer__copyright">© 2022–2025 All rights reserved.
+                  Developed by DC Infotech
+                  Private Limited</span><span _ngcontent-ng-c4213031196="" class="cp-footer__content"></span>
+              </footer>
+            </cp-view-footer>
+          </section>
+        </main>
+      </div>
+      <cm-notifications _ngcontent-ng-c3770715812=""></cm-notifications><cm-timeout
+        _ngcontent-ng-c3770715812=""></cm-timeout><!---->
+    </cp-view><!---->
+  </alpine-testing-root>
+  <script async="" src="https://scripts.clarity.ms/0.8.37/clarity.js"></script>
+  <script async="" src="https://www.clarity.ms/tag/o9egk6wqj2"></script>
+  <script src="runtime.3f940ac68f44bded.js" type="module"></script>
+  <script src="polyfills.19ce021d4f0361d2.js" type="module"></script>
+  <script src="scripts.e7100de443234fbc.js" defer=""></script>
+  <script src="main.6925c33400926bbd.js" type="module"></script>
+
+  <div class="cdk-live-announcer-element cdk-visually-hidden" aria-atomic="true" aria-live="polite"
+    id="cdk-live-announcer-0"></div>
+
+  <div class="squid-chat-widget-container">
+    <script type="text/javascript">
+      var Tawk_API = Tawk_API || {},
+        Tawk_LoadStart = new Date();
+      (function () {
+        var s1 = document.createElement("script"),
+          s0 = document.getElementsByTagName("script")[0];
+        s1.async = true;
+        s1.src = "https://embed.tawk.to/673b87e22480f5b4f59ffc23/1id08lk55";
+        s1.charset = "UTF-8";
+        s1.setAttribute("crossorigin", "*");
+        s0.parentNode.insertBefore(s1, s0);
+      })();
+    </script>
+  </div>
+  <script src="js/security.js"></script>
+  <div id="cm-preloader" aria-hidden="true">
+    <div class="cm-preloader-inner">
+      <div class="cm-loader-letters" aria-hidden="true">
+        <span>L</span><span>o</span><span>a</span><span>d</span><span>i</span><span>n</span><span>g</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Preloader CSS -->
+  <style id="cm-preloader-styles">
+    #cm-preloader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0d2538;
+      color: #fff;
+      z-index: 99999;
+      transition: opacity 0.6s ease;
+      font-family: "Noto Sans", sans-serif;
+    }
+
+    .cm-preloader-inner {
+      text-align: center;
+    }
+
+    .cm-loader-letters {
+      display: inline-flex;
+      gap: 6px;
+      font-weight: 700;
+      font-size: 32px;
+      letter-spacing: 0.05em;
+    }
+
+    .cm-loader-letters span {
+      display: inline-block;
+      transform: translateY(0);
+      animation: cm-float 1.6s ease-in-out infinite;
+    }
+
+    .cm-loader-letters span:nth-child(2) {
+      animation-delay: 0.12s;
+    }
+
+    .cm-loader-letters span:nth-child(3) {
+      animation-delay: 0.24s;
+    }
+
+    .cm-loader-letters span:nth-child(4) {
+      animation-delay: 0.36s;
+    }
+
+    .cm-loader-letters span:nth-child(5) {
+      animation-delay: 0.48s;
+    }
+
+    .cm-loader-letters span:nth-child(6) {
+      animation-delay: 0.6s;
+    }
+
+    .cm-loader-letters span:nth-child(7) {
+      animation-delay: 0.72s;
+    }
+
+    @keyframes cm-float {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      50% {
+        transform: translateY(-10px);
+        opacity: 0.95;
+      }
+
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .cm-preloader-hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+
+  <!-- ✅ Preloader JS -->
+  <script id="cm-preloader-script">
+    (function () {
+      const preloader = document.getElementById("cm-preloader");
+
+      function hidePreloader() {
+        if (!preloader) return;
+        preloader.classList.add("cm-preloader-hide");
+        setTimeout(() => {
+          preloader.style.display = "none";
+        }, 600);
+      }
+
+      // Wait 2 seconds before hiding (smooth and consistent)
+      function autoHide() {
+        setTimeout(hidePreloader, 2000);
+      }
+
+      if (document.readyState === "complete") {
+        autoHide();
+      } else {
+        window.addEventListener("load", autoHide, { once: true });
+        // fallback just in case 'load' doesn't fire
+        setTimeout(autoHide, 4000);
+      }
+
+      // Reusable functions
+      window.showPreloader = function () {
+        if (!preloader) return;
+        preloader.style.display = "flex";
+        requestAnimationFrame(() =>
+          preloader.classList.remove("cm-preloader-hide")
+        );
+      };
+
+      window.hidePreloader = hidePreloader;
+    })();
+  </script>
+</body>
+
+</html>

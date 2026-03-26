@@ -1,0 +1,62 @@
+<!-- program.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Training Program Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f9ff;
+      padding: 30px;
+    }
+    .program-container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    img {
+      max-width: 120px;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="program-container" id="programContent">
+    <p>Loading program details...</p>
+  </div>
+
+  <script>
+    const certifications = /* Paste your certifications array here (only the relevant ones) */;
+
+    function getCertIdFromUrl() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('cert');
+    }
+
+    function renderProgram() {
+      const certId = getCertIdFromUrl();
+      const cert = certifications.find(c => c.id === certId);
+      const container = document.getElementById("programContent");
+
+      if (!cert) {
+        container.innerHTML = "<h2>Program not found</h2>";
+        return;
+      }
+
+      container.innerHTML = `
+        <h1>${cert.title}</h1>
+        <img src="${cert.image}" alt="${cert.title}">
+        <p>${cert.description}</p>
+        ${cert.details}
+      `;
+    }
+
+    document.addEventListener("DOMContentLoaded", renderProgram);
+  </script>
+</body>
+</html>
