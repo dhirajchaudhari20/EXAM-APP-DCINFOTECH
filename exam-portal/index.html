@@ -3776,7 +3776,7 @@
                          <div class="download-section">
                            <div class="download-title">Get DC SafeBrowser</div>
                            <div class="download-buttons">
-                             <a href="https://github.com/dhirajchaudhari20/EXAM-APP-DCINFOTECH/releases/latest/download/DC.SafeBrowser-1.0.0.exe" class="download-btn win-btn">
+                             <a href="https://github.com/dhirajchaudhari20/EXAM-APP-DCINFOTECH/releases/latest/download/DC.SafeBrowser.Setup.1.0.0.exe" class="download-btn win-btn">
                                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 12V6.33L10.33 5V12M11.67 12V4.83L21 3.5V12M21 12.67V21.17L11.67 19.83V12.67M10.33 12.67V18.67L3 17.33V12.67H10.33Z"/></svg>
                                Windows (.exe)
                              </a>
@@ -4284,59 +4284,39 @@
     line-height: 1;
   }
 
-  /* --- Download Section Styles --- */
+  /* --- Premium Download Section --- */
   .download-section {
-    margin-top: 24px;
-    padding: 20px 0;
-    border-top: 1px dashed var(--google-border-gray);
+    margin: 40px auto 20px;
+    padding: 24px;
+    background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    max-width: 420px;
     text-align: center;
   }
   .download-title {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--google-text-medium);
-    margin-bottom: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #1a73e8;
+    margin-bottom: 20px;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
   }
   .download-buttons {
     display: flex;
-    flex-direction: column;
     gap: 12px;
+    justify-content: center;
+    margin-bottom: 15px;
   }
   .download-btn {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    padding: 12px;
-    border-radius: 6px;
+    padding: 12px 10px;
+    border-radius: 12px;
     text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 2px rgba(60,64,67,0.3);
-  }
-  .win-btn {
-    background: #0078d4;
-    color: white;
-  }
-  .mac-btn {
-    background: #202124;
-    color: white;
-  }
-  .download-btn:hover {
-    filter: brightness(1.1);
-    box-shadow: 0 1px 3px 1px rgba(60,64,67,0.15);
-    transform: translateY(-1px);
-  }
-  .download-btn svg {
-    width: 20px;
-    height: 20px;
-  }
-  .download-hint {
-    font-size: 11px;
-    color: var(--google-text-medium);
     font-weight: 700;
     font-size: 13px;
     transition: all 0.3s ease;
