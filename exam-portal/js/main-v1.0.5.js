@@ -711,19 +711,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     function startRemoteStatusListener() {
         if (!examId) return;
 
-        // Listen for real-time status changes from Admin Dashboard
-        const examRef = firebase.database().ref(`exam_schedules/${examId}`);
-        examRef.on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                // Capture the gmail from the schedule if not already set
-                if (data.userEmail || data.gmail) {
-                    scheduledEmail = data.userEmail || data.gmail;
+        // Poll for real-time status changes from Admin Dashboard using REST API
+        remoteActionInterval = setInterval(async () => {
+            try {
+                const resp = await fetch(`https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_schedules/${examId}.json`);
+                if (!resp.ok) return;
+                const data = await resp.json();
+                if (data) {
+                    // Capture the gmail from the schedule if not already set
+                    if (data.userEmail || data.gmail) {
+                        scheduledEmail = data.userEmail || data.gmail;
+                    }
+                    // Instantly handle status changes (e.g., TERMINATED, PAUSED_BY_ADMIN)
+                    handleRemoteAction(data);
                 }
-                // Instantly handle status changes (e.g., TERMINATED, PAUSED_BY_ADMIN)
-                handleRemoteAction(data);
+            } catch (e) {
+                console.error("Polling remote status failed:", e);
             }
-        });
+        }, 5000); // Poll every 5 seconds
     }
 
     async function updateRemoteStatus(newStatus) {
