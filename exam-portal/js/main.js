@@ -1470,7 +1470,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     // --- Enhanced AI Proctoring Logic with NLP Warnings ---
     let warningCount = 0;
-    const MAX_WARNINGS = 3;
+    const MAX_WARNINGS = 10;
     let audioContext;
     let speechReady = false;
     let analyser;
@@ -1775,12 +1775,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }, false);
 
-        // 4. Debugger Trap
-        setInterval(() => {
+        // 4. Debugger Trap Removed (UX Fix)
+        /* setInterval(() => {
             if (screens.exam.style.display === 'flex') {
                 debugger;
             }
-        }, 1000);
+        }, 1000); */
 
         // 5. Drag & Drop
         document.addEventListener('dragstart', (e) => {
@@ -1790,12 +1790,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (screens.exam.style.display === 'flex') e.preventDefault();
         });
 
-        // 6. Mouse Leave
-        document.addEventListener('mouseleave', () => {
+        // 6. Mouse Leave (Removed for UX)
+        /* document.addEventListener('mouseleave', () => {
             if (screens.exam.style.display === 'flex') {
                 issueWarning("Mouse left the exam area. Keep cursor inside.");
             }
-        });
+        }); */
     };
 
     // Initialize security
