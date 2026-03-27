@@ -9,38 +9,6 @@ async function sha256(message) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // --- MAINTENANCE ANNOUNCEMENT BANNER ---
-    const showMaintenanceBanner = (title, message, type = 'info', dismissible = true) => {
-        let banner = document.getElementById('customAnnouncementBanner');
-        if (!banner) {
-            banner = document.createElement('div');
-            banner.id = 'customAnnouncementBanner';
-            banner.style.cssText = `
-                position: fixed; top: 0; left: 0; width: 100%; padding: 12px 24px;
-                z-index: 10001; font-family: 'Inter', sans-serif; font-size: 14px;
-                color: white; display: flex; align-items: center; justify-content: center;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-weight: 500; width: 100%;
-                box-sizing: border-box; transition: background-color 0.3s;
-            `;
-            document.body.prepend(banner);
-        }
-        let bgColor = '#2196F3';
-        if (type === 'error') bgColor = '#f44336';
-        else if (type === 'warning') bgColor = '#ff9800';
-        else if (type === 'success') bgColor = '#4CAF50';
-        banner.style.backgroundColor = bgColor;
-        banner.className = `maintenance-banner banner-${type}`;
-
-        let dismissButton = dismissible ? `<button class="maintenance-banner-dismiss" onclick="document.getElementById('customAnnouncementBanner').remove()" style="margin-left:auto; background:rgba(255,255,255,0.2); border:none; color:white; padding:4px 12px; border-radius:4px; cursor:pointer;">Dismiss</button>` : '';
-
-        banner.innerHTML = `
-            <span class="banner-title" style="margin-right:8px; font-weight:700;">${title}:</span>
-            <span>${message}</span>
-            ${dismissButton}
-        `;
-    };
-    // Example call for a maintenance announcement.
-    // showMaintenanceBanner('Scheduled Maintenance', '...', 'warning');
 
     // --- CRITICAL CONSTANTS ---
     const MAX_PAUSES = 2;

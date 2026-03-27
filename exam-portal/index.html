@@ -10,26 +10,6 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/notiflix@3.2.5/dist/notiflix-aio-3.2.5.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script>
-    // Maintenance Notice
-    document.addEventListener("DOMContentLoaded", function() {
-      Swal.fire({
-        title: 'Portal Under Maintenance',
-        html: `
-          <div style="text-align: left; line-height: 1.5;">
-            <p>The DC Cloud Solutions Exam Portal is currently under maintenance <strong>till 28th March, 10:00 AM</strong>.</p>
-            <p>All scheduled exams during this period will be held. If you need to reschedule or have questions, please reach out to:</p>
-            <p style="text-align: center; margin-top: 15px;">
-              <a href="mailto:support@dcinfotech.org.in" style="color: #1a73e8; font-weight: bold;">support@dcinfotech.org.in</a>
-            </p>
-          </div>
-        `,
-        icon: 'warning',
-        confirmButtonText: 'I Understand',
-        allowOutsideClick: false
-      });
-    });
-  </script>
   <script src="js/users.js"></script>
   <!-- Single login handling script -->
   <script>
@@ -4400,6 +4380,75 @@
   .is-desktop .announcement-bar {
     display: none !important;
   }
+
+  /* --- Dark Mode Toggle & Overrides --- */
+  .dark-mode-toggle {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--google-card-white);
+    color: var(--google-text-dark);
+    border: 1px solid var(--google-border-gray);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+  .dark-mode-toggle:hover {
+    transform: scale(1.1);
+  }
+
+  body.dark-mode {
+    --google-page-bg: #121212;
+    --google-action-blue: #8ab4f8;
+    --google-border-gray: #5f6368;
+    --google-text-dark: #e8eaed;
+    --google-text-medium: #9aa0a6;
+    --google-card-white: #202124;
+    --google-brand-green: #81c995;
+  }
+  
+  /* Hardcoded CSS Overrides for Dark Mode */
+  body.dark-mode .mat-mdc-input-element { color: var(--google-text-dark) !important; }
+  body.dark-mode .mat-mdc-floating-label { color: var(--google-text-medium) !important; }
+  body.dark-mode .cp-footer__full-width-html { color: var(--google-text-dark) !important; }
+  body.dark-mode .cp-footer__copyright { color: var(--google-text-medium) !important; }
+  body.dark-mode #custom-login-modal > div { background: var(--google-card-white) !important; color: var(--google-text-dark) !important; border: 1px solid var(--google-border-gray); }
+  body.dark-mode #custom-login-modal p { color: var(--google-text-dark) !important; }
+  body.dark-mode .download-section { background: #202124 !important; border-color: #5f6368 !important; }
+  body.dark-mode .mac-help { background: #3c4043 !important; border-color: #5f6368 !important; color: #8ab4f8 !important; }
+  body.dark-mode .announcement-bar { background: #3c4043 !important; color: #e8eaed !important; border-bottom: 1px solid #5f6368 !important; }
+  body.dark-mode .announcement-bar strong { color: #fbbc04 !important; }
 </style>
+
+<!-- Dark Mode Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('darkModeToggle');
+    if (!toggleBtn) return;
+    
+    const body = document.body;
+    
+    // Sync with the exact same localStorage key used in main.js
+    if (localStorage.getItem('darkMode') === 'true') {
+        body.classList.add('dark-mode');
+        toggleBtn.textContent = '☀️';
+    }
+    
+    toggleBtn.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        const isDark = body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDark);
+        toggleBtn.textContent = isDark ? '☀️' : '🌙';
+    });
+  });
+</script>
 </body>
 </html>
