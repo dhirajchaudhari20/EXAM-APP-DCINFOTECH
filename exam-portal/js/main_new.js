@@ -6,8 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 0. RESUME / COMPLETION CHECK ---
     const urlParams = new URLSearchParams(window.location.search);
     const examName = urlParams.get('exam') || 'Associate Cloud Engineer';
+    const examId = urlParams.get('id') || 'legacy';
     const user = JSON.parse(localStorage.getItem('cm_user') || '{}');
-    const completionKey = `exam_completed_${user.email || 'guest'}_${examName.replace(/\s+/g, '_')}`;
+    const completionKey = `exam_completed_${user.email || 'guest'}_${examName.replace(/\s+/g, '_')}_${examId}`;
 
     if (localStorage.getItem(completionKey)) {
         Swal.fire({
@@ -564,7 +565,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 2. QUESTION BANK ---
     // Questions moved to js/questions.js
 
-    const examId = urlParams.get('id'); // Get Exam ID
+    // examId is already declared at the top of the scope
     const sourceQuestions = allQuestions[examName] || allQuestions.default;
     let questions = [...sourceQuestions]; // Initialize with copy, will be reordered
     let questionOrder = []; // Store indices for persistence

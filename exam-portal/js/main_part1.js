@@ -6,8 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 0. RESUME / COMPLETION CHECK ---
     const urlParams = new URLSearchParams(window.location.search);
     const examName = urlParams.get('exam') || 'Associate Cloud Engineer';
+    const examId = urlParams.get('id') || 'legacy';
     const user = JSON.parse(localStorage.getItem('cm_user') || '{}');
-    const completionKey = `exam_completed_${user.email || 'guest'}_${examName.replace(/\s+/g, '_')}`;
+    const completionKey = `exam_completed_${user.email || 'guest'}_${examName.replace(/\s+/g, '_')}_${examId}`;
 
     if (localStorage.getItem(completionKey)) {
         Swal.fire({

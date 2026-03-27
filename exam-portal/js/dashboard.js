@@ -423,10 +423,33 @@
         });
 
         // --- Check for saved state (Remote Session) ---
-        const sessionId = `${user.email.replace(/[.@]/g, '_')}_${exam.name.replace(/\s+/g, '_')}`;
+        const examId = exam.id || 'legacy';
+        const sessionId = `${user.email.replace(/[.@]/g, '_')}_${exam.name.replace(/\s+/g, '_')}_${examId}`;
         const SYNC_BASE_URL = 'https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_sessions';
 
         async function getExamAction() {
+            const now = new Date();
+            const examTime = new Date(exam.dateTime);
+            const windowStart = new Date(examTime.getTime() - 15 * 60000); // 15 mins early
+            const windowEnd = new Date(examTime.getTime() + 180 * 60000); // 3 hours window
+            
+            // Check for local completion first
+            const localCompletionKey = `exam_completed_${user.email || 'guest'}_${exam.name.replace(/\s+/g, '_')}_${examId}`;
+            let isCompleted = localStorage.getItem(localCompletionKey) === 'true';
+
+            // Check Firebase for completion (Remote Session)
+            if (!isCompleted) {
+                try {
+                    const sessionResponse = await fetch(`${SYNC_BASE_URL}/${sessionId}.json`);
+                    const sessionData = await sessionResponse.json();
+                    if (sessionData && sessionData.status === 'completed') {
+                        isCompleted = true;
+                    }
+                } catch (e) {
+                    console.error("Session Check Error:", e);
+                }
+            }
+
             if (isCompleted) {
                 return `
                     <button class="btn" disabled style="background-color: #9aa0a6; color: white; border: none; font-weight: 700; cursor: not-allowed; margin-bottom: 8px; display: block; width: 100%;">Exam Ended</button>
