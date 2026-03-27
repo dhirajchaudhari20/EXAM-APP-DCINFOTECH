@@ -22,16 +22,13 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-
-      - name: Install Dependencies
-        run: |
-          npm install
+          node-version: 22
 
       - name: Build/Release Electron App
         run: |
-          npm install --include=dev
-          npm run build:${{ matrix.os == 'macos-latest' && 'mac' || 'win' }}
+          npm install
+          ls -R
+          npx electron-builder --${{ matrix.os == 'macos-latest' && 'mac' || 'win' }} --publish always
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_LINK: ${{ secrets.MAC_CERTS }}
