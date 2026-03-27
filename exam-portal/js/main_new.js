@@ -812,6 +812,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add event listeners for saving answers
         questionArea.querySelectorAll('input[type="radio"]').forEach(input => {
             input.addEventListener('change', (e) => {
+                const qIndex = parseInt(e.target.name.replace('question', ''));
                 userAnswers[qIndex] = e.target.value;
                 updateNav(false);
 
