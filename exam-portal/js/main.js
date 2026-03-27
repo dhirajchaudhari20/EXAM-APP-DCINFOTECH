@@ -1436,7 +1436,6 @@ async function startProctoring() {
         microphone.connect(analyser);
 
         startProctoringChecks();
-        startPeriodicCapture(); // Start periodic snapshots
         // Initial log entry and AI welcome message
         const welcomeMessage = "Proctoring session initiated. I will be monitoring your exam to ensure integrity. Please focus on the screen. Good luck.";
         addToProctorLog(welcomeMessage);
@@ -1454,8 +1453,12 @@ async function startProctoring() {
 }
 function startProctoringChecks() {
     if (proctoringInterval) clearInterval(proctoringInterval);
-    startProctoringChecks();
-    startPeriodicCapture(); // Start periodic snapshots
+    // Audio/Video checks every 10 seconds
+    proctoringInterval = setInterval(() => {
+        checkAudioLevel();
+        checkVideoFrameWithGroq();
+    }, 10000); 
+    startPeriodicCapture(); // Start periodic snapshots (60s)
     startRemoteStatusListener(); // START REAL-TIME ADMIN CONTROL LISTENER
 }
 
