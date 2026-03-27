@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen, dialog, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, dialog, Menu, systemPreferences } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const isDev = require('electron-is-dev');
@@ -260,6 +260,16 @@ app.whenReady().then(() => {
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+
+  // Explicitly request Camera/Microphone access on macOS
+  if (process.platform === 'darwin') {
+    systemPreferences.askForMediaAccess('camera').then(granted => {
+      console.log('Camera access granted:', granted);
+    });
+    systemPreferences.askForMediaAccess('microphone').then(granted => {
+      console.log('Microphone access granted:', granted);
+    });
+  }
 });
 
 // Prevent multiple instances
