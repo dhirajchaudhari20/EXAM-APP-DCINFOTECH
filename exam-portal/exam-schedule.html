@@ -114,8 +114,31 @@
           <div id="voucherStatus" class="voucher-status"></div>
         </div>
         <button type="submit" id="scheduleBtn" class="btn" disabled>Schedule Exam</button>
+        <!-- Dev Only: Quick Launch -->
+        <button type="button" id="devQuickLaunchBtn" class="btn" style="background-color: #f4b400; color: #202124; margin-top: 10px; width: 100%; font-weight: 700;">DEV: INSTANT LAUNCH (SKIP VOUCHER)</button>
       </form>
     </div>
+
+    <script>
+      // Quick Launch Logic
+      document.getElementById('devQuickLaunchBtn').addEventListener('click', () => {
+        const selectedExamInput = document.querySelector('input[name="exam_category"]:checked');
+        const examName = selectedExamInput ? selectedExamInput.value : "Associate Cloud Engineer";
+        const examId = "dev_" + Date.now();
+        
+        Swal.fire({
+          title: 'Instant Launch',
+          text: `Starting "${examName}" immediately. No voucher required.`,
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonText: 'Launch Now'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = `exam-session.html?exam=${encodeURIComponent(examName)}&id=${examId}`;
+          }
+        });
+      });
+    </script>
 
     <div class="page-section">
       <h2>Your Upcoming Exams</h2>
