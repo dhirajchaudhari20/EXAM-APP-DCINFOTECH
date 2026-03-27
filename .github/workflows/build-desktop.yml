@@ -29,17 +29,13 @@ jobs:
           npm install
 
       - name: Build/Release Electron App
-        uses: samuelmeuli/action-electron-builder@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          package_root: ./
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-          
-          # macOS Signing/Notarization
-          mac_certs: ${{ secrets.MAC_CERTS }}
-          mac_certs_password: ${{ secrets.MAC_CERTS_PASSWORD }}
+        run: |
+          npm install --include=dev
+          npm run build:${{ matrix.os == 'macos-latest' && 'mac' || 'win' }}
         env:
-          # Apple Notarization
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_LINK: ${{ secrets.MAC_CERTS }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTS_PASSWORD }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
