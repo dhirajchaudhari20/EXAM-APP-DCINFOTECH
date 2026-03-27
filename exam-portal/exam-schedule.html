@@ -11,6 +11,25 @@
     rel="stylesheet">
   <!-- Add SweetAlert2 for modern, non-blocking alerts -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      Swal.fire({
+        title: 'Portal Under Maintenance',
+        html: `
+          <div style="text-align: left; line-height: 1.5;">
+            <p>The DC Cloud Solutions Exam Portal is currently under maintenance <strong>till 28th March, 10:00 AM</strong>.</p>
+            <p>All scheduled exams during this period will be held. If you need to reschedule or have questions, please reach out to:</p>
+            <p style="text-align: center; margin-top: 15px;">
+              <a href="mailto:support@dcinfotech.org.in" style="color: #1a73e8; font-weight: bold;">support@dcinfotech.org.in</a>
+            </p>
+          </div>
+        `,
+        icon: 'warning',
+        confirmButtonText: 'I Understand',
+        allowOutsideClick: false
+      });
+    });
+  </script>
 </head>
 
 <body>
