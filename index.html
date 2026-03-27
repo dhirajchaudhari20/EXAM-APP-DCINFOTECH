@@ -541,13 +541,11 @@
 
   <script>
     window.addEventListener('load', function () {
-      // Show loader initially
-      document.querySelector('.loader').style.display = 'flex';
-
-      // Hide loader after a certain delay (e.g., 3 seconds)
-      setTimeout(function () {
-        document.querySelector('.loader').classList.add('hidden');
-      }, 3000); // 3000 milliseconds = 3 seconds
+      // Hide loader instantly when the page finishes loading, removing artificial delays
+      const loader = document.querySelector('.loader');
+      if (loader) {
+        loader.classList.add('hidden');
+      }
     });
   </script>
   <script>
@@ -614,8 +612,14 @@
               with cutting-edge technology. Let's shape the future together.
             </p>
 
-            <a class='btn consult-bn' href='/about'> About </a>
-            <a class='btn consult-bn contact-bn' href='/contact'> Contact </a>
+            <div class="d-flex flex-wrap gap-3 mt-4 justify-content-center justify-content-lg-start">
+              <a class="btn btn-primary rounded-pill px-4 py-3 fw-bold" href="#" data-bs-toggle="modal" data-bs-target="#quickModal" style="background: linear-gradient(135deg, #4285F4, #34A853); border: none;">
+                Get Free Consultation <i class="fas fa-arrow-right ms-2"></i>
+              </a>
+              <a class="btn btn-outline-primary rounded-pill px-4 py-3 fw-bold" href="#expertise" style="border: 2px solid #4285F4; color: #4285F4;">
+                Explore Services
+              </a>
+            </div>
           </div>
 
           <!-- RIGHT COLUMN -->
@@ -629,12 +633,55 @@
       </div>
     </div>
   </div>
+  <!-- LOGO MARQUEE SECTION (NEW) -->
+  <div class="logo-marquee-wrapper py-4 bg-white border-bottom">
+    <div class="container">
+      <p class="text-center text-muted small fw-bold text-uppercase mb-4" style="letter-spacing: 2px;">Trusted by Industry Leaders & Partners</p>
+      <div class="logo-marquee">
+        <div class="logo-track">
+          <img src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" alt="Google">
+          <img src="/images/logo.png" alt="DC Cloud Solutions" style="filter: grayscale(1); opacity: 0.7;">
+          <img src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" alt="Google Cloud">
+          <img src="/images/logo.png" alt="Partner" style="filter: grayscale(1); opacity: 0.7;">
+          <!-- Duplicate for seamless loop -->
+          <img src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" alt="Google">
+          <img src="/images/logo.png" alt="DC Cloud Solutions" style="filter: grayscale(1); opacity: 0.7;">
+          <img src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" alt="Google Cloud">
+          <img src="/images/logo.png" alt="Partner" style="filter: grayscale(1); opacity: 0.7;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .logo-marquee {
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+    .logo-track {
+      display: inline-flex;
+      gap: 80px;
+      animation: marquee 30s linear infinite;
+      align-items: center;
+    }
+    .logo-track img {
+      height: 35px;
+      width: auto;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+  </style>
+
   <!-- AOS CSS -->
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
 
 
 
-  <section class="py-5 bg-light position-relative" style="border-radius: 0 0 40px 40px; overflow: hidden;">
+  <section id="expertise" class="py-5 bg-light position-relative"
+    style="border-radius: 0 0 40px 40px; overflow: hidden;">
     <div class="container py-4">
       <div class="text-center mb-5" data-aos="fade-up">
         <h6 class="text-primary fw-bold text-uppercase tracking-wider mb-2"
@@ -1322,7 +1369,8 @@
                   style="background: linear-gradient(135deg, #4285F4, #34A853); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">quality
                   IT service</span> is our passion.</h2>
               <p class="lead text-secondary mb-4" style="font-family: 'Open Sans', sans-serif;">
-                DC Cloud Solutions is dedicated to transforming ideas into impactful digital solutions through innovative web,
+                DC Cloud Solutions is dedicated to transforming ideas into impactful digital solutions through
+                innovative web,
                 app, WordPress, and cloud services.
               </p>
 
@@ -1379,140 +1427,99 @@
     <!-- Skill bar animation script -->
 
 
-    <div class="why-choose-block py-5" style="background: #f6f8fd;">
+    <div id="why-trust-us" class="unified-why-us py-5" style="background: #f6f8fd;">
       <div class="container">
-        <div class="row row-cols-1 row-cols-lg-2 mt-5 g-lg-5 align-items-center flex-column-reverse flex-lg-row">
-          <div class="col" data-aos="fade-left">
-            <h6 class="mt-4 mt-lg-0 text-primary fw-bold">Why Choose Us?</h6>
-            <h2 class="fw-bold mb-3">Empowering Your Success With Tailored Tech Solutions</h2>
-            <p class="mb-4" style="color:#444;">
-              At DC Cloud Solutions, we provide cutting-edge web, app, WordPress, and cloud services designed to drive
-              innovation and growth for your business.
-            </p>
-            <div class="why-features-grid">
-              <div class="why-feature-card">
-                <span class="why-feature-icon"><i class="fas fa-cloud"></i></span>
-                <span class="why-feature-text">Expertise in Web, App, and Cloud Solutions</span>
-              </div>
-              <div class="why-feature-card">
-                <span class="why-feature-icon"><i class="fab fa-wordpress"></i></span>
-                <span class="why-feature-text">Customized WordPress Development</span>
-              </div>
-              <div class="why-feature-card">
-                <span class="why-feature-icon"><i class="fas fa-search"></i></span>
-                <span class="why-feature-text">Advanced SEO Strategies for Enhanced Visibility</span>
-              </div>
-              <div class="why-feature-card">
-                <span class="why-feature-icon"><i class="fas fa-database"></i></span>
-                <span class="why-feature-text">Robust Database Management Solutions</span>
-              </div>
-              <div class="why-feature-card">
-                <span class="why-feature-icon"><i class="fas fa-headset"></i></span>
-                <span class="why-feature-text">Dedicated Support and Maintenance</span>
-              </div>
-              <div class="why-feature-card">
-                <span class="why-feature-icon"><i class="fas fa-check-circle"></i></span>
-                <span class="why-feature-text">Proven Track Record of Successful Projects</span>
-              </div>
+        <div class="text-center mb-5" data-aos="fade-up">
+          <h6 class="text-primary fw-bold text-uppercase tracking-wider mb-2">Why Choose & Trust Us</h6>
+          <h2 class="display-5 fw-bold mb-3">Your Success is Our Responsibility</h2>
+          <p class="lead text-secondary mx-auto" style="max-width: 700px;">We combine industry expertise with a personalized approach to deliver exceptional tech solutions.</p>
+        </div>
+        
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          <div class="col" data-aos="fade-up" data-aos-delay="0">
+            <div class="feature-card-unified">
+              <div class="icon-circle"><i class="fas fa-cloud"></i></div>
+              <h5>Cloud & Web Expertise</h5>
+              <p>Specialized solutions in GCP, Web Apps, and modern frameworks.</p>
             </div>
           </div>
-          <div class="col" data-aos="fade-right">
-            <figure class="mb-0">
-              <img src="images/featured-image-7.png" alt="bn" class="img-fluid" />
-            </figure>
+          <div class="col" data-aos="fade-up" data-aos-delay="100">
+            <div class="feature-card-unified">
+              <div class="icon-circle"><i class="fab fa-wordpress"></i></div>
+              <h5>Custom WordPress</h5>
+              <p>Tailored development for high-performance business websites.</p>
+            </div>
+          </div>
+          <div class="col" data-aos="fade-up" data-aos-delay="200">
+            <div class="feature-card-unified">
+              <div class="icon-circle"><i class="fas fa-search"></i></div>
+              <h5>Advanced SEO</h5>
+              <p>Data-driven strategies to boost your search rankings and visibility.</p>
+            </div>
+          </div>
+          <div class="col" data-aos="fade-up" data-aos-delay="300">
+            <div class="feature-card-unified">
+              <div class="icon-circle"><i class="fas fa-users"></i></div>
+              <h5>Skilled Industry Team</h5>
+              <p>A dedicated team of experts with deep technical knowledge.</p>
+            </div>
+          </div>
+          <div class="col" data-aos="fade-up" data-aos-delay="400">
+            <div class="feature-card-unified">
+              <div class="icon-circle"><i class="fas fa-comments"></i></div>
+              <h5>Transparent Process</h5>
+              <p>Clear communication and regular reporting on your project status.</p>
+            </div>
+          </div>
+          <div class="col" data-aos="fade-up" data-aos-delay="500">
+            <div class="feature-card-unified">
+              <div class="icon-circle"><i class="fas fa-headset"></i></div>
+              <h5>Continuous Support</h5>
+              <p>Post-launch care and 24/7 dedicated maintenance support.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <style>
-      .why-features-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 18px 24px;
-        margin-top: 24px;
-      }
-
-      .why-feature-card {
-        display: flex;
-        align-items: center;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 2px 12px #5a8dee0d;
-        padding: 16px 18px;
-        font-size: 1.08em;
-        font-weight: 500;
-        transition: box-shadow 0.2s;
-      }
-
-      .why-feature-card:hover {
-        box-shadow: 0 4px 18px #5a8dee22;
-      }
-
-      .why-feature-icon {
-        color: #5a8dee;
-        font-size: 1.5em;
-        margin-right: 14px;
-        min-width: 32px;
+      .feature-card-unified {
+        background: white;
+        padding: 35px;
+        border-radius: 20px;
+        height: 100%;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05);
         text-align: center;
       }
-
-      .why-feature-text {
-        color: #22223b;
+      .feature-card-unified:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        border-color: #4285F4;
       }
-
-      @media (max-width: 768px) {
-        .why-features-grid {
-          grid-template-columns: 1fr;
-          gap: 14px;
-        }
+      .icon-circle {
+        width: 60px;
+        height: 60px;
+        background: #f0f7ff;
+        color: #4285F4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 24px;
+      }
+      .feature-card-unified h5 {
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #222;
+      }
+      .feature-card-unified p {
+        color: #666;
+        margin-bottom: 0;
+        font-size: 14px;
       }
     </style>
-    <div class="trust-choose-block py-5" style="background: #f6f8fd;">
-      <div class="container">
-        <div class="row row-cols-1 row-cols-lg-2 mt-3 g-lg-5 align-items-center">
-          <div class="col" data-aos="fade-right">
-            <figure class="mb-0">
-              <img src="images/support-center1.png" alt="Support Center" class="img-fluid" />
-            </figure>
-          </div>
-          <div class="col" data-aos="fade-left">
-            <h6 class="mt-4 mt-lg-0 text-primary fw-bold">Why Trust Us?</h6>
-            <h2 class="fw-bold mb-3">Your Success is Our Responsibility</h2>
-            <p class="mb-4" style="color:#444;">
-              At DC Cloud Solutions, we are committed to delivering exceptional results through dedicated teamwork and
-              tailored solutions that meet your unique needs.
-            </p>
-            <div class="trust-features-grid">
-              <div class="trust-feature-card" data-aos="fade-up" data-aos-delay="0">
-                <span class="trust-feature-icon"><i class="fas fa-users"></i></span>
-                <span class="trust-feature-text">Skilled team with industry expertise</span>
-              </div>
-              <div class="trust-feature-card" data-aos="fade-up" data-aos-delay="100">
-                <span class="trust-feature-icon"><i class="fas fa-user-check"></i></span>
-                <span class="trust-feature-text">Personalized approach to each project</span>
-              </div>
-              <div class="trust-feature-card" data-aos="fade-up" data-aos-delay="200">
-                <span class="trust-feature-icon"><i class="fas fa-trophy"></i></span>
-                <span class="trust-feature-text">Proven track record of successful outcomes</span>
-              </div>
-              <div class="trust-feature-card" data-aos="fade-up" data-aos-delay="300">
-                <span class="trust-feature-icon"><i class="fas fa-comments"></i></span>
-                <span class="trust-feature-text">Transparent communication and reporting</span>
-              </div>
-              <div class="trust-feature-card" data-aos="fade-up" data-aos-delay="400">
-                <span class="trust-feature-icon"><i class="fas fa-clock"></i></span>
-                <span class="trust-feature-text">Commitment to timely project delivery</span>
-              </div>
-              <div class="trust-feature-card" data-aos="fade-up" data-aos-delay="500">
-                <span class="trust-feature-icon"><i class="fas fa-headset"></i></span>
-                <span class="trust-feature-text">Continuous support and post-launch care</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <style>
       .trust-features-grid {
@@ -1639,7 +1646,8 @@
               <div class="testimonial-content">
                 <div class="testimonial-quote">
                   <i class="fas fa-quote-left" aria-hidden="true"></i>
-                  <h5 itemprop="reviewBody">DC Cloud Solutions's WordPress solutions helped us build a robust online presence.
+                  <h5 itemprop="reviewBody">DC Cloud Solutions's WordPress solutions helped us build a robust online
+                    presence.
                     Their support and service have been exceptional.</h5>
                 </div>
                 <div class="testimonial-rating" aria-label="5 star rating">
@@ -1688,7 +1696,8 @@
               <div class="testimonial-content">
                 <div class="testimonial-quote">
                   <i class="fas fa-quote-left" aria-hidden="true"></i>
-                  <h5 itemprop="reviewBody">The team at DC Cloud Solutions went above and beyond to meet our needs. Their
+                  <h5 itemprop="reviewBody">The team at DC Cloud Solutions went above and beyond to meet our needs.
+                    Their
                     cloud and app development services have been instrumental in our growth.</h5>
                 </div>
                 <div class="testimonial-rating" aria-label="5 star rating">
@@ -2030,7 +2039,8 @@
             <h2 class="call-contact-title mb-3 animate__animated animate__fadeInUp">Transform And Elevate Your Digital
               Presence!</h2>
             <p class="call-contact-desc mb-4 animate__animated animate__fadeIn">
-              At DC Cloud Solutions, we specialize in delivering cutting-edge web development and IT solutions tailored to
+              At DC Cloud Solutions, we specialize in delivering cutting-edge web development and IT solutions tailored
+              to
               your business needs. Let us help you achieve your digital goals with innovative strategies and exceptional
               service.
             </p>
@@ -2423,13 +2433,9 @@
 
     <!-- loader js -->
     <script>
-
       window.onload = function () {
-        setTimeout(function () {
-          var loader = document.getElementsByClassName("loader")[0];
-          loader.className = "loader fadeout";
-          setTimeout(function () { loader.style.display = "none" }, 1000)
-        }, 1000)
+        var loader = document.getElementsByClassName("loader")[0];
+        if (loader) loader.style.display = "none";
       }
     </script>
     <script>
