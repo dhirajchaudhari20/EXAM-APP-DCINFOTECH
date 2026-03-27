@@ -26,11 +26,11 @@ jobs:
         with:
           node-version: 22
 
-      - name: Build/Release Electron App
+      - name: Build/Release Electron App (macOS)
+        if: matrix.os == 'macos-latest'
         run: |
           npm install
-          ls -R
-          npx electron-builder --${{ matrix.os == 'macos-latest' && 'mac' || 'win' }} --publish always
+          npx electron-builder --mac --publish always
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_LINK: ${{ secrets.MAC_CERTS }}
@@ -38,3 +38,13 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          DEBUG: electron-builder
+
+      - name: Build/Release Electron App (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          npm install
+          npx electron-builder --win --publish always
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG: electron-builder
