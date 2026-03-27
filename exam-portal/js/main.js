@@ -10,57 +10,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!banner) {
             banner = document.createElement('div');
             banner.id = 'customAnnouncementBanner';
-            banner.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                background-color: #2196F3; /* Default info blue */
-                color: white;
-                padding: 15px 20px;
-                text-align: center;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                font-size: 18px;
-                z-index: 10000; /* Ensure it's on top of everything */
-                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 10px;
-            `;
             document.body.prepend(banner); // Add to the very top of the body
         }
 
         // Update banner content and style based on type
-        let bgColor = '#2196F3'; // info
-        if (type === 'error') bgColor = '#f44336';
-        else if (type === 'warning') bgColor = '#ff9800';
-        else if (type === 'success') bgColor = '#4CAF50';
-        banner.style.backgroundColor = bgColor;
+        banner.className = `maintenance-banner banner-${type}`;
 
         let dismissButton = '';
         if (dismissible) {
-            dismissButton = `
-                <button onclick="document.getElementById('customAnnouncementBanner').remove()" style="
-                    background-color: rgba(255,255,255,0.3);
-                    color: white;
-                    border: none;
-                    padding: 5px 10px;
-                    border-radius: 3px;
-                    cursor: pointer;
-                    font-size: 14px;
-                    margin-left: 20px;
-                    transition: background-color 0.3s;
-                ">Dismiss</button>
-            `;
+            dismissButton = `<button class="maintenance-banner-dismiss" onclick="const banner = document.getElementById('customAnnouncementBanner'); banner.style.animation = 'slideUpBanner 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards'; setTimeout(() => banner.remove(), 400);">Dismiss</button>`;
         }
 
         banner.innerHTML = `
-            <span style="font-weight: bold;">${title}:</span>
+            <span class="banner-title">${title}:</span>
             <span>${message}</span>
             ${dismissButton}
         `;
-        banner.style.display = 'flex';
     };
 
     // Example call for a maintenance announcement.
