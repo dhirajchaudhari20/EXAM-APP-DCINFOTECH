@@ -1,7 +1,0 @@
-node_modules/
-dist/
-build/
-bin/
-obj/
-.DS_Store
-.env
