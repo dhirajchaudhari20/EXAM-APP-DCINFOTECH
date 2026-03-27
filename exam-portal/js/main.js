@@ -1,5 +1,72 @@
 // --- 1. LOGIN & EXAM CHECK ---
 document.addEventListener('DOMContentLoaded', () => {
+    // --- MAINTENANCE ANNOUNCEMENT BANNER (NEW) ---
+    // This function creates and displays a custom banner for announcements,
+    // providing an alternative to SweetAlert for such messages.
+    // In a real application, this would typically be triggered dynamically
+    // (e.g., from a database setting, a feature flag, or a specific URL parameter).
+    const showMaintenanceBanner = (title, message, type = 'info', dismissible = true) => {
+        let banner = document.getElementById('customAnnouncementBanner');
+        if (!banner) {
+            banner = document.createElement('div');
+            banner.id = 'customAnnouncementBanner';
+            banner.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                background-color: #2196F3; /* Default info blue */
+                color: white;
+                padding: 15px 20px;
+                text-align: center;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-size: 18px;
+                z-index: 10000; /* Ensure it's on top of everything */
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+            `;
+            document.body.prepend(banner); // Add to the very top of the body
+        }
+
+        // Update banner content and style based on type
+        let bgColor = '#2196F3'; // info
+        if (type === 'error') bgColor = '#f44336';
+        else if (type === 'warning') bgColor = '#ff9800';
+        else if (type === 'success') bgColor = '#4CAF50';
+        banner.style.backgroundColor = bgColor;
+
+        let dismissButton = '';
+        if (dismissible) {
+            dismissButton = `
+                <button onclick="document.getElementById('customAnnouncementBanner').remove()" style="
+                    background-color: rgba(255,255,255,0.3);
+                    color: white;
+                    border: none;
+                    padding: 5px 10px;
+                    border-radius: 3px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    margin-left: 20px;
+                    transition: background-color 0.3s;
+                ">Dismiss</button>
+            `;
+        }
+
+        banner.innerHTML = `
+            <span style="font-weight: bold;">${title}:</span>
+            <span>${message}</span>
+            ${dismissButton}
+        `;
+        banner.style.display = 'flex';
+    };
+
+    // Example call for a maintenance announcement.
+    // Uncomment the line below to see the banner in action.
+    // showMaintenanceBanner('Scheduled Maintenance', 'The exam portal will undergo maintenance tonight from 1 AM to 3 AM UTC. Expect brief interruptions.', 'warning');
+
     // --- CRITICAL CONSTANTS ---
     const MAX_PAUSES = 2;
 
@@ -646,114 +713,114 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 2. QUESTION BANK ---
     const sourceQuestions = allQuestions[examName] || allQuestions.default;
-let questions = [...sourceQuestions]; // Initialize with copy, will be reordered
-let questionOrder = []; // Store indices for persistence
-// --- State Variables ---
-let currentQuestionIndex = 0;
-let userAnswers = new Array(questions.length).fill(null);
-let markedForReview = new Array(questions.length).fill(false);
-let sessionSnapshots = []; // Store snapshots locally
-let remoteActionInterval;
-let scheduledEmail = ''; // To store the email from the schedule
+    let questions = [...sourceQuestions]; // Initialize with copy, will be reordered
+    let questionOrder = []; // Store indices for persistence
+    // --- State Variables ---
+    let currentQuestionIndex = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+    let markedForReview = new Array(questions.length).fill(false);
+    let sessionSnapshots = []; // Store snapshots locally
+    let remoteActionInterval;
+    let scheduledEmail = ''; // To store the email from the schedule
 
-// --- REMOTE PROCTORING POLLING ---
-// --- REAL-TIME REMOTE PROCTORING LISTENER ---
-function startRemoteStatusListener() {
-    if (!examId) return;
+    // --- REMOTE PROCTORING POLLING ---
+    // --- REAL-TIME REMOTE PROCTORING LISTENER ---
+    function startRemoteStatusListener() {
+        if (!examId) return;
 
-    // Listen for real-time status changes from Admin Dashboard
-    const examRef = firebase.database().ref(`exam_schedules/${examId}`);
-    examRef.on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            // Capture the gmail from the schedule if not already set
-            if (data.userEmail || data.gmail) {
-                scheduledEmail = data.userEmail || data.gmail;
+        // Listen for real-time status changes from Admin Dashboard
+        const examRef = firebase.database().ref(`exam_schedules/${examId}`);
+        examRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                // Capture the gmail from the schedule if not already set
+                if (data.userEmail || data.gmail) {
+                    scheduledEmail = data.userEmail || data.gmail;
+                }
+                // Instantly handle status changes (e.g., TERMINATED, PAUSED_BY_ADMIN)
+                handleRemoteAction(data);
             }
-            // Instantly handle status changes (e.g., TERMINATED, PAUSED_BY_ADMIN)
-            handleRemoteAction(data);
-        }
-    });
-}
-
-async function updateRemoteStatus(newStatus) {
-    if (!examId) return;
-    try {
-        // Update status directly on the Firebase exam_schedules node
-        await fetch(`https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_schedules/${examId}.json`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: newStatus })
         });
-    } catch (e) {
-        console.error("Failed to update remote status", e);
     }
-}
 
-function handleRemoteAction(data) {
-    const status = data.status;
-    const meetingLink = data.meetingLink; // Get link from data
-
-    if (status === 'PAUSED_BY_ADMIN') {
-        if (!document.getElementById('pauseOverlay')) {
-            showPauseOverlay(true, meetingLink); // Pass link to overlay
+    async function updateRemoteStatus(newStatus) {
+        if (!examId) return;
+        try {
+            // Update status directly on the Firebase exam_schedules node
+            await fetch(`https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_schedules/${examId}.json`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+        } catch (e) {
+            console.error("Failed to update remote status", e);
         }
-    } else if (status === 'TERMINATED') {
-        if (proctoringInterval) clearInterval(proctoringInterval);
-        if (remoteActionInterval) clearInterval(remoteActionInterval);
-        if (timerInterval) clearInterval(timerInterval);
+    }
 
-        Swal.fire({
-            icon: 'error',
-            title: 'Exam Terminated',
-            html: `
+    function handleRemoteAction(data) {
+        const status = data.status;
+        const meetingLink = data.meetingLink; // Get link from data
+
+        if (status === 'PAUSED_BY_ADMIN') {
+            if (!document.getElementById('pauseOverlay')) {
+                showPauseOverlay(true, meetingLink); // Pass link to overlay
+            }
+        } else if (status === 'TERMINATED') {
+            if (proctoringInterval) clearInterval(proctoringInterval);
+            if (remoteActionInterval) clearInterval(remoteActionInterval);
+            if (timerInterval) clearInterval(timerInterval);
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Exam Terminated',
+                html: `
                     <p>Your exam has been forcibly terminated by the proctor due to policy violations or administrative action.</p>
                     <p>Please contact support immediately.</p>
                 `,
-            allowOutsideClick: false,
-            confirmButtonText: 'Connect with Support',
-            showCancelButton: false
-        }).then(() => {
-            // Determine Tawk.to direct chat link or just widget
-            if (typeof Tawk_API !== 'undefined') {
-                Tawk_API.maximize();
+                allowOutsideClick: false,
+                confirmButtonText: 'Connect with Support',
+                showCancelButton: false
+            }).then(() => {
+                // Determine Tawk.to direct chat link or just widget
+                if (typeof Tawk_API !== 'undefined') {
+                    Tawk_API.maximize();
+                }
+            });
+            // Stop interactions
+            document.body.style.pointerEvents = 'none';
+            // Allow Tawk widget interaction (it usually has high z-index, but pointer-events none on body might kill it. let's fix that)
+            // Actually Tawk widget is in an iframe, usually usually safe.
+            // Better to redirect or just show the swal persistently.
+        } else if (status === 'LIVE' || status === 'Scheduled') {
+            // Resume if paused by admin
+            const pauseOverlay = document.getElementById('pauseOverlay');
+            if (pauseOverlay && pauseOverlay.dataset.triggeredByAdmin === 'true') {
+                pauseOverlay.remove();
             }
-        });
-        // Stop interactions
-        document.body.style.pointerEvents = 'none';
-        // Allow Tawk widget interaction (it usually has high z-index, but pointer-events none on body might kill it. let's fix that)
-        // Actually Tawk widget is in an iframe, usually usually safe.
-        // Better to redirect or just show the swal persistently.
-    } else if (status === 'LIVE' || status === 'Scheduled') {
-        // Resume if paused by admin
-        const pauseOverlay = document.getElementById('pauseOverlay');
-        if (pauseOverlay && pauseOverlay.dataset.triggeredByAdmin === 'true') {
-            pauseOverlay.remove();
         }
     }
-}
 
-function showPauseOverlay(isAdmin = false, meetingLink = null) {
-    if (document.getElementById('pauseOverlay')) return;
-    const overlay = document.createElement('div');
-    overlay.id = 'pauseOverlay';
-    if (isAdmin) overlay.dataset.triggeredByAdmin = 'true';
-    overlay.style.cssText = `
+    function showPauseOverlay(isAdmin = false, meetingLink = null) {
+        if (document.getElementById('pauseOverlay')) return;
+        const overlay = document.createElement('div');
+        overlay.id = 'pauseOverlay';
+        if (isAdmin) overlay.dataset.triggeredByAdmin = 'true';
+        overlay.style.cssText = `
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             color: white; text-align: center;
         `;
 
-    let content = `<h1>Exam Paused</h1><p>You have used a pause.</p><button id="resumeBtn">Resume</button>`;
+        let content = `<h1>Exam Paused</h1><p>You have used a pause.</p><button id="resumeBtn">Resume</button>`;
 
-    if (isAdmin) {
-        // Auto-maximize chat if available
-        if (typeof Tawk_API !== 'undefined') {
-            Tawk_API.maximize();
-        }
+        if (isAdmin) {
+            // Auto-maximize chat if available
+            if (typeof Tawk_API !== 'undefined') {
+                Tawk_API.maximize();
+            }
 
-        content = `
+            content = `
                 <h1 style="color: #ea8600;">Exam Paused by Proctor</h1>
                 <p>The administrator has paused your session.</p>
                 <div style="margin: 20px 0; border: 2px solid #ea8600; padding: 5px; border-radius: 8px;">
@@ -768,215 +835,215 @@ function showPauseOverlay(isAdmin = false, meetingLink = null) {
                     ${meetingLink ? `<a href="${meetingLink}" target="_blank" style="padding: 10px 20px; background: #ea4335; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">🎥 Join Video Call</a>` : ''}
                 </div>
              `;
-    }
+        }
 
-    overlay.innerHTML = content;
-    document.body.appendChild(overlay);
+        overlay.innerHTML = content;
+        document.body.appendChild(overlay);
 
-    // Attach steam to the video element we just created
-    if (isAdmin) {
-        const pausedVideo = document.getElementById('pausedFeed');
-        if (pausedVideo && stream) {
-            pausedVideo.srcObject = stream;
+        // Attach steam to the video element we just created
+        if (isAdmin) {
+            const pausedVideo = document.getElementById('pausedFeed');
+            if (pausedVideo && stream) {
+                pausedVideo.srcObject = stream;
+            }
+        }
+
+        if (!isAdmin) {
+            document.getElementById('resumeBtn').addEventListener('click', () => {
+                overlay.remove();
+                // Logic to resume timer etc
+            });
         }
     }
 
-    if (!isAdmin) {
-        document.getElementById('resumeBtn').addEventListener('click', () => {
-            overlay.remove();
-            // Logic to resume timer etc
-        });
+
+    // --- State Persistence Logic ---
+    function getStorageKey() {
+        const user = JSON.parse(localStorage.getItem('cm_user') || '{}');
+        const userEmail = user.email || 'guest';
+        return `exam_state_${userEmail}_${examName.replace(/\s+/g, '_')}`;
     }
-}
 
+    function saveExamState() {
+        const state = {
+            userAnswers,
+            markedForReview,
+            currentQuestionIndex,
+            secondsRemaining,
+            pauseCount,
+            questionOrder, // Save the randomized order
 
-// --- State Persistence Logic ---
-function getStorageKey() {
-    const user = JSON.parse(localStorage.getItem('cm_user') || '{}');
-    const userEmail = user.email || 'guest';
-    return `exam_state_${userEmail}_${examName.replace(/\s+/g, '_')}`;
-}
+            timestamp: new Date().getTime()
+        };
+        localStorage.setItem(getStorageKey(), JSON.stringify(state));
+    }
 
-function saveExamState() {
-    const state = {
-        userAnswers,
-        markedForReview,
-        currentQuestionIndex,
-        secondsRemaining,
-        pauseCount,
-        questionOrder, // Save the randomized order
+    function clearExamState() {
+        localStorage.removeItem(getStorageKey());
+    }
 
-        timestamp: new Date().getTime()
-    };
-    localStorage.setItem(getStorageKey(), JSON.stringify(state));
-}
+    returnToExamBtn.addEventListener('click', () => {
+        showScreen('exam');
+    });
 
-function clearExamState() {
-    localStorage.removeItem(getStorageKey());
-}
-
-returnToExamBtn.addEventListener('click', () => {
-    showScreen('exam');
-});
-
-finalSubmitBtn.addEventListener('click', () => {
-    const answeredCount = userAnswers.filter(a => a !== null).length;
-    const unansweredCount = questions.length - answeredCount;
-    Swal.fire({
-        title: 'Confirm Final Submission',
-        html: `
+    finalSubmitBtn.addEventListener('click', () => {
+        const answeredCount = userAnswers.filter(a => a !== null).length;
+        const unansweredCount = questions.length - answeredCount;
+        Swal.fire({
+            title: 'Confirm Final Submission',
+            html: `
                 <p>You are about to permanently submit your exam.</p>
                 <p><strong>Answered:</strong> ${answeredCount} | <strong>Unanswered:</strong> ${unansweredCount}</p>
                 <p>This action cannot be undone.</p>
             `,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#34a853',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, submit it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            submitAndExit();
-        }
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#34a853',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, submit it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                submitAndExit();
+            }
+        });
     });
-});
 
-function populateReviewScreen() {
-    const answeredCount = userAnswers.filter(a => a !== null).length;
-    document.getElementById('summaryAnswered').textContent = answeredCount;
-    document.getElementById('summaryUnanswered').textContent = questions.length - answeredCount;
-    document.getElementById('summaryMarked').textContent = markedForReview.filter(m => m).length;
-    // Render the review grid
-    renderNav(true);
-}
-// --- Initialization ---
-async function initializeExam() {
-    // --- START AGGRESSIVE SECURITY ---
-    if (window.setupExamSecurity) window.setupExamSecurity();
-
-    showScreen('exam');
-    // Fetch scheduled email immediately
-    if (examId) {
-        // Check localStorage first to avoid API request
-        const cachedEmail = localStorage.getItem(`scheduled_email_${examId}`);
-        if (cachedEmail) {
-            scheduledEmail = cachedEmail;
-            console.log("Captured scheduled email from cache:", scheduledEmail);
-        } else {
-            try {
-                const resp = await fetch(`https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_schedules/${examId}.json`);
-                const data = await resp.json();
-                if (data && data.gmail) {
-                    scheduledEmail = data.gmail;
-                    console.log("Captured scheduled email from Firebase:", scheduledEmail);
-                    // Store it for future use during this session's refreshes
-                    localStorage.setItem(`scheduled_email_${examId}`, scheduledEmail);
-                }
-            } catch (e) {
-                console.error("Initial schedule fetch failed", e);
-            }
-        }
+    function populateReviewScreen() {
+        const answeredCount = userAnswers.filter(a => a !== null).length;
+        document.getElementById('summaryAnswered').textContent = answeredCount;
+        document.getElementById('summaryUnanswered').textContent = questions.length - answeredCount;
+        document.getElementById('summaryMarked').textContent = markedForReview.filter(m => m).length;
+        // Render the review grid
+        renderNav(true);
     }
-
-    // Initialize pause button display
-    const pauseCountDisplay = document.getElementById('pauseCountDisplay');
-    if (pauseCountDisplay) {
-        pauseCountDisplay.textContent = `(${MAX_PAUSES - pauseCount} left)`;
-    }
-    // Note: Fullscreen is now handled by launchExamBtn click event.
-    // Stop the system check stream if it exists
-    if (systemCheckAudioStream) systemCheckAudioStream.getTracks().forEach(track => track.stop());
-
-    examTitleEl.textContent = examName;
-
-    // --- Restore State Logic ---
-    const savedStateJson = localStorage.getItem(getStorageKey());
-    let savedSeconds = 90 * 60;
-    let isResuming = false;
-
-    if (savedStateJson) {
-        try {
-            const state = JSON.parse(savedStateJson);
-            // Basic validation to ensure state matches current exam structure
-            if (state.userAnswers && state.userAnswers.length === questions.length) {
-                userAnswers = state.userAnswers;
-                markedForReview = state.markedForReview || markedForReview;
-                currentQuestionIndex = state.currentQuestionIndex || 0;
-                pauseCount = state.pauseCount || 0;
-                savedSeconds = state.secondsRemaining || savedSeconds;
-
-                // --- Restore Question Order ---
-                if (state.questionOrder && state.questionOrder.length === sourceQuestions.length) {
-                    questionOrder = state.questionOrder;
-                    // Reconstruct shuffled array based on saved indices
-                    questions = questionOrder.map(index => sourceQuestions[index]);
-                }
-
-                isResuming = true;
-            }
-        } catch (e) {
-            console.error("Error parsing saved state", e);
-        }
-    }
-
-    // --- If NEW session (not resuming), Shuffle Questions ---
-    if (!isResuming) {
-        // Create array of indices [0, 1, 2, ... n]
-        questionOrder = Array.from({ length: sourceQuestions.length }, (_, i) => i);
-        // Shuffle indices
-        for (let i = questionOrder.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [questionOrder[i], questionOrder[j]] = [questionOrder[j], questionOrder[i]];
-        }
-        // Reorder questions array
-        questions = questionOrder.map(index => sourceQuestions[index]);
-
-        // Reset state variables to match new shuffled length (though length is same)
-        userAnswers = new Array(questions.length).fill(null);
-        markedForReview = new Array(questions.length).fill(false);
-    }
-
-    // Start proctoring first to get the welcome message
-    await startProctoring();
-    // Show the welcome message from the AI
-    Swal.fire({
-        title: isResuming ? 'Resuming Your Exam' : 'Welcome to Your Live Proctored Exam',
-        html: isResuming ?
-            `<p>We found a previous session. You will be placed exactly where you left off.</p>
-                 <p><strong>Time Remaining:</strong> ${Math.floor(savedSeconds / 60)} minutes</p>
-                 <p>Good luck!</p>` :
-            `<p>I am your AI proctor for this session. My purpose is to ensure a fair and secure testing environment.</p>
-                 <p>Please maintain focus on your screen, ensure you are alone, and keep your environment clear of any unauthorized materials. I will be monitoring your session in real-time.</p>
-                 <p><strong>All the best for your ${examName}!</strong></p>`,
-        icon: 'info',
-        allowOutsideClick: false,
-        confirmButtonText: isResuming ? 'Resume Exam' : 'I Understand, Begin Exam'
-    }).then(() => {
-        // Now show the exam screen and start the timer
-        // START PROCTORING CHECKS (Audio/Polling)
-        startProctoringChecks();
-        // Update Remote Status to LIVE
-        updateRemoteStatus('LIVE');
+    // --- Initialization ---
+    async function initializeExam() {
+        // --- START AGGRESSIVE SECURITY ---
+        if (window.setupExamSecurity) window.setupExamSecurity();
 
         showScreen('exam');
-        renderQuestions();
-        renderNav(false);
-        showQuestion(currentQuestionIndex);
-        startTimer(savedSeconds);
-
-        if (isResuming) {
-            // Update pause count display if resuming
-            const pauseDisplay = document.getElementById('pauseCountDisplay');
-            if (pauseDisplay) pauseDisplay.textContent = `(${MAX_PAUSES - pauseCount} left)`;
-
-            // Trigger fullscreen on resume
-            goFullScreen();
+        // Fetch scheduled email immediately
+        if (examId) {
+            // Check localStorage first to avoid API request
+            const cachedEmail = localStorage.getItem(`scheduled_email_${examId}`);
+            if (cachedEmail) {
+                scheduledEmail = cachedEmail;
+                console.log("Captured scheduled email from cache:", scheduledEmail);
+            } else {
+                try {
+                    const resp = await fetch(`https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_schedules/${examId}.json`);
+                    const data = await resp.json();
+                    if (data && data.gmail) {
+                        scheduledEmail = data.gmail;
+                        console.log("Captured scheduled email from Firebase:", scheduledEmail);
+                        // Store it for future use during this session's refreshes
+                        localStorage.setItem(`scheduled_email_${examId}`, scheduledEmail);
+                    }
+                } catch (e) {
+                    console.error("Initial schedule fetch failed", e);
+                }
+            }
         }
-    });
-}
-// --- Question Rendering and Navigation ---
-function renderQuestions() {
-    questionArea.innerHTML = questions.map((q, index) => `
+
+        // Initialize pause button display
+        const pauseCountDisplay = document.getElementById('pauseCountDisplay');
+        if (pauseCountDisplay) {
+            pauseCountDisplay.textContent = `(${MAX_PAUSES - pauseCount} left)`;
+        }
+        // Note: Fullscreen is now handled by launchExamBtn click event.
+        // Stop the system check stream if it exists
+        if (systemCheckAudioStream) systemCheckAudioStream.getTracks().forEach(track => track.stop());
+
+        examTitleEl.textContent = examName;
+
+        // --- Restore State Logic ---
+        const savedStateJson = localStorage.getItem(getStorageKey());
+        let savedSeconds = 90 * 60;
+        let isResuming = false;
+
+        if (savedStateJson) {
+            try {
+                const state = JSON.parse(savedStateJson);
+                // Basic validation to ensure state matches current exam structure
+                if (state.userAnswers && state.userAnswers.length === questions.length) {
+                    userAnswers = state.userAnswers;
+                    markedForReview = state.markedForReview || markedForReview;
+                    currentQuestionIndex = state.currentQuestionIndex || 0;
+                    pauseCount = state.pauseCount || 0;
+                    savedSeconds = state.secondsRemaining || savedSeconds;
+
+                    // --- Restore Question Order ---
+                    if (state.questionOrder && state.questionOrder.length === sourceQuestions.length) {
+                        questionOrder = state.questionOrder;
+                        // Reconstruct shuffled array based on saved indices
+                        questions = questionOrder.map(index => sourceQuestions[index]);
+                    }
+
+                    isResuming = true;
+                }
+            } catch (e) {
+                console.error("Error parsing saved state", e);
+            }
+        }
+
+        // --- If NEW session (not resuming), Shuffle Questions ---
+        if (!isResuming) {
+            // Create array of indices [0, 1, 2, ... n]
+            questionOrder = Array.from({ length: sourceQuestions.length }, (_, i) => i);
+            // Shuffle indices
+            for (let i = questionOrder.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [questionOrder[i], questionOrder[j]] = [questionOrder[j], questionOrder[i]];
+            }
+            // Reorder questions array
+            questions = questionOrder.map(index => sourceQuestions[index]);
+
+            // Reset state variables to match new shuffled length (though length is same)
+            userAnswers = new Array(questions.length).fill(null);
+            markedForReview = new Array(questions.length).fill(false);
+        }
+
+        // Start proctoring first to get the welcome message
+        await startProctoring();
+        // Show the welcome message from the AI
+        Swal.fire({
+            title: isResuming ? 'Resuming Your Exam' : 'Welcome to Your Live Proctored Exam',
+            html: isResuming ?
+                `<p>We found a previous session. You will be placed exactly where you left off.</p>
+                 <p><strong>Time Remaining:</strong> ${Math.floor(savedSeconds / 60)} minutes</p>
+                 <p>Good luck!</p>` :
+                `<p>I am your AI proctor for this session. My purpose is to ensure a fair and secure testing environment.</p>
+                 <p>Please maintain focus on your screen, ensure you are alone, and keep your environment clear of any unauthorized materials. I will be monitoring your session in real-time.</p>
+                 <p><strong>All the best for your ${examName}!</strong></p>`,
+            icon: 'info',
+            allowOutsideClick: false,
+            confirmButtonText: isResuming ? 'Resume Exam' : 'I Understand, Begin Exam'
+        }).then(() => {
+            // Now show the exam screen and start the timer
+            // START PROCTORING CHECKS (Audio/Polling)
+            startProctoringChecks();
+            // Update Remote Status to LIVE
+            updateRemoteStatus('LIVE');
+
+            showScreen('exam');
+            renderQuestions();
+            renderNav(false);
+            showQuestion(currentQuestionIndex);
+            startTimer(savedSeconds);
+
+            if (isResuming) {
+                // Update pause count display if resuming
+                const pauseDisplay = document.getElementById('pauseCountDisplay');
+                if (pauseDisplay) pauseDisplay.textContent = `(${MAX_PAUSES - pauseCount} left)`;
+
+                // Trigger fullscreen on resume
+                goFullScreen();
+            }
+        });
+    }
+    // --- Question Rendering and Navigation ---
+    function renderQuestions() {
+        questionArea.innerHTML = questions.map((q, index) => `
             <div class="question-block" id="question-${index}" data-index="${index}">
                 <h3>Question ${index + 1}: ${q.question}</h3>
                 <ul class="options-list">
@@ -989,762 +1056,762 @@ function renderQuestions() {
                 </ul>
             </div>
         `).join('');
-    // Add event listeners for saving answers
-    questionArea.querySelectorAll('input[type="radio"]').forEach(input => {
-        input.addEventListener('change', (e) => {
-            const qIndex = parseInt(e.target.name.replace('question', ''));
-            userAnswers[qIndex] = e.target.value;
-            updateNav(false);
-            // saveExamState removed
+        // Add event listeners for saving answers
+        questionArea.querySelectorAll('input[type="radio"]').forEach(input => {
+            input.addEventListener('change', (e) => {
+                const qIndex = parseInt(e.target.name.replace('question', ''));
+                userAnswers[qIndex] = e.target.value;
+                updateNav(false);
+                // saveExamState removed
 
+            });
         });
-    });
-}
-function renderNav(isForReviewScreen = false) {
-    const container = isForReviewScreen ? reviewGrid : questionNav;
-    container.innerHTML = ''; // Clear previous content
-    questions.forEach((_, index) => {
-        const item = document.createElement('div');
-        const status = userAnswers[index] !== null ? 'answered' : 'unanswered';
-        const isMarked = markedForReview[index];
-        if (isForReviewScreen) {
-            item.className = 'review-item';
-            let statusText = status === 'answered' ? 'Answered' : 'Not Answered';
-            let statusClass = status === 'answered' ? 'status-answered' : 'status-unanswered';
-            if (isMarked) {
-                statusText = 'Marked for Review';
-                statusClass = 'status-marked';
-            }
-            item.innerHTML = `
+    }
+    function renderNav(isForReviewScreen = false) {
+        const container = isForReviewScreen ? reviewGrid : questionNav;
+        container.innerHTML = ''; // Clear previous content
+        questions.forEach((_, index) => {
+            const item = document.createElement('div');
+            const status = userAnswers[index] !== null ? 'answered' : 'unanswered';
+            const isMarked = markedForReview[index];
+            if (isForReviewScreen) {
+                item.className = 'review-item';
+                let statusText = status === 'answered' ? 'Answered' : 'Not Answered';
+                let statusClass = status === 'answered' ? 'status-answered' : 'status-unanswered';
+                if (isMarked) {
+                    statusText = 'Marked for Review';
+                    statusClass = 'status-marked';
+                }
+                item.innerHTML = `
                     <span>Question ${index + 1}</span>
                     <span class="status-text ${statusClass}">${statusText}</span>
                 `;
-            item.addEventListener('click', () => {
-                showScreen('exam');
-                showQuestion(index);
-            });
-            item.setAttribute('tabindex', '0'); // Accessibility
-        } else {
-            item.className = 'q-nav-item';
-            item.textContent = index + 1;
-            item.dataset.index = index;
-            item.addEventListener('click', () => {
-                showQuestion(index);
-            });
-            item.setAttribute('tabindex', '0'); // Accessibility
+                item.addEventListener('click', () => {
+                    showScreen('exam');
+                    showQuestion(index);
+                });
+                item.setAttribute('tabindex', '0'); // Accessibility
+            } else {
+                item.className = 'q-nav-item';
+                item.textContent = index + 1;
+                item.dataset.index = index;
+                item.addEventListener('click', () => {
+                    showQuestion(index);
+                });
+                item.setAttribute('tabindex', '0'); // Accessibility
+            }
+            container.appendChild(item);
         }
-        container.appendChild(item);
+        );
     }
-    );
-}
-function updateNav(isForReviewScreen = false) {
-    if (isForReviewScreen) {
-        // Re-render review if needed, but since static, no update needed beyond initial render
-        return;
-    }
-    // Update exam navigator classes
-    questionNav.querySelectorAll('.q-nav-item').forEach((item, index) => {
-        item.classList.remove('current', 'answered', 'marked');
-        if (userAnswers[index]) {
-            item.classList.add('answered');
+    function updateNav(isForReviewScreen = false) {
+        if (isForReviewScreen) {
+            // Re-render review if needed, but since static, no update needed beyond initial render
+            return;
         }
-        if (markedForReview[index]) {
-            item.classList.add('marked');
+        // Update exam navigator classes
+        questionNav.querySelectorAll('.q-nav-item').forEach((item, index) => {
+            item.classList.remove('current', 'answered', 'marked');
+            if (userAnswers[index]) {
+                item.classList.add('answered');
+            }
+            if (markedForReview[index]) {
+                item.classList.add('marked');
+            }
+            if (index === currentQuestionIndex) {
+                item.classList.add('current');
+            }
+        });
+    }
+    function showQuestion(index) {
+        document.querySelectorAll('.question-block').forEach(block => block.classList.remove('active'));
+        const questionToShow = document.getElementById(`question-${index}`);
+        if (questionToShow) {
+            questionToShow.classList.add('active');
         }
-        if (index === currentQuestionIndex) {
-            item.classList.add('current');
+        currentQuestionIndex = index;
+        // Pre-fill answer if exists
+        const answer = userAnswers[index];
+        if (answer) {
+            const input = questionToShow.querySelector(`input[value="${answer}"]`);
+            if (input) input.checked = true;
         }
-    });
-}
-function showQuestion(index) {
-    document.querySelectorAll('.question-block').forEach(block => block.classList.remove('active'));
-    const questionToShow = document.getElementById(`question-${index}`);
-    if (questionToShow) {
-        questionToShow.classList.add('active');
+        updateNavButtons();
+        updateNav(false);
     }
-    currentQuestionIndex = index;
-    // Pre-fill answer if exists
-    const answer = userAnswers[index];
-    if (answer) {
-        const input = questionToShow.querySelector(`input[value="${answer}"]`);
-        if (input) input.checked = true;
+    function updateNavButtons() {
+        prevBtn.disabled = currentQuestionIndex === 0;
+        nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'none' : 'inline-flex';
+        reviewExamBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'inline-flex' : 'none';
+        markReviewBtn.textContent = markedForReview[currentQuestionIndex] ? 'Unmark Review' : 'Mark for Review';
     }
-    updateNavButtons();
-    updateNav(false);
-}
-function updateNavButtons() {
-    prevBtn.disabled = currentQuestionIndex === 0;
-    nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'none' : 'inline-flex';
-    reviewExamBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'inline-flex' : 'none';
-    markReviewBtn.textContent = markedForReview[currentQuestionIndex] ? 'Unmark Review' : 'Mark for Review';
-}
-nextBtn.addEventListener('click', () => {
-    if (currentQuestionIndex < questions.length - 1) {
-        showQuestion(currentQuestionIndex + 1);
-        // saveExamState removed
-
-    }
-});
-prevBtn.addEventListener('click', () => {
-    if (currentQuestionIndex > 0) {
-        showQuestion(currentQuestionIndex - 1);
-        // saveExamState removed
-
-    }
-});
-markReviewBtn.addEventListener('click', () => {
-    markedForReview[currentQuestionIndex] = !markedForReview[currentQuestionIndex];
-    updateNav(false);
-    updateNavButtons();
-    // saveExamState removed
-
-});
-reviewExamBtn.addEventListener('click', () => {
-    // When the user is on the last question and clicks "Review Exam"
-    populateReviewScreen();
-    showScreen('review');
-});
-// --- Timer Logic ---
-let timerInterval;
-let secondsRemaining;
-function startTimer(durationInSeconds) {
-    let timer = durationInSeconds;
-    secondsRemaining = durationInSeconds;
-    timerInterval = setInterval(() => {
-        const hours = Math.floor(timer / 3600);
-        const minutes = Math.floor((timer % 3600) / 60);
-        const seconds = timer % 60;
-        timerEl.textContent =
-            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
-        secondsRemaining = timer;
-
-        // Save state every 5 seconds to capture timer progress
-        if (timer % 5 === 0) {
+    nextBtn.addEventListener('click', () => {
+        if (currentQuestionIndex < questions.length - 1) {
+            showQuestion(currentQuestionIndex + 1);
             // saveExamState removed
 
         }
+    });
+    prevBtn.addEventListener('click', () => {
+        if (currentQuestionIndex > 0) {
+            showQuestion(currentQuestionIndex - 1);
+            // saveExamState removed
 
-        if (--timer < 0) {
-            clearInterval(timerInterval);
-            // clearExamState removed
-
-            Swal.fire({
-                title: 'Time\'s Up!',
-                text: 'Your exam has been automatically submitted.',
-                icon: 'warning',
-                allowOutsideClick: false,
-            }).then(() => submitAndExit());
         }
-    }, 1000);
-}
-// --- Pause and Resume Logic ---
-function pauseExam() {
-    if (pauseCount >= MAX_PAUSES) {
-        Swal.fire({
-            icon: 'error',
-            title: 'No Pauses Left',
-            text: `You have used all your ${MAX_PAUSES} available pauses.`,
-        });
-        pauseBtn.disabled = true;
-        pauseBtn.innerHTML = '<i data-lucide="pause"></i> No Pauses Left';
-        lucide.createIcons();
-        return;
+    });
+    markReviewBtn.addEventListener('click', () => {
+        markedForReview[currentQuestionIndex] = !markedForReview[currentQuestionIndex];
+        updateNav(false);
+        updateNavButtons();
+        // saveExamState removed
+
+    });
+    reviewExamBtn.addEventListener('click', () => {
+        // When the user is on the last question and clicks "Review Exam"
+        populateReviewScreen();
+        showScreen('review');
+    });
+    // --- Timer Logic ---
+    let timerInterval;
+    let secondsRemaining;
+    function startTimer(durationInSeconds) {
+        let timer = durationInSeconds;
+        secondsRemaining = durationInSeconds;
+        timerInterval = setInterval(() => {
+            const hours = Math.floor(timer / 3600);
+            const minutes = Math.floor((timer % 3600) / 60);
+            const seconds = timer % 60;
+            timerEl.textContent =
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            secondsRemaining = timer;
+
+            // Save state every 5 seconds to capture timer progress
+            if (timer % 5 === 0) {
+                // saveExamState removed
+
+            }
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                // clearExamState removed
+
+                Swal.fire({
+                    title: 'Time\'s Up!',
+                    text: 'Your exam has been automatically submitted.',
+                    icon: 'warning',
+                    allowOutsideClick: false,
+                }).then(() => submitAndExit());
+            }
+        }, 1000);
     }
-    if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
+    // --- Pause and Resume Logic ---
+    function pauseExam() {
+        if (pauseCount >= MAX_PAUSES) {
+            Swal.fire({
+                icon: 'error',
+                title: 'No Pauses Left',
+                text: `You have used all your ${MAX_PAUSES} available pauses.`,
+            });
+            pauseBtn.disabled = true;
+            pauseBtn.innerHTML = '<i data-lucide="pause"></i> No Pauses Left';
+            lucide.createIcons();
+            return;
+        }
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        if (proctoringInterval) {
+            clearInterval(proctoringInterval);
+            proctoringInterval = null;
+        }
+
+        pauseOverlay.style.display = 'flex';
+
+        pauseCount++;
+        const remainingPauses = MAX_PAUSES - pauseCount;
+        const pauseCountDisplay = document.getElementById('pauseCountDisplay');
+        if (pauseCountDisplay) {
+            pauseCountDisplay.textContent = `(${remainingPauses} left)`;
+        }
+        // saveExamState removed
+
+        addToProctorLog("Session paused by user.");
     }
-    if (proctoringInterval) {
-        clearInterval(proctoringInterval);
-        proctoringInterval = null;
+    function resumeExam() {
+        pauseOverlay.style.display = 'none';
+        if (secondsRemaining > 0) {
+            startTimer(secondsRemaining);
+        }
+        // Restart proctoring checks
+        startProctoringChecks();
+        addToProctorLog("Session resumed by user.");
+    }
+    pauseBtn.addEventListener('click', pauseExam);
+    resumeBtn.addEventListener('click', resumeExam);
+    // --- Email Notification Logic ---
+    function sendResultEmail(score, percentage, status) {
+        if (typeof emailjs === 'undefined') {
+            console.error("EmailJS not loaded");
+            return;
+        }
+
+        // --- CONFIGURATION REQUIRED ---
+        // Please replace these placeholders with your actual EmailJS credentials.
+        // 1. Sign up at https://emailjs.com
+        // 2. Create a service (e.g., 'gmail') -> Service ID
+        // 3. Create a template -> Template ID
+        // 4. Get your Public Key from Account > General
+        const PUBLIC_KEY = 'HZtgyUoNkOfNpFHy3';
+        const SERVICE_ID = 'service_946v1vs';
+        // You can set separate templates for Pass and Fail outcomes
+        // e.g. TEMPLATE_ID_PASS = 'template_jkym9ys' and TEMPLATE_ID_FAIL = 'template_fail_id'
+        const TEMPLATE_ID_PASS = 'template_jkym9ys';
+        const TEMPLATE_ID_FAIL = 'template_bnqcqbr';
+
+        if (PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+            console.warn("EmailJS keys not configured. Skipping email.");
+            return;
+        }
+
+        try {
+            emailjs.init(PUBLIC_KEY);
+
+            const user = JSON.parse(localStorage.getItem('cm_user') || '{}');
+            const examName = document.getElementById('examTitle').textContent;
+
+            const templateParams = {
+                to_name: user.name || "Candidate",
+                to_email: scheduledEmail || user.email,
+                exam_name: examName,
+                score: score,
+                percentage: `${percentage}%`,
+                status: status,
+                result_word: status === 'Passed' ? "Proficient" : "Not Passed",
+                date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+                certificate_link: arguments[3] || (status === 'Passed' ? "https://example.com/certificate/" + (user.email || 'id') : "")
+            };
+
+            const templateIdToUse = status === 'Passed' ? TEMPLATE_ID_PASS : TEMPLATE_ID_FAIL;
+            emailjs.send(SERVICE_ID, templateIdToUse, templateParams)
+                .then(() => console.log('Result email sent successfully!'))
+                .catch((error) => console.error('Failed to send result email:', error));
+
+        } catch (e) {
+            console.error("Error initializing EmailJS:", e);
+        }
     }
 
-    pauseOverlay.style.display = 'flex';
-
-    pauseCount++;
-    const remainingPauses = MAX_PAUSES - pauseCount;
-    const pauseCountDisplay = document.getElementById('pauseCountDisplay');
-    if (pauseCountDisplay) {
-        pauseCountDisplay.textContent = `(${remainingPauses} left)`;
-    }
-    // saveExamState removed
-
-    addToProctorLog("Session paused by user.");
-}
-function resumeExam() {
-    pauseOverlay.style.display = 'none';
-    if (secondsRemaining > 0) {
-        startTimer(secondsRemaining);
-    }
-    // Restart proctoring checks
-    startProctoringChecks();
-    addToProctorLog("Session resumed by user.");
-}
-pauseBtn.addEventListener('click', pauseExam);
-resumeBtn.addEventListener('click', resumeExam);
-// --- Email Notification Logic ---
-function sendResultEmail(score, percentage, status) {
-    if (typeof emailjs === 'undefined') {
-        console.error("EmailJS not loaded");
-        return;
-    }
-
-    // --- CONFIGURATION REQUIRED ---
-    // Please replace these placeholders with your actual EmailJS credentials.
-    // 1. Sign up at https://emailjs.com
-    // 2. Create a service (e.g., 'gmail') -> Service ID
-    // 3. Create a template -> Template ID
-    // 4. Get your Public Key from Account > General
-    const PUBLIC_KEY = 'HZtgyUoNkOfNpFHy3';
-    const SERVICE_ID = 'service_946v1vs';
-    // You can set separate templates for Pass and Fail outcomes
-    // e.g. TEMPLATE_ID_PASS = 'template_jkym9ys' and TEMPLATE_ID_FAIL = 'template_fail_id'
-    const TEMPLATE_ID_PASS = 'template_jkym9ys';
-    const TEMPLATE_ID_FAIL = 'template_bnqcqbr';
-
-    if (PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
-        console.warn("EmailJS keys not configured. Skipping email.");
-        return;
-    }
-
-    try {
-        emailjs.init(PUBLIC_KEY);
-
+    // --- Certificate Generation & Link Retrieval ---
+    async function generateCertificateAndGetLink(firebaseId) {
         const user = JSON.parse(localStorage.getItem('cm_user') || '{}');
         const examName = document.getElementById('examTitle').textContent;
+        const meta = EXAM_META_MAPPING[examName] || { seriesID: "GEN-001", level: "(Completed)", sealText: "CERTIFIED • DC CLOUD SOLUTIONS" };
 
-        const templateParams = {
-            to_name: user.name || "Candidate",
-            to_email: scheduledEmail || user.email,
-            exam_name: examName,
-            score: score,
-            percentage: `${percentage}%`,
-            status: status,
-            result_word: status === 'Passed' ? "Proficient" : "Not Passed",
-            date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-            certificate_link: arguments[3] || (status === 'Passed' ? "https://example.com/certificate/" + (user.email || 'id') : "")
+        // 1. Use Firebase ID
+        const uniqueID = firebaseId || Math.random().toString(36).substring(2, 15);
+        const issuedDate = new Date().toISOString();
+
+        // 2. Populate Template
+        document.getElementById('certStudentName').textContent = user.name || "Candidate";
+        document.getElementById('certExamName').textContent = examName;
+        document.getElementById('certLevel').textContent = meta.level;
+        document.getElementById('certSeriesID').textContent = meta.seriesID;
+        document.getElementById('certIssuedDate').textContent = issuedDate;
+        document.getElementById('certUniqueID').textContent = uniqueID;
+        document.getElementById('certCandidateNameDisplay').textContent = user.name || "Candidate";
+
+        // 3. Generate QR Code
+        const qrData = encodeURIComponent(`https://dcinfotech.org.in/verify?id=${uniqueID}`);
+        document.getElementById('certQRCode').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${qrData}" style="width: 100%; height: 100%;">`;
+
+        // Wait for QR code image to load
+        await new Promise(r => setTimeout(r, 1000));
+
+        // 4. Capture Canvas
+        const certElement = document.getElementById('certificateTemplate');
+        const canvas = await html2canvas(certElement, {
+            scale: 1.5,
+            useCORS: true,
+            logging: false
+        });
+
+        // 5. Convert to Blob & Upload to ImgBB
+        return new Promise((resolve, reject) => {
+            canvas.toBlob(async (blob) => {
+                const formData = new FormData();
+                formData.append('image', blob);
+
+                try {
+                    const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        resolve(result.data.url);
+                    } else {
+                        reject('ImgBB upload failed');
+                    }
+                } catch (e) {
+                    reject(e);
+                }
+            }, 'image/png');
+        });
+    }
+
+    // --- Submission Logic ---
+    async function submitAndExit() {
+        // clearExamState removed
+
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+        clearInterval(timerInterval);
+        if (remoteActionInterval) clearInterval(remoteActionInterval);
+        if (proctoringInterval) clearInterval(proctoringInterval);
+        if (periodicCaptureInterval) clearInterval(periodicCaptureInterval);
+
+        // --- Mark session as completed in Firebase ---
+        try {
+            const sessionId = `${user.email.replace(/[.@]/g, '_')}_${examName.replace(/\s+/g, '_')}`;
+            await fetch(`https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_sessions/${sessionId}.json`, {
+                method: 'PATCH',
+                body: JSON.stringify({ status: 'completed', endTime: new Date().toISOString() })
+            });
+            console.log("[Sync] Session marked as completed.");
+        } catch (e) {
+            console.warn("[Sync] Could not mark session as completed:", e);
+        }
+
+        const score = userAnswers.reduce((acc, ans, idx) => ans === questions[idx].answer ? acc + 1 : acc, 0);
+        const percentage = Math.round((score / questions.length) * 100);
+        const user = JSON.parse(localStorage.getItem('cm_user') || '{}');
+        const examName = document.getElementById('examTitle').textContent;
+        const status = percentage >= 75 ? 'Passed' : 'Failed';
+        const firebaseId = "DC-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+
+        let certLink = "";
+        if (status === 'Passed') {
+            Swal.fire({
+                title: 'Generating Certificate...',
+                text: 'Please wait while we finalize your results.',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+            try {
+                certLink = await generateCertificateAndGetLink(firebaseId);
+                console.log("Certificate generated:", certLink);
+            } catch (e) {
+                console.error("Certificate generation failed:", e);
+            }
+        }
+
+        // --- Send Email Notification ---
+        sendResultEmail(score + "/" + questions.length, percentage, status, certLink);
+
+        const resultData = {
+            id: firebaseId, // Consistent Firebase Dictionary Key & Cert ID
+            Timestamp: new Date().toISOString(),
+            UserName: user.name || 'N/A',
+            UserEmail: user.email || 'N/A',
+            ExamName: examName,
+            Score: `${score}/${questions.length}`,
+            Percentage: `${percentage}%`,
+            Status: status,
+            CertificateLink: certLink,
+            // Include bundled snapshots and violations
+            ViolationReason: sessionSnapshots.map(s => s.reason).join(' | '),
+            SnapshotURL: sessionSnapshots.map(s => `[${s.time}] ${s.reason}: ${s.url}`).join('\n'),
+            ExamTime: ''
         };
 
-        const templateIdToUse = status === 'Passed' ? TEMPLATE_ID_PASS : TEMPLATE_ID_FAIL;
-        emailjs.send(SERVICE_ID, templateIdToUse, templateParams)
-            .then(() => console.log('Result email sent successfully!'))
-            .catch((error) => console.error('Failed to send result email:', error));
+        // --- Save Completion Flag Locally ---
+        const completionKey = `exam_completed_${user.email || 'guest'}_${examName.replace(/\s+/g, '_')}`;
+        const completionData = {
+            status: 'completed',
+            timestamp: new Date().getTime(),
+            score: resultData.Score,
+            percentage: resultData.Percentage
+        };
+        localStorage.setItem(completionKey, JSON.stringify(completionData));
 
-    } catch (e) {
-        console.error("Error initializing EmailJS:", e);
-    }
-}
+        let saveSuccess = false;
+        let saveMessage = '';
 
-// --- Certificate Generation & Link Retrieval ---
-async function generateCertificateAndGetLink(firebaseId) {
-    const user = JSON.parse(localStorage.getItem('cm_user') || '{}');
-    const examName = document.getElementById('examTitle').textContent;
-    const meta = EXAM_META_MAPPING[examName] || { seriesID: "GEN-001", level: "(Completed)", sealText: "CERTIFIED • DC CLOUD SOLUTIONS" };
-
-    // 1. Use Firebase ID
-    const uniqueID = firebaseId || Math.random().toString(36).substring(2, 15);
-    const issuedDate = new Date().toISOString();
-
-    // 2. Populate Template
-    document.getElementById('certStudentName').textContent = user.name || "Candidate";
-    document.getElementById('certExamName').textContent = examName;
-    document.getElementById('certLevel').textContent = meta.level;
-    document.getElementById('certSeriesID').textContent = meta.seriesID;
-    document.getElementById('certIssuedDate').textContent = issuedDate;
-    document.getElementById('certUniqueID').textContent = uniqueID;
-    document.getElementById('certCandidateNameDisplay').textContent = user.name || "Candidate";
-
-    // 3. Generate QR Code
-    const qrData = encodeURIComponent(`https://dcinfotech.org.in/verify?id=${uniqueID}`);
-    document.getElementById('certQRCode').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${qrData}" style="width: 100%; height: 100%;">`;
-
-    // Wait for QR code image to load
-    await new Promise(r => setTimeout(r, 1000));
-
-    // 4. Capture Canvas
-    const certElement = document.getElementById('certificateTemplate');
-    const canvas = await html2canvas(certElement, {
-        scale: 1.5,
-        useCORS: true,
-        logging: false
-    });
-
-    // 5. Convert to Blob & Upload to ImgBB
-    return new Promise((resolve, reject) => {
-        canvas.toBlob(async (blob) => {
-            const formData = new FormData();
-            formData.append('image', blob);
-
-            try {
-                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-                if (result.success) {
-                    resolve(result.data.url);
-                } else {
-                    reject('ImgBB upload failed');
-                }
-            } catch (e) {
-                reject(e);
-            }
-        }, 'image/png');
-    });
-}
-
-// --- Submission Logic ---
-async function submitAndExit() {
-    // clearExamState removed
-
-    if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-    }
-    clearInterval(timerInterval);
-    if (remoteActionInterval) clearInterval(remoteActionInterval);
-    if (proctoringInterval) clearInterval(proctoringInterval);
-    if (periodicCaptureInterval) clearInterval(periodicCaptureInterval);
-
-    // --- Mark session as completed in Firebase ---
-    try {
-        const sessionId = `${user.email.replace(/[.@]/g, '_')}_${examName.replace(/\s+/g, '_')}`;
-        await fetch(`https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com/exam_sessions/${sessionId}.json`, {
-            method: 'PATCH',
-            body: JSON.stringify({ status: 'completed', endTime: new Date().toISOString() })
-        });
-        console.log("[Sync] Session marked as completed.");
-    } catch (e) {
-        console.warn("[Sync] Could not mark session as completed:", e);
-    }
-
-    const score = userAnswers.reduce((acc, ans, idx) => ans === questions[idx].answer ? acc + 1 : acc, 0);
-    const percentage = Math.round((score / questions.length) * 100);
-    const user = JSON.parse(localStorage.getItem('cm_user') || '{}');
-    const examName = document.getElementById('examTitle').textContent;
-    const status = percentage >= 75 ? 'Passed' : 'Failed';
-    const firebaseId = "DC-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-
-    let certLink = "";
-    if (status === 'Passed') {
-        Swal.fire({
-            title: 'Generating Certificate...',
-            text: 'Please wait while we finalize your results.',
-            allowOutsideClick: false,
-            didOpen: () => { Swal.showLoading(); }
-        });
+        // --- Save results to Firebase ---
         try {
-            certLink = await generateCertificateAndGetLink(firebaseId);
-            console.log("Certificate generated:", certLink);
-        } catch (e) {
-            console.error("Certificate generation failed:", e);
+            const response = await fetch(`${SHEETDB_RESULTS_URL}/${resultData.id}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(resultData)
+            });
+            if (response.ok) {
+                saveSuccess = true;
+                saveMessage = 'Your score has been successfully saved to the server.';
+            } else {
+                // Attempt to read error message if provided by SheetDB
+                const errorBody = await response.text();
+                saveMessage = `Submission failed (Server error: ${response.status}). Contact support with this score: ${resultData.Score}. Error details: ${errorBody}`;
+                console.error("Failed to save exam results:", response.status, response.statusText, errorBody);
+            }
+        } catch (error) {
+            saveMessage = `Submission failed (Network error: ${error.message}). Contact support with this score: ${resultData.Score}.`;
+            console.error("Failed to save exam results (Network):", error);
         }
-    }
 
-    // --- Send Email Notification ---
-    sendResultEmail(score + "/" + questions.length, percentage, status, certLink);
-
-    const resultData = {
-        id: firebaseId, // Consistent Firebase Dictionary Key & Cert ID
-        Timestamp: new Date().toISOString(),
-        UserName: user.name || 'N/A',
-        UserEmail: user.email || 'N/A',
-        ExamName: examName,
-        Score: `${score}/${questions.length}`,
-        Percentage: `${percentage}%`,
-        Status: status,
-        CertificateLink: certLink,
-        // Include bundled snapshots and violations
-        ViolationReason: sessionSnapshots.map(s => s.reason).join(' | '),
-        SnapshotURL: sessionSnapshots.map(s => `[${s.time}] ${s.reason}: ${s.url}`).join('\n'),
-        ExamTime: ''
-    };
-
-    // --- Save Completion Flag Locally ---
-    const completionKey = `exam_completed_${user.email || 'guest'}_${examName.replace(/\s+/g, '_')}`;
-    const completionData = {
-        status: 'completed',
-        timestamp: new Date().getTime(),
-        score: resultData.Score,
-        percentage: resultData.Percentage
-    };
-    localStorage.setItem(completionKey, JSON.stringify(completionData));
-
-    let saveSuccess = false;
-    let saveMessage = '';
-
-    // --- Save results to Firebase ---
-    try {
-        const response = await fetch(`${SHEETDB_RESULTS_URL}/${resultData.id}.json`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(resultData)
-        });
-        if (response.ok) {
-            saveSuccess = true;
-            saveMessage = 'Your score has been successfully saved to the server.';
-        } else {
-            // Attempt to read error message if provided by SheetDB
-            const errorBody = await response.text();
-            saveMessage = `Submission failed (Server error: ${response.status}). Contact support with this score: ${resultData.Score}. Error details: ${errorBody}`;
-            console.error("Failed to save exam results:", response.status, response.statusText, errorBody);
-        }
-    } catch (error) {
-        saveMessage = `Submission failed (Network error: ${error.message}). Contact support with this score: ${resultData.Score}.`;
-        console.error("Failed to save exam results (Network):", error);
-    }
-
-    // --- Final User Feedback ---
-    Swal.fire({
-        title: saveSuccess ? 'Submitted!' : 'Submission Error!',
-        html: `
+        // --- Final User Feedback ---
+        Swal.fire({
+            title: saveSuccess ? 'Submitted!' : 'Submission Error!',
+            html: `
                 <p>Your exam has been submitted and recorded locally.</p>
                 <p><strong>Score: ${resultData.Score} (${resultData.Percentage})</strong></p>
                 <p><strong>Status: ${resultData.Status}</strong></p>
                 <p>${saveMessage}</p>
             `,
-        icon: saveSuccess ? 'success' : 'error',
-        allowOutsideClick: false,
-    }).then(() => {
-        window.location.href = 'dashboard.html';
-    });
-}
-// --- Enhanced AI Proctoring Logic with NLP Warnings ---
-let warningCount = 0;
-const MAX_WARNINGS = 3;
-let audioContext;
-let speechReady = false;
-let analyser;
-let microphone;
-let proctorLogEntries = [];
-async function startProctoring() {
-    // Initialize Speech Synthesis for "talking" AI
-    // document.addEventListener('visibilitychange', handleVisibilityChange);
-    try {
-        // Get a fresh stream for proctoring (since biometric stream was stopped)
-        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        // Use a separate stream for the video element to avoid feedback loops with audio analysis
-        const videoStream = new MediaStream(stream.getVideoTracks());
-        proctoringVideo.srcObject = videoStream;
-        proctoringVideo.play();
-        // Set up audio analysis
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioContext.createAnalyser();
-        microphone = audioContext.createMediaStreamSource(stream);
-
-        analyser.fftSize = 512;
-        microphone.connect(analyser);
-
-        startProctoringChecks();
-        // Initial log entry and AI welcome message
-        const welcomeMessage = "Proctoring session initiated. I will be monitoring your exam to ensure integrity. Please focus on the screen. Good luck.";
-        addToProctorLog(welcomeMessage);
-        speak(welcomeMessage); // Use the new speak function
-    } catch (err) {
-        console.error("Proctoring stream error:", err);
-        Swal.fire({
-            icon: 'error',
-            title: 'Proctoring Error',
-            text: 'Could not access webcam/microphone for proctoring. Exam cannot proceed.',
+            icon: saveSuccess ? 'success' : 'error',
+            allowOutsideClick: false,
         }).then(() => {
             window.location.href = 'dashboard.html';
         });
     }
-}
-function startProctoringChecks() {
-    if (proctoringInterval) clearInterval(proctoringInterval);
-    // Audio/Video checks every 10 seconds
-    proctoringInterval = setInterval(() => {
-        checkAudioLevel();
-        checkVideoFrameWithGroq();
-    }, 10000); 
-    startPeriodicCapture(); // Start periodic snapshots (60s)
-    startRemoteStatusListener(); // START REAL-TIME ADMIN CONTROL LISTENER
-}
+    // --- Enhanced AI Proctoring Logic with NLP Warnings ---
+    let warningCount = 0;
+    const MAX_WARNINGS = 3;
+    let audioContext;
+    let speechReady = false;
+    let analyser;
+    let microphone;
+    let proctorLogEntries = [];
+    async function startProctoring() {
+        // Initialize Speech Synthesis for "talking" AI
+        // document.addEventListener('visibilitychange', handleVisibilityChange);
+        try {
+            // Get a fresh stream for proctoring (since biometric stream was stopped)
+            stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            // Use a separate stream for the video element to avoid feedback loops with audio analysis
+            const videoStream = new MediaStream(stream.getVideoTracks());
+            proctoringVideo.srcObject = videoStream;
+            proctoringVideo.play();
+            // Set up audio analysis
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            microphone = audioContext.createMediaStreamSource(stream);
 
-function startPeriodicCapture() {
-    if (periodicCaptureInterval) clearInterval(periodicCaptureInterval);
-    // Capture every 60 seconds (60000 ms)
-    periodicCaptureInterval = setInterval(async () => {
+            analyser.fftSize = 512;
+            microphone.connect(analyser);
+
+            startProctoringChecks();
+            // Initial log entry and AI welcome message
+            const welcomeMessage = "Proctoring session initiated. I will be monitoring your exam to ensure integrity. Please focus on the screen. Good luck.";
+            addToProctorLog(welcomeMessage);
+            speak(welcomeMessage); // Use the new speak function
+        } catch (err) {
+            console.error("Proctoring stream error:", err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Proctoring Error',
+                text: 'Could not access webcam/microphone for proctoring. Exam cannot proceed.',
+            }).then(() => {
+                window.location.href = 'dashboard.html';
+            });
+        }
+    }
+    function startProctoringChecks() {
+        if (proctoringInterval) clearInterval(proctoringInterval);
+        // Audio/Video checks every 10 seconds
+        proctoringInterval = setInterval(() => {
+            checkAudioLevel();
+            checkVideoFrameWithGroq();
+        }, 10000);
+        startPeriodicCapture(); // Start periodic snapshots (60s)
+        startRemoteStatusListener(); // START REAL-TIME ADMIN CONTROL LISTENER
+    }
+
+    function startPeriodicCapture() {
+        if (periodicCaptureInterval) clearInterval(periodicCaptureInterval);
+        // Capture every 60 seconds (60000 ms)
+        periodicCaptureInterval = setInterval(async () => {
+            if (!proctoringVideo.srcObject || proctoringVideo.paused || proctoringVideo.ended || document.hidden || screens.exam.style.display !== 'flex') return;
+
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = proctoringVideo.videoWidth;
+                canvas.height = proctoringVideo.videoHeight;
+                const context = canvas.getContext('2d');
+                context.drawImage(proctoringVideo, 0, 0, canvas.width, canvas.height);
+
+                // Reuse logViolationSnapshot but with a specific reason for periodic capture
+                // We need to modify logViolationSnapshot to accept the canvas directly if possible, 
+                // or we can just duplicate the upload logic here for clarity and separation.
+                // Let's reuse logViolationSnapshot as it already handles ImgBB and SheetDB.
+
+                logViolationSnapshot(canvas, "Routine Snapshot");
+
+            } catch (err) {
+                console.error("Periodic capture error:", err);
+            }
+        }, 60000);
+    }
+
+    function addToProctorLog(message) {
+        const timestamp = new Date().toLocaleTimeString();
+        proctorLogEntries.push(`[${timestamp}] ${message}`);
+        if (proctorLogEntries.length > 10) {
+            proctorLogEntries.shift(); // Keep only last 10 entries
+        }
+        proctorLog.innerHTML = proctorLogEntries.map(entry => `<div>${entry}</div>`).join('');
+        proctorLog.scrollTop = proctorLog.scrollHeight;
+    }
+    function handleVisibilityChange() {
+        if (document.hidden && screens.exam.style.display === 'flex') {
+            issueWarning("Tab switch detected! Return to the exam immediately to avoid exam termination.");
+            addToProctorLog("Alert: User switched tabs. Strict focus required.");
+        }
+    }
+    function checkAudioLevel() {
+        // Audio level check is now disabled as per user request.
+        // The audio stream is still acquired as part of the webcam stream,
+        // but no proctoring actions will be taken based on audio input.
+    }
+    async function checkVideoFrameWithGroq() {
         if (!proctoringVideo.srcObject || proctoringVideo.paused || proctoringVideo.ended || document.hidden || screens.exam.style.display !== 'flex') return;
+        // Wait a bit for video to be ready
+        if (proctoringVideo.videoWidth === 0) return;
+        const canvas = document.createElement('canvas');
+        canvas.width = proctoringVideo.videoWidth;
+        canvas.height = proctoringVideo.videoHeight;
+        const context = canvas.getContext('2d');
+        context.drawImage(proctoringVideo, 0, 0, canvas.width, canvas.height);
+        const base64ImageData = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
 
         try {
-            const canvas = document.createElement('canvas');
-            canvas.width = proctoringVideo.videoWidth;
-            canvas.height = proctoringVideo.videoHeight;
-            const context = canvas.getContext('2d');
-            context.drawImage(proctoringVideo, 0, 0, canvas.width, canvas.height);
+            const prompt = "You are a strict exam proctor. Analyze this webcam frame. Is there a mobile phone, a book/notes, or a second person visible? If YES, explain what you see in 1 short sentence starting with 'Violation:'. If NO, simply say 'All Clear'.";
+            const isViolation = await analyzeImage(prompt, base64ImageData);
 
-            // Reuse logViolationSnapshot but with a specific reason for periodic capture
-            // We need to modify logViolationSnapshot to accept the canvas directly if possible, 
-            // or we can just duplicate the upload logic here for clarity and separation.
-            // Let's reuse logViolationSnapshot as it already handles ImgBB and SheetDB.
+            // Note: analyzeImage returns boolean based on text content
+            // However, for proctoring we might want the exact text for the log.
+            // Let's call the Groq API directly here to get the specific reason.
 
-            logViolationSnapshot(canvas, "Routine Snapshot");
-
-        } catch (err) {
-            console.error("Periodic capture error:", err);
-        }
-    }, 60000);
-}
-
-function addToProctorLog(message) {
-    const timestamp = new Date().toLocaleTimeString();
-    proctorLogEntries.push(`[${timestamp}] ${message}`);
-    if (proctorLogEntries.length > 10) {
-        proctorLogEntries.shift(); // Keep only last 10 entries
-    }
-    proctorLog.innerHTML = proctorLogEntries.map(entry => `<div>${entry}</div>`).join('');
-    proctorLog.scrollTop = proctorLog.scrollHeight;
-}
-function handleVisibilityChange() {
-    if (document.hidden && screens.exam.style.display === 'flex') {
-        issueWarning("Tab switch detected! Return to the exam immediately to avoid exam termination.");
-        addToProctorLog("Alert: User switched tabs. Strict focus required.");
-    }
-}
-function checkAudioLevel() {
-    // Audio level check is now disabled as per user request.
-    // The audio stream is still acquired as part of the webcam stream,
-    // but no proctoring actions will be taken based on audio input.
-}
-async function checkVideoFrameWithGroq() {
-    if (!proctoringVideo.srcObject || proctoringVideo.paused || proctoringVideo.ended || document.hidden || screens.exam.style.display !== 'flex') return;
-    // Wait a bit for video to be ready
-    if (proctoringVideo.videoWidth === 0) return;
-    const canvas = document.createElement('canvas');
-    canvas.width = proctoringVideo.videoWidth;
-    canvas.height = proctoringVideo.videoHeight;
-    const context = canvas.getContext('2d');
-    context.drawImage(proctoringVideo, 0, 0, canvas.width, canvas.height);
-    const base64ImageData = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
-
-    try {
-        const prompt = "You are a strict exam proctor. Analyze this webcam frame. Is there a mobile phone, a book/notes, or a second person visible? If YES, explain what you see in 1 short sentence starting with 'Violation:'. If NO, simply say 'All Clear'.";
-        const isViolation = await analyzeImage(prompt, base64ImageData);
-
-        // Note: analyzeImage returns boolean based on text content
-        // However, for proctoring we might want the exact text for the log.
-        // Let's call the Groq API directly here to get the specific reason.
-
-        const requestBody = {
-            model: GROQ_MODEL,
-            messages: [
-                {
-                    role: "user",
-                    content: [
-                        { type: "text", text: prompt },
-                        {
-                            type: "image_url",
-                            image_url: {
-                                url: `data:image/jpeg;base64,${base64ImageData}`
+            const requestBody = {
+                model: GROQ_MODEL,
+                messages: [
+                    {
+                        role: "user",
+                        content: [
+                            { type: "text", text: prompt },
+                            {
+                                type: "image_url",
+                                image_url: {
+                                    url: `data:image/jpeg;base64,${base64ImageData}`
+                                }
                             }
-                        }
-                    ]
-                }
-            ],
-            temperature: 0.1,
-            max_tokens: 100
-        };
+                        ]
+                    }
+                ],
+                temperature: 0.1,
+                max_tokens: 100
+            };
 
-        const response = await fetch(SECURE_GROQ_PROXY_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-                // Authorization is handled by the proxy on the server
-            },
-            body: JSON.stringify(requestBody)
-        });
+            const response = await fetch(SECURE_GROQ_PROXY_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                    // Authorization is handled by the proxy on the server
+                },
+                body: JSON.stringify(requestBody)
+            });
 
-        if (!response.ok) return;
+            if (!response.ok) return;
 
-        const data = await response.json();
-        const text = data.choices[0]?.message?.content || 'All Clear';
-        if (text.toLowerCase().includes('yes') || text.toLowerCase().includes('violation')) {
-            issueWarning(text); // Show the visual warning
-            speak("Unauthorized object detected. Please clear your desk.", 0.9, 1.1); // Make the AI "speak" the warning
-            logViolationSnapshot(canvas, text); // Take and log a snapshot
-            addToProctorLog(`Violation flagged: ${text}`);
-        } else {
-            addToProctorLog("Status: Compliant. Continue focusing.");
+            const data = await response.json();
+            const text = data.choices[0]?.message?.content || 'All Clear';
+            if (text.toLowerCase().includes('yes') || text.toLowerCase().includes('violation')) {
+                issueWarning(text); // Show the visual warning
+                speak("Unauthorized object detected. Please clear your desk.", 0.9, 1.1); // Make the AI "speak" the warning
+                logViolationSnapshot(canvas, text); // Take and log a snapshot
+                addToProctorLog(`Violation flagged: ${text}`);
+            } else {
+                addToProctorLog("Status: Compliant. Continue focusing.");
+            }
+        } catch (error) {
+            console.error("Error calling Groq API:", error);
         }
-    } catch (error) {
-        console.error("Error calling Groq API:", error);
     }
-}
-async function logViolationSnapshot(canvas, reason) {
-    const base64ImageData = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
-    let snapshotUrl = 'Upload failed';
-    // 1. Upload snapshot to ImgBB
-    const formData = new FormData();
-    formData.append('image', base64ImageData);
-    try {
-        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-            method: 'POST',
-            body: formData,
-        });
-        const result = await response.json();
-        if (result.success) {
-            snapshotUrl = result.data.url;
-            addToProctorLog(`Snapshot captured: ${snapshotUrl}`);
+    async function logViolationSnapshot(canvas, reason) {
+        const base64ImageData = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
+        let snapshotUrl = 'Upload failed';
+        // 1. Upload snapshot to ImgBB
+        const formData = new FormData();
+        formData.append('image', base64ImageData);
+        try {
+            const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData,
+            });
+            const result = await response.json();
+            if (result.success) {
+                snapshotUrl = result.data.url;
+                addToProctorLog(`Snapshot captured: ${snapshotUrl}`);
+            }
+        } catch (error) {
+            console.error("Snapshot Upload Error:", error);
+            addToProctorLog("Snapshot capture failed.");
         }
-    } catch (error) {
-        console.error("Snapshot Upload Error:", error);
-        addToProctorLog("Snapshot capture failed.");
-    }
 
-    // 2. Store violation details locally instead of sending immediately
-    const timestamp = new Date().toLocaleTimeString();
-    sessionSnapshots.push({
-        time: timestamp,
-        reason: reason,
-        url: snapshotUrl
-    });
-    console.log("Violation recorded locally:", reason, snapshotUrl);
-}
-// --- Enhanced, Human-like Speech Synthesis ---
-let voices = [];
-function loadVoices() {
-    voices = window.speechSynthesis.getVoices();
-    speechReady = true;
-}
-// The voices list is loaded asynchronously.
-if ('speechSynthesis' in window) {
-    loadVoices();
-    // Some browsers need this event to load voices
-    if (speechSynthesis.onvoiceschanged !== undefined) {
-        speechSynthesis.onvoiceschanged = loadVoices;
+        // 2. Store violation details locally instead of sending immediately
+        const timestamp = new Date().toLocaleTimeString();
+        sessionSnapshots.push({
+            time: timestamp,
+            reason: reason,
+            url: snapshotUrl
+        });
+        console.log("Violation recorded locally:", reason, snapshotUrl);
     }
-}
-function speak(text, rate = 0.9, pitch = 1.1) {
-    if (!('speechSynthesis' in window) || !speechReady) {
-        console.warn("Speech synthesis not ready or not supported.");
-        return;
+    // --- Enhanced, Human-like Speech Synthesis ---
+    let voices = [];
+    function loadVoices() {
+        voices = window.speechSynthesis.getVoices();
+        speechReady = true;
     }
-    const utterance = new SpeechSynthesisUtterance(text);
-
-    // Try to find a specific, high-quality voice.
-    let selectedVoice = voices.find(voice => voice.name === 'Google US English' && voice.lang.startsWith('en'));
-    if (!selectedVoice) {
-        selectedVoice = voices.find(voice => voice.lang.startsWith('en-US'));
+    // The voices list is loaded asynchronously.
+    if ('speechSynthesis' in window) {
+        loadVoices();
+        // Some browsers need this event to load voices
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
     }
-    // Final fallback to the first available English voice
-    if (!selectedVoice) selectedVoice = voices.find(voice => voice.lang.startsWith('en'));
+    function speak(text, rate = 0.9, pitch = 1.1) {
+        if (!('speechSynthesis' in window) || !speechReady) {
+            console.warn("Speech synthesis not ready or not supported.");
+            return;
+        }
+        const utterance = new SpeechSynthesisUtterance(text);
 
-    utterance.voice = selectedVoice || voices.find(voice => voice.lang === 'en-US'); // Fallback to any US English voice
-    utterance.volume = 1; // Full volume
-    utterance.rate = rate; // Speed of speech (0.1 to 10, default is 1)
-    utterance.pitch = pitch; // Pitch of speech (0 to 2, default is 1)
-    window.speechSynthesis.speak(utterance);
-}
-function issueWarning(reason) {
-    warningCount++;
-    warningsDisplay.innerHTML = `Warnings: <strong>${warningCount} / ${MAX_WARNINGS}</strong>`;
+        // Try to find a specific, high-quality voice.
+        let selectedVoice = voices.find(voice => voice.name === 'Google US English' && voice.lang.startsWith('en'));
+        if (!selectedVoice) {
+            selectedVoice = voices.find(voice => voice.lang.startsWith('en-US'));
+        }
+        // Final fallback to the first available English voice
+        if (!selectedVoice) selectedVoice = voices.find(voice => voice.lang.startsWith('en'));
 
-    Swal.fire({
-        icon: 'warning',
-        title: `Strict Proctor Alert ${warningCount} of ${MAX_WARNINGS}`,
-        text: reason,
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 5000,
-        timerProgressBar: true
-    });
-    if (warningCount >= MAX_WARNINGS) {
+        utterance.voice = selectedVoice || voices.find(voice => voice.lang === 'en-US'); // Fallback to any US English voice
+        utterance.volume = 1; // Full volume
+        utterance.rate = rate; // Speed of speech (0.1 to 10, default is 1)
+        utterance.pitch = pitch; // Pitch of speech (0 to 2, default is 1)
+        window.speechSynthesis.speak(utterance);
+    }
+    function issueWarning(reason) {
+        warningCount++;
+        warningsDisplay.innerHTML = `Warnings: <strong>${warningCount} / ${MAX_WARNINGS}</strong>`;
+
         Swal.fire({
-            icon: 'error',
-            title: 'Exam Terminated by Strict Proctor',
-            text: 'Multiple violations detected. Session terminated immediately.',
-            allowOutsideClick: false,
-        }).then(() => {
-            // Stop all checks before submitting
-            if (proctoringInterval) clearInterval(proctoringInterval);
-            submitAndExit();
+            icon: 'warning',
+            title: `Strict Proctor Alert ${warningCount} of ${MAX_WARNINGS}`,
+            text: reason,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true
         });
+        if (warningCount >= MAX_WARNINGS) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Exam Terminated by Strict Proctor',
+                text: 'Multiple violations detected. Session terminated immediately.',
+                allowOutsideClick: false,
+            }).then(() => {
+                // Stop all checks before submitting
+                if (proctoringInterval) clearInterval(proctoringInterval);
+                submitAndExit();
+            });
+        }
     }
-}
-// Initial check for agreements on page load
-checkAgreements();
-checkLaunchReadiness();
+    // Initial check for agreements on page load
+    checkAgreements();
+    checkLaunchReadiness();
 
-// --- Auto-Launch for Resume removed ---
-
+    // --- Auto-Launch for Resume removed ---
 
 
 
 
 
-// *******************************************************************
-// ************ START SECURITY ENHANCEMENT BLOCK *********************
-// *******************************************************************
 
-// *******************************************************************
-// ************ START SECURITY ENHANCEMENT BLOCK *********************
-// *******************************************************************
+    // *******************************************************************
+    // ************ START SECURITY ENHANCEMENT BLOCK *********************
+    // *******************************************************************
 
-// --- SECURITY ENFORCEMENT ---
-window.setupExamSecurity = function () {
-    console.log("Initializing strict exam security...");
+    // *******************************************************************
+    // ************ START SECURITY ENHANCEMENT BLOCK *********************
+    // *******************************************************************
 
-    // 1. Disable Right-Click / Context Menu
-    document.addEventListener('contextmenu', function (e) {
-        if (screens.exam.style.display === 'flex') {
-            e.preventDefault();
-            issueWarning("Right-click disabled for security reasons.");
-        }
-    }, false);
+    // --- SECURITY ENFORCEMENT ---
+    window.setupExamSecurity = function () {
+        console.log("Initializing strict exam security...");
 
-    // 2. Disable Text Selection (to prevent copying)
-    document.addEventListener('selectstart', function (e) {
-        if (screens.exam.style.display === 'flex') e.preventDefault();
-    }, false);
+        // 1. Disable Right-Click / Context Menu
+        document.addEventListener('contextmenu', function (e) {
+            if (screens.exam.style.display === 'flex') {
+                e.preventDefault();
+                issueWarning("Right-click disabled for security reasons.");
+            }
+        }, false);
 
-    document.addEventListener('copy', function (e) {
-        if (screens.exam.style.display === 'flex') {
-            e.preventDefault();
-            e.clipboardData.setData('text/plain', '');
-            issueWarning("Copying text is disabled during the exam.");
-        }
-    }, false);
+        // 2. Disable Text Selection (to prevent copying)
+        document.addEventListener('selectstart', function (e) {
+            if (screens.exam.style.display === 'flex') e.preventDefault();
+        }, false);
 
-    document.addEventListener('cut', function (e) {
-        if (screens.exam.style.display === 'flex') {
-            e.preventDefault();
-            e.clipboardData.setData('text/plain', '');
-            issueWarning("Cutting text is disabled during the exam.");
-        }
-    }, false);
+        document.addEventListener('copy', function (e) {
+            if (screens.exam.style.display === 'flex') {
+                e.preventDefault();
+                e.clipboardData.setData('text/plain', '');
+                issueWarning("Copying text is disabled during the exam.");
+            }
+        }, false);
 
-    // 4. Debugger Trap
-    setInterval(() => {
-        if (screens.exam.style.display === 'flex') {
-            debugger;
-        }
-    }, 1000);
+        document.addEventListener('cut', function (e) {
+            if (screens.exam.style.display === 'flex') {
+                e.preventDefault();
+                e.clipboardData.setData('text/plain', '');
+                issueWarning("Cutting text is disabled during the exam.");
+            }
+        }, false);
 
-    // 5. Drag & Drop
-    document.addEventListener('dragstart', (e) => {
-        if (screens.exam.style.display === 'flex') e.preventDefault();
-    });
-    document.addEventListener('drop', (e) => {
-        if (screens.exam.style.display === 'flex') e.preventDefault();
-    });
+        // 4. Debugger Trap
+        setInterval(() => {
+            if (screens.exam.style.display === 'flex') {
+                debugger;
+            }
+        }, 1000);
 
-    // 6. Mouse Leave
-    document.addEventListener('mouseleave', () => {
-        if (screens.exam.style.display === 'flex') {
-            issueWarning("Mouse left the exam area. Keep cursor inside.");
-        }
-    });
-};
+        // 5. Drag & Drop
+        document.addEventListener('dragstart', (e) => {
+            if (screens.exam.style.display === 'flex') e.preventDefault();
+        });
+        document.addEventListener('drop', (e) => {
+            if (screens.exam.style.display === 'flex') e.preventDefault();
+        });
 
-// Initialize security
-setupExamSecurity();
+        // 6. Mouse Leave
+        document.addEventListener('mouseleave', () => {
+            if (screens.exam.style.display === 'flex') {
+                issueWarning("Mouse left the exam area. Keep cursor inside.");
+            }
+        });
+    };
 
-        // --- Resume Check removed ---
+    // Initialize security
+    setupExamSecurity();
 
-    });
+    // --- Resume Check removed ---
+
+});
 
 // *******************************************************************
 // ************* END SECURITY ENHANCEMENT BLOCK **********************
