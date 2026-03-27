@@ -1,36 +1,46 @@
-// --- 1. LOGIN & EXAM CHECK ---
-document.addEventListener('DOMContentLoaded', () => {
-    // --- MAINTENANCE ANNOUNCEMENT BANNER (NEW) ---
-    // This function creates and displays a custom banner for announcements,
-    // providing an alternative to SweetAlert for such messages.
-    // In a real application, this would typically be triggered dynamically
-    // (e.g., from a database setting, a feature flag, or a specific URL parameter).
+// --- HARD FIX v1.0.3 ---
+// --- 1. UTILITIES ---
+async function sha256(message) {
+    if (!message) return null;
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // --- MAINTENANCE ANNOUNCEMENT BANNER ---
     const showMaintenanceBanner = (title, message, type = 'info', dismissible = true) => {
         let banner = document.getElementById('customAnnouncementBanner');
         if (!banner) {
             banner = document.createElement('div');
             banner.id = 'customAnnouncementBanner';
-            document.body.prepend(banner); // Add to the very top of the body
+            banner.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; padding: 12px 24px;
+                z-index: 10001; font-family: 'Inter', sans-serif; font-size: 14px;
+                color: white; display: flex; align-items: center; justify-content: center;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-weight: 500; width: 100%;
+                box-sizing: border-box; transition: background-color 0.3s;
+            `;
+            document.body.prepend(banner);
         }
-
-        // Update banner content and style based on type
+        let bgColor = '#2196F3';
+        if (type === 'error') bgColor = '#f44336';
+        else if (type === 'warning') bgColor = '#ff9800';
+        else if (type === 'success') bgColor = '#4CAF50';
+        banner.style.backgroundColor = bgColor;
         banner.className = `maintenance-banner banner-${type}`;
 
-        let dismissButton = '';
-        if (dismissible) {
-            dismissButton = `<button class="maintenance-banner-dismiss" onclick="const banner = document.getElementById('customAnnouncementBanner'); banner.style.animation = 'slideUpBanner 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards'; setTimeout(() => banner.remove(), 400);">Dismiss</button>`;
-        }
+        let dismissButton = dismissible ? `<button class="maintenance-banner-dismiss" onclick="document.getElementById('customAnnouncementBanner').remove()" style="margin-left:auto; background:rgba(255,255,255,0.2); border:none; color:white; padding:4px 12px; border-radius:4px; cursor:pointer;">Dismiss</button>` : '';
 
         banner.innerHTML = `
-            <span class="banner-title">${title}:</span>
+            <span class="banner-title" style="margin-right:8px; font-weight:700;">${title}:</span>
             <span>${message}</span>
             ${dismissButton}
         `;
     };
-
     // Example call for a maintenance announcement.
-    // Uncomment the line below to see the banner in action.
-    // showMaintenanceBanner('Scheduled Maintenance', 'The exam portal will undergo maintenance tonight from 1 AM to 3 AM UTC. Expect brief interruptions.', 'warning');
+    // showMaintenanceBanner('Scheduled Maintenance', '...', 'warning');
 
     // --- CRITICAL CONSTANTS ---
     const MAX_PAUSES = 2;
@@ -677,8 +687,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- 2. QUESTION BANK ---
-    const sourceQuestions = allQuestions[examName] || allQuestions.default;
-    let questions = [...sourceQuestions]; // Initialize with copy, will be reordered
+    // Defensively load from window and check for existence
+    const allQuestionsData = window.allQuestions || {};
+    const sourceQuestions = allQuestionsData[examName] || allQuestionsData.default || [];
+    
+    if (sourceQuestions.length === 0) {
+        console.error("CRITICAL: Failed to load question bank for", examName);
+        addToProctorLog("Error: Question bank failed to load.");
+    }
+
+    let questions = [...sourceQuestions];
     let questionOrder = []; // Store indices for persistence
     // --- State Variables ---
     let currentQuestionIndex = 0;
@@ -1350,7 +1368,16 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn("[Sync] Could not mark session as completed:", e);
         }
 
-        const score = userAnswers.reduce((acc, ans, idx) => ans === questions[idx].answer ? acc + 1 : acc, 0);
+        // --- Async Score Calculation for Hashed Answers ---
+        let score = 0;
+        for (let i = 0; i < questions.length; i++) {
+            if (userAnswers[i] !== null) {
+                const hashedSelection = await sha256(userAnswers[i]);
+                if (hashedSelection === questions[i].answer) {
+                    score++;
+                }
+            }
+        }
         const percentage = Math.round((score / questions.length) * 100);
         const user = JSON.parse(localStorage.getItem('cm_user') || '{}');
         const examName = document.getElementById('examTitle').textContent;
