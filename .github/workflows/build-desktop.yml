@@ -38,7 +38,6 @@ jobs:
           # macOS Signing/Notarization
           mac_certs: ${{ secrets.MAC_CERTS }}
           mac_certs_password: ${{ secrets.MAC_CERTS_PASSWORD }}
-          notarize: true
         env:
           # Apple Notarization
           APPLE_ID: ${{ secrets.APPLE_ID }}
