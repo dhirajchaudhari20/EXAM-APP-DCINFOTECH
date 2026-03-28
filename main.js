@@ -284,6 +284,11 @@ app.whenReady().then(() => {
     });
 
     autoUpdater.on('update-downloaded', (info) => {
+      // Send IPC message to renderer for in-app notification
+      if (mainWindow) {
+        mainWindow.webContents.send('update-ready', info);
+      }
+
       dialog.showMessageBox({
         type: 'info',
         title: 'New Update Available',
@@ -347,3 +352,4 @@ app.on('window-all-closed', function () {
 // IPC handlers for safe communication
 ipcMain.handle('get-app-version', () => app.getVersion());
 ipcMain.on('exit-app', () => app.quit());
+ipcMain.on('quit-and-install', () => autoUpdater.quitAndInstall());
