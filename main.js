@@ -112,7 +112,13 @@ function createWindow() {
         },
         { type: 'separator' },
         { label: 'Check for Updates...', click: () => {
-            if (!isDev) autoUpdater.checkForUpdatesAndNotify();
+            if (!isDev) {
+              autoUpdater.checkForUpdates().then((result) => {
+                if (result && result.updateInfo.version === app.getVersion()) {
+                  dialog.showMessageBox({ title: 'No Update', message: 'You are using the latest version.' });
+                }
+              });
+            }
         }},
         { type: 'separator' },
         { label: 'Reset Browser', click: () => mainWindow.loadURL(startUrl) },
@@ -280,11 +286,15 @@ app.whenReady().then(() => {
     autoUpdater.on('update-downloaded', (info) => {
       dialog.showMessageBox({
         type: 'info',
-        title: 'Mandatory Update Found',
-        message: 'A critical security update (version ' + info.version + ') has been downloaded. The application will now restart to apply this update.',
-        buttons: ['Update Now']
-      }).then(() => {
-        autoUpdater.quitAndInstall();
+        title: 'New Update Available',
+        message: `Version ${info.version} of DC SafeBrowser is ready to install.`,
+        detail: 'This update includes security patches and professional branding improvements. The application will restart to apply the update now.',
+        buttons: ['Update & Restart Now', 'Later'],
+        defaultId: 0
+      }).then((result) => {
+        if (result.response === 0) {
+          autoUpdater.quitAndInstall();
+        }
       });
     });
     
