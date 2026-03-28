@@ -9,8 +9,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <style>
     :root {
       --tcs-blue-600: #0056b3;
@@ -801,16 +802,55 @@
       </div>
     </div>
   </div>
+  <!-- Screen 2.5: Desk Environment Capture (NEW) -->
+  <div id="deskCaptureScreen" class="pre-exam-screen">
+    <div class="pre-exam-container">
+      <h1>Step 0: Verify Your Environment</h1>
+      <p>Please take a photo of your desk and surrounding area to ensure a clean testing environment.</p>
+      
+      <div id="desk-webcam-container">
+        <video id="deskVideoFeed" autoplay playsinline style="width: 100%; max-width: 500px; border-radius: 12px; background: #000;"></video>
+      </div>
+
+      <!-- QR Handoff for Desk (Always available as fallback) -->
+      <div id="desk-qr-container" style="display:none; margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 12px; border: 2px dashed #dee2e6;">
+        <p style="color: #495057; font-weight: 600;">No Webcam? Use your Mobile.</p>
+        <div id="desk-qrcode" style="display: flex; justify-content: center; margin: 15px 0;"></div>
+        <p style="font-size: 0.85rem; color: #6c757d;">Scan this QR with your phone to upload your desk photo.</p>
+      </div>
+
+      <div class="pre-exam-actions">
+        <button id="exitExamBtn0" class="btn btn-secondary">Exit Exam</button>
+        <button id="useMobileDeskBtn" class="btn btn-secondary">Use Mobile Camera</button>
+        <button id="captureDeskBtn" class="btn">Capture Desk</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Screen 3: Biometric Capture -->
   <div id="biometricCaptureScreen" class="pre-exam-screen">
     <div class="pre-exam-container">
       <h1 id="captureInstructionTitle">Step 1: Capture Your ID</h1>
       <p id="captureInstructionText">Please hold your government-issued ID clearly in front of the camera. Ensure it is
         readable.</p>
-      <video id="videoFeed" autoplay playsinline></video>
+      <div id="biometric-webcam-container">
+        <video id="videoFeed" autoplay playsinline></video>
+      </div>
+
+      <!-- QR Handoff for Biometric -->
+      <div id="biometric-qr-container" style="display:none; margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 12px; border: 2px dashed #dee2e6;">
+        <p style="color: #495057; font-weight: 600;">Camera Not Found?</p>
+        <div id="biometric-qrcode" style="display: flex; justify-content: center; margin: 15px 0;"></div>
+        <p style="font-size: 0.85rem; color: #6c757d;">Scan with your phone to take your biometric photo.</p>
+        <div id="mobile-sync-status" style="color: #6366f1; font-weight: 600; margin-top: 10px; display: none;">
+          📲 Mobile Connected! Waiting for photo...
+        </div>
+      </div>
+
       <canvas id="captureCanvas" style="display:none;"></canvas>
       <div class="pre-exam-actions">
         <button id="exitExamBtn2" class="btn btn-secondary">Exit Exam</button>
+        <button id="useMobileBiometricBtn" class="btn btn-secondary">Use Mobile</button>
         <button id="captureBtn" class="btn">
           <i data-lucide="camera" style="margin-right: 8px;"></i> Capture
         </button>

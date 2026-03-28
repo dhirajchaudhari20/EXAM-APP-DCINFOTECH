@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Verification | DC SafeBrowser</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, system-ui, sans-serif;
+            background: #0f172a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h1 { font-size: 24px; margin-bottom: 8px; }
+        p { color: #94a3b8; margin-bottom: 24px; }
+        #video-container {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        .capture-btn {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
+        }
+        .capture-btn:active { transform: scale(0.98); }
+        #status {
+            margin-top: 16px;
+            font-size: 14px;
+        }
+        canvas { display: none; }
+        .success-screen { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container" id="main-ui">
+        <h1>Identity Verification</h1>
+        <p id="instruction">Please position your face in the center and tap Capture.</p>
+        
+        <div id="video-container">
+            <video id="video" autoplay playsinline></video>
+        </div>
+
+        <button class="capture-btn" id="capture">Take Photo</button>
+        <div id="status">Waiting for camera...</div>
+    </div>
+
+    <div class="container success-screen" id="success-ui">
+        <h1 style="color: #4ade80;">✓ Uploaded!</h1>
+        <p>Your photo has been synced to the exam portal. You can now return to your computer screen to continue.</p>
+        <button class="capture-btn" style="background: #334155;" onclick="window.close()">Close This Tab</button>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('sessionId');
+        const type = urlParams.get('type') || 'face'; // 'face' or 'desk'
+
+        if (!sessionId) {
+            document.body.innerHTML = "<h1>Error</h1><p>Invalid session. Please scan the QR again.</p>";
+        }
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCohKlqNu0I1sXcLW4D_fv-OEw9x0S50q8",
+            authDomain: "dc-infotechpvt-1-d1a4b.firebaseapp.com",
+            databaseURL: "https://dc-infotechpvt-1-d1a4b-default-rtdb.firebaseio.com",
+            projectId: "dc-infotechpvt-1-d1a4b",
+            storageBucket: "dc-infotechpvt-1-d1a4b.firebasestorage.app",
+            messagingSenderId: "622552457680",
+            appId: "1:622552457680:web:4b80e21e14e2b8266f19d5"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const status = document.getElementById('status');
+        const instruction = document.getElementById('instruction');
+
+        if (type === 'desk') {
+            instruction.textContent = "Please take a clear photo of your desk and environment.";
+        }
+
+        // Initialize Camera
+        navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: type === 'face' ? 'user' : 'environment' }, 
+            audio: false 
+        })
+        .then(stream => {
+            video.srcObject = stream;
+            status.textContent = "Camera Ready";
+        })
+        .catch(err => {
+            status.textContent = "Camera Error: " + err.message;
+            console.error(err);
+        });
+
+        document.getElementById('capture').addEventListener('click', () => {
+            status.textContent = "Capturing...";
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            const imageData = canvas.toDataURL('image/jpeg', 0.7);
+            
+            status.textContent = "Syncing to Exam Portal...";
+            
+            db.ref('biometric-handoff/' + sessionId).update({
+                [type]: imageData,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            })
+            .then(() => {
+                document.getElementById('main-ui').style.display = 'none';
+                document.getElementById('success-ui').style.display = 'block';
+            })
+            .catch(err => {
+                status.textContent = "Upload Error: " + err.message;
+            });
+        });
+    </script>
+</body>
+</html>

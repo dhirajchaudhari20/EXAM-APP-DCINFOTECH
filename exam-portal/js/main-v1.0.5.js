@@ -102,8 +102,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const screens = {
         tos: document.getElementById('tosScreen'),
         photoExamples: document.getElementById('photoExamplesScreen'),
+        deskCapture: document.getElementById('deskCaptureScreen'), // NEW SCREEN
         biometricCapture: document.getElementById('biometricCaptureScreen'),
-        systemCheck: document.getElementById('systemCheckScreen'), // NEW SCREEN
+        systemCheck: document.getElementById('systemCheckScreen'),
         prepareLaunch: document.getElementById('prepareLaunchScreen'),
         review: document.getElementById('reviewScreen'),
         exam: document.getElementById('examScreen'),
@@ -137,7 +138,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const captureInstructionTitle = document.getElementById('captureInstructionTitle');
     const captureInstructionText = document.getElementById('captureInstructionText');
     const captureCanvas = document.getElementById('captureCanvas');
-    // --- System Check Elements (NEW) ---
+    // --- Desk Environment Elements (NEW) ---
+    const captureDeskBtn = document.getElementById('captureDeskBtn');
+    const exitExamBtn0 = document.getElementById('exitExamBtn0');
+    const useMobileDeskBtn = document.getElementById('useMobileDeskBtn');
+    const deskVideoFeed = document.getElementById('deskVideoFeed');
+    const useMobileBiometricBtn = document.getElementById('useMobileBiometricBtn');
+    
+    // Generate a secure session ID for mobile hand-off
+    const handoffId = user.email ? (user.email.replace(/[.@]/g, '_') + '_' + Date.now()) : ('guest_' + Math.random().toString(36).substr(2, 9));
     const startSystemChecksBtn = document.getElementById('startSystemChecksBtn');
     const proceedToLaunchBtn = document.getElementById('proceedToLaunchBtn');
     const audioCheckStatus = document.getElementById('audioCheckStatus');
@@ -183,6 +192,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         Object.values(screens).forEach(s => s.style.display = 'none');
         if (screens[screenName]) {
             screens[screenName].style.display = 'flex';
+            lucide.createIcons();
             syncExamState(screenName); // Sync on every screen change
         }
     }
@@ -220,10 +230,67 @@ document.addEventListener('DOMContentLoaded', async () => {
         showScreen('photoExamples');
     });
     proceedToCaptureBtn.addEventListener('click', () => {
+        showScreen('deskCapture');
+        startWebcam(deskVideoFeed);
+    });
+
+    // --- MOBILE HANDOFF LOGIC ---
+    function generateHandoffQR(type, qrDivId) {
+        document.getElementById(qrDivId).innerHTML = ''; // Clear
+        const url = `https://dcinfotech.org.in/exam-portal/mobile-upload.html?sessionId=${handoffId}&type=${type}`;
+        new QRCode(document.getElementById(qrDivId), {
+            text: url,
+            width: 160,
+            height: 160,
+            colorDark : "#0f172a",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+        
+        // Listen for Firebase Sync
+        const handoffRef = firebase.database().ref(`biometric-handoff/${handoffId}/${type}`);
+        handoffRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                console.log(`[Handoff] Received ${type} photo from mobile!`);
+                if (type === 'desk') {
+                    // Automatically proceed to biometric capture after desk photo
+                    document.getElementById('desk-qr-container').style.display = 'none';
+                    Swal.fire({ icon: 'success', title: 'Desk Photo Received', timer: 1500 });
+                    setTimeout(() => {
+                        showScreen('biometricCapture');
+                        startWebcam(videoFeed);
+                    }, 1000);
+                } else if (type === 'face') {
+                    // Bio received
+                    idImageData = data;
+                    document.getElementById('mobile-sync-status').style.display = 'block';
+                    document.getElementById('mobile-sync-status').textContent = "✅ Photo Received! Click Continue.";
+                }
+            }
+        });
+    }
+
+    useMobileDeskBtn.addEventListener('click', () => {
+        document.getElementById('desk-webcam-container').style.display = 'none';
+        document.getElementById('desk-qr-container').style.display = 'block';
+        generateHandoffQR('desk', 'desk-qrcode');
+    });
+
+    useMobileBiometricBtn.addEventListener('click', () => {
+        document.getElementById('biometric-webcam-container').style.display = 'none';
+        document.getElementById('biometric-qr-container').style.display = 'block';
+        generateHandoffQR('face', 'biometric-qrcode');
+    });
+
+    captureDeskBtn.addEventListener('click', () => {
+        // Take desk photo locally
         showScreen('biometricCapture');
         startWebcam(videoFeed);
     });
-    [exitExamBtn1, exitExamBtn2, exitExamBtn3, exitExamBtn4].forEach(btn => {
+
+    [exitExamBtn0, exitExamBtn1, exitExamBtn2, exitExamBtn3, exitExamBtn4].forEach(btn => {
+        if (!btn) return;
         btn.addEventListener('click', () => {
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
@@ -243,12 +310,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             videoElement.srcObject = stream;
         } catch (err) {
             console.error("Error accessing webcam:", err);
+            // Suggest Mobile Handoff instead of hard error
             Swal.fire({
-                icon: 'error',
-                title: 'Webcam Error',
-                text: 'Could not access your webcam. Please ensure it is enabled and permissions are granted.',
-            }).then(() => {
-                window.location.href = 'dashboard.html';
+                icon: 'warning',
+                title: 'No Camera Detected',
+                text: 'We couldn\'t find a webcam. Don\'t worry! You can use your Mobile Phone as a temporary camera.',
+                confirmButtonText: 'Use Mobile Camera',
+                showCancelButton: true,
+                cancelButtonText: 'Try Again'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Trigger mobile QR for current screen
+                    const activeScreen = Object.keys(screens).find(key => screens[key].style.display === 'flex');
+                    if (activeScreen === 'deskCapture') {
+                         useMobileDeskBtn.click();
+                    } else {
+                         useMobileBiometricBtn.click();
+                    }
+                } else {
+                    startWebcam(videoElement);
+                }
             });
         }
     }
