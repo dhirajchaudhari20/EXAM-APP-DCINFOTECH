@@ -1,6 +1,6 @@
 {
   "name": "dcinfotech-safebrowser",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Secure Exam Browser for DC Infotech",
   "author": "DC Infotech",
   "main": "main.js",
