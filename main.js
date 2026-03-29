@@ -8,38 +8,24 @@ app.commandLine.appendSwitch('disable-features', 'IOSurfaceCapturer');
 let mainWindow;
 let aboutWindow;
 
-function createAboutWindow() {
-  if (aboutWindow) {
-    aboutWindow.focus();
-    return;
-  }
+function showAboutDialog() {
+  const detail = `
+Version: 1.1.7 (PRO Hardened)
+Status: System Hardened Active
+Lockdown: Aggressive Background Termination
+Sweep Interval: 3 Seconds
 
-  aboutWindow = new BrowserWindow({
-    width: 450,
-    height: 550,
+Developed by DC Infotech Cloud Solutions
+© 2026 All rights reserved.
+  `.trim();
+
+  dialog.showMessageBox(mainWindow, {
+    type: 'info',
     title: 'About DC SafeBrowser',
-    resizable: false,
-    minimizable: false,
-    maximizable: false,
-    fullscreenable: false,
-    frame: false, // Cleaner frameless design as seen in about.html
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-    },
-    alwaysOnTop: true,
-    backgroundColor: '#0f172a',
-    show: false
-  });
-
-  aboutWindow.loadFile(path.join(__dirname, 'about.html'));
-  
-  aboutWindow.once('ready-to-show', () => {
-    aboutWindow.show();
-  });
-
-  aboutWindow.on('closed', () => {
-    aboutWindow = null;
+    message: 'DC SafeBrowser Pro',
+    detail: detail,
+    buttons: ['OK'],
+    icon: path.join(__dirname, 'build/icon.png') // Use the app icon if available
   });
 }
 
@@ -114,7 +100,7 @@ function createWindow() {
       submenu: [
         { 
           label: 'About DC SafeBrowser', 
-          click: () => createAboutWindow() 
+          click: () => showAboutDialog() 
         },
         { type: 'separator' },
         { label: 'Check for Updates...', click: () => {
