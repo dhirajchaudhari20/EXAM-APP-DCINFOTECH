@@ -166,18 +166,37 @@ function createWindow() {
   const { exec } = require('child_process');
 
   function killBackgroundApps() {
+    const blacklist = [
+      'chrome', 'firefox', 'msedge', 'brave', 'opera', 'safari',
+      'anydesk', 'teamviewer', 'discord', 'slack', 'zoom', 'teams', 'webex',
+      'whatsapp', 'telegram', 'obs', 'skype', 'vlc', 'spotify'
+    ];
+    
     if (process.platform === 'darwin') {
-      // macOS: Find all foreground apps (excluding Finder and itself) and force kill them via terminal
+      // macOS: Kill apps that are not the SafeBrowser or Finder, and specifically kill blacklisted apps
+      const blacklistStr = blacklist.map(app => `"${app}"`).join(',');
       const script = `
         osascript -e '
           tell application "System Events"
-            set activeApp to name of first application process whose frontmost is true
             set appList to every application process whose background only is false
+            set blacklistNames to {${blacklistStr}}
             repeat with theApp in appList
               set appName to name of theApp
-              if appName is not activeApp and appName is not "Finder" then
-                set appPid to unix id of theApp
-                do shell script "kill -9 " & appPid
+              set lowerName to do shell script "echo " & quoted form of appName & " | tr [:upper:] [:lower:]"
+              
+              set isBlacklisted to false
+              repeat with bItem in blacklistNames
+                if lowerName contains bItem then
+                  set isBlacklisted to true
+                  exit repeat
+                end if
+              end repeat
+              
+              if (appName is not "DC SafeBrowser" and appName is not "Finder") or isBlacklisted then
+                try
+                  set appPid to unix id of theApp
+                  do shell script "kill -9 " & appPid
+                end try
               end if
             end repeat
           end tell
@@ -187,8 +206,9 @@ function createWindow() {
         if (err) console.error('Failed to kill macOS apps:', err);
       });
     } else if (process.platform === 'win32') {
-      // Windows: Stop all processes with an active MainWindowTitle (excluding Explorer and the SafeBrowser)
-      const script = `powershell -WindowStyle Hidden -Command "Get-Process | Where-Object { $_.MainWindowTitle -ne '' -and $_.ProcessName -notmatch 'DC SafeBrowser|explorer' } | Stop-Process -Force"`;
+      // Windows: Stop all processes with a window title OR matching the blacklist (excluding SafeBrowser and explorer)
+      const blacklistStr = blacklist.join('|');
+      const script = `powershell -WindowStyle Hidden -Command "Get-Process | Where-Object { ($_.MainWindowTitle -ne '' -or $_.ProcessName -match '${blacklistStr}') -and $_.ProcessName -notmatch 'DC SafeBrowser|explorer' } | Stop-Process -Force -ErrorAction SilentlyContinue"`;
       exec(script, (err) => {
         if (err) console.error('Failed to kill Windows apps:', err);
       });
@@ -203,9 +223,9 @@ function createWindow() {
     // 1. Force kill all other background applications
     killBackgroundApps();
     
-    // Periodically sweep for newly opened apps every 5 seconds
+    // Periodically sweep for newly opened apps every 3 seconds
     if (lockdownInterval) clearInterval(lockdownInterval);
-    lockdownInterval = setInterval(killBackgroundApps, 5000);
+    lockdownInterval = setInterval(killBackgroundApps, 3000);
 
     // 2. Enter Full Screen and stay on top
     if (!mainWindow.isFullScreen()) mainWindow.setFullScreen(true);
