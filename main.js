@@ -12,9 +12,10 @@ let aboutWindow;
 
 function showAboutDialog() {
   const detail = `
-Version: 1.3.0 (PRO Hardened)
+Version: 1.4.0 (AI Advanced)
 Status: System Hardened Active
-Lockdown: Multi-Monitor & VM Detection
+Lockdown: Remote Kill-Switch Enabled
+AI Proctoring: Audio & Visual Sync
 Mobile-Webcam: AI Fallback Enabled
 Clipboard: Auto-Clear Active
 Sweep Interval: 3 Seconds
@@ -448,3 +449,7 @@ app.on('window-all-closed', function () {
 // IPC handlers for safe communication
 ipcMain.handle('get-app-version', () => app.getVersion());
 ipcMain.on('exit-app', () => app.quit());
+ipcMain.on('force-terminate-app', () => {
+  console.log('>>> FORCE TERMINATE COMMAND RECEIVED FROM PORTAL');
+  app.quit();
+});

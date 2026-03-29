@@ -3,6 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electronAPI', {
     getAppVersion: () => ipcRenderer.invoke('get-app-version'),
     exitApp: () => ipcRenderer.send('exit-app'),
+    forceTerminateApp: () => ipcRenderer.send('force-terminate-app'),
     isDesktop: true
 });
 
