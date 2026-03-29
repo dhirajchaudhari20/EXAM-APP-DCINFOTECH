@@ -12,7 +12,7 @@ let aboutWindow;
 
 function showAboutDialog() {
   const detail = `
-Version: 1.4.0 (AI Advanced)
+Version: 1.4.1 (AI Advanced)
 Status: System Hardened Active
 Lockdown: Remote Kill-Switch Enabled
 AI Proctoring: Audio & Visual Sync
@@ -30,7 +30,7 @@ Developed by DC Infotech Cloud Solutions
     message: 'DC SafeBrowser Pro',
     detail: detail,
     buttons: ['OK'],
-    icon: path.join(__dirname, 'build/icon.png') // Use the app icon if available
+    icon: path.join(__dirname, 'assets/icon.png') // Use the bundled assets folder
   });
 }
 
