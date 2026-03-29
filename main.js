@@ -1,7 +1,9 @@
-const { app, BrowserWindow, ipcMain, screen, dialog, Menu, systemPreferences } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain, dialog, shell, screen, clipboard } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const isDev = require('electron-is-dev');
+const { exec } = require('child_process');
+
 // Disable specific features that cause macOS ARM64 GPU process crashes on interaction
 app.commandLine.appendSwitch('disable-features', 'IOSurfaceCapturer');
 
@@ -10,10 +12,11 @@ let aboutWindow;
 
 function showAboutDialog() {
   const detail = `
-Version: 1.2.0 (PRO Hardened)
+Version: 1.3.0 (PRO Hardened)
 Status: System Hardened Active
-Lockdown: Aggressive Background Termination
+Lockdown: Multi-Monitor & VM Detection
 Mobile-Webcam: AI Fallback Enabled
+Clipboard: Auto-Clear Active
 Sweep Interval: 3 Seconds
 
 Developed by DC Infotech Cloud Solutions
@@ -145,13 +148,58 @@ function createWindow() {
   mainWindow.webContents.on('unresponsive', () => console.log('>>> RENDERER UNRESPONSIVE!'));
   mainWindow.webContents.on('plugin-crashed', (e, n, v) => console.log('>>> PLUGIN CRASHED:', n, v));
   mainWindow.webContents.on('destroyed', () => console.log('>>> WEBCONTENTS DESTROYED'));
-  
+    // --- v1.3.0 SECURITY HARDENING TOOLS ---
+  function checkMultiMonitor() {
+    if (!isExamLockedDown) return;
+    const displays = screen.getAllDisplays();
+    if (displays.length > 1) {
+      console.log('>>> MULTI-MONITOR DETECTED: ', displays.length);
+      mainWindow.webContents.executeJavaScript(`
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({
+            icon: 'error',
+            title: 'External Display Detected',
+            text: 'Multiple monitors are not allowed during the exam. Please disconnect all external displays to continue.',
+            allowOutsideClick: false,
+            showConfirmButton: false
+          });
+        } else {
+          alert('Multiple monitors detected. Please disconnect external screens.');
+        }
+      `);
+      // Blackout secondary screens if possible (optional hardening)
+    }
+  }
+
+  function hardenClipboard() {
+    if (!isExamLockedDown) return;
+    clipboard.clear();
+    console.log('[Security] Clipboard Cleared');
+  }
+
+  function getHardwareTelemetry() {
+    if (!isExamLockedDown || !mainWindow) return;
+    
+    // Get battery status if on laptop
+    exec('pmset -g batt', (err, stdout) => {
+      let batteryInfo = "AC Power";
+      if (!err && stdout) {
+        const match = stdout.match(/InternalBattery-0\s+(\d+)%/);
+        if (match) batteryInfo = match[1] + "%";
+      }
+      
+      mainWindow.webContents.executeJavaScript(`
+        if (window.updateSystemHealth) {
+          window.updateSystemHealth({ battery: "${batteryInfo}", displays: ${screen.getAllDisplays().length} });
+        }
+      `);
+    });
+  }
   // --- ACTIVE EXAM LOCKDOWN FEATURES ---
   let blackoutWindows = [];
   let isExamLockedDown = false;
   let lockdownInterval = null;
   let lockdownSplashWin = null;
-  const { exec } = require('child_process');
 
   function showLockdownSplash() {
     if (lockdownSplashWin) return;
@@ -185,8 +233,10 @@ function createWindow() {
   function killBackgroundApps() {
     const blacklist = [
       'chrome', 'firefox', 'msedge', 'brave', 'opera', 'safari',
-      'anydesk', 'teamviewer', 'discord', 'slack', 'zoom', 'teams', 'webex',
-      'whatsapp', 'telegram', 'obs', 'skype', 'vlc', 'spotify'
+      'anydesk', 'teamviewer', 'discord', 'slack', 'zoom', 'skype',
+      'webex', 'teams', 'whatsapp', 'telegram', 'viber', 'signal',
+      'vmware', 'virtualbox', 'vboxsvc', 'vboxmanage', 'rdp', 'remotedesktop',
+      'parsec', 'obs64', 'obs-studio', 'streamlabs', 'snippingtool'
     ];
     
     if (process.platform === 'darwin') {
@@ -243,9 +293,14 @@ function createWindow() {
     // 1. Force kill all other background applications
     killBackgroundApps();
     
-    // Periodically sweep for newly opened apps every 3 seconds
+    // 4. Start periodic checks
     if (lockdownInterval) clearInterval(lockdownInterval);
-    lockdownInterval = setInterval(killBackgroundApps, 3000);
+    lockdownInterval = setInterval(() => {
+      killBackgroundApps();
+      checkMultiMonitor();
+      hardenClipboard();
+      getHardwareTelemetry();
+    }, 3000);
 
     // 2. Enter Full Screen and stay on top
     if (!mainWindow.isFullScreen()) mainWindow.setFullScreen(true);
