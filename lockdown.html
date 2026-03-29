@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LockDown Browser | DC SafeBrowser</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            overflow: hidden;
+            user-select: none;
+        }
+        .container {
+            animation: fadeIn 0.8s ease-out;
+        }
+        .badge {
+            background: #ff6b00;
+            color: white;
+            padding: 4px 12px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+        .logo-container {
+            position: relative;
+            margin-bottom: 40px;
+        }
+        .globe {
+            font-size: 120px;
+            color: #7ab1ff;
+            filter: drop-shadow(0 0 20px rgba(122, 177, 255, 0.4));
+        }
+        .lock {
+            position: absolute;
+            bottom: 0;
+            right: 10%;
+            font-size: 60px;
+            color: #fbbc04;
+            filter: drop-shadow(0 0 10px rgba(251, 188, 4, 0.6));
+        }
+        h1 {
+            font-size: 42px;
+            font-weight: 400;
+            margin: 0;
+            letter-spacing: 1.5px;
+        }
+        .status-container {
+            margin-top: 50px;
+            font-size: 16px;
+            color: #cbd5e1;
+        }
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .footer {
+            position: absolute;
+            bottom: 30px;
+            font-size: 12px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="badge">DC Infotech</div>
+        
+        <div class="logo-container">
+            <i class="fas fa-globe globe"></i>
+            <i class="fas fa-lock lock"></i>
+        </div>
+
+        <h1>LockDown Browser</h1>
+        
+        <div class="status-container">
+            <div id="status-text">
+                <div class="spinner"></div> System Hardening in Progress...
+            </div>
+            <p style="font-size: 12px; margin-top: 20px; opacity: 0.8;">
+                Closing background applications and securing display environment.
+            </p>
+        </div>
+    </div>
+
+    <div class="footer">
+        Powered by DC SafeBrowser Engine v1.1.7 PRO
+    </div>
+
+    <script>
+        // Optional: Update status text dynamically if needed
+        setTimeout(() => {
+            document.getElementById('status-text').innerHTML = '<i class="fas fa-check-circle" style="color:#4ade80;"></i> Security Policy Applied';
+        }, 2000);
+    </script>
+</body>
+</html>

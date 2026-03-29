@@ -10,9 +10,10 @@ let aboutWindow;
 
 function showAboutDialog() {
   const detail = `
-Version: 1.1.7 (PRO Hardened)
+Version: 1.2.0 (PRO Hardened)
 Status: System Hardened Active
 Lockdown: Aggressive Background Termination
+Mobile-Webcam: AI Fallback Enabled
 Sweep Interval: 3 Seconds
 
 Developed by DC Infotech Cloud Solutions
@@ -149,7 +150,37 @@ function createWindow() {
   let blackoutWindows = [];
   let isExamLockedDown = false;
   let lockdownInterval = null;
+  let lockdownSplashWin = null;
   const { exec } = require('child_process');
+
+  function showLockdownSplash() {
+    if (lockdownSplashWin) return;
+    
+    lockdownSplashWin = new BrowserWindow({
+      width: 700,
+      height: 500,
+      frame: false,
+      transparent: false,
+      alwaysOnTop: true,
+      center: true,
+      backgroundColor: '#1e3c72',
+      skipTaskbar: true,
+      webPreferences: {
+        nodeIntegration: false,
+        contextIsolation: true
+      }
+    });
+
+    lockdownSplashWin.loadFile(path.join(__dirname, 'lockdown.html'));
+    
+    // Automatically close the splash after 4 seconds
+    setTimeout(() => {
+      if (lockdownSplashWin && !lockdownSplashWin.isDestroyed()) {
+        lockdownSplashWin.close();
+        lockdownSplashWin = null;
+      }
+    }, 4000);
+  }
 
   function killBackgroundApps() {
     const blacklist = [
@@ -205,6 +236,9 @@ function createWindow() {
     if (isExamLockedDown) return;
     isExamLockedDown = true;
     console.log('>>> ENFORCING EXAM LOCKDOWN');
+
+    // 0. Show professional lockdown splash
+    showLockdownSplash();
 
     // 1. Force kill all other background applications
     killBackgroundApps();
